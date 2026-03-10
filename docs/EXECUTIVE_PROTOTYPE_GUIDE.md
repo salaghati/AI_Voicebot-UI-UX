@@ -88,24 +88,20 @@ Prototype này mô phỏng đầy đủ bức tranh vận hành:
 
 ---
 
-## 5. Ai dùng hệ thống và họ cần đạt điều gì
+## 5. Nhóm actor dùng trong tài liệu này
 
-| Vai trò | Họ vào hệ thống để làm gì | Màn hình họ quan tâm nhất |
+Để người đọc dễ theo dõi, phần use case của tài liệu được rút gọn về `2 actor chính`:
+
+| Actor | Đại diện cho ai | Họ làm gì trong bức tranh tổng thể |
 | --- | --- | --- |
-| Campaign Manager | Tạo và vận hành các chiến dịch gọi ra | Outbound, Report Outbound, Dashboard |
-| Ops Manager | Theo dõi chất lượng vận hành và xử lý các điểm nghẽn | Dashboard, Inbound, Report, Settings |
-| Bot Designer | Thiết kế logic bot và kiểm tra runtime | Workflow, Preview, Playground |
-| Knowledge Supervisor | Cập nhật tri thức và fallback để bot trả lời đúng hơn | KB List, KB Fallback, KB Usage |
-| Admin / Tech Ops | Cấu hình nền tảng, tích hợp, phân quyền | Settings |
-| Khách hàng / người gọi | Nhận hoặc thực hiện cuộc gọi với bot | Không dùng console, nhưng là đầu ra trực tiếp của toàn bộ hệ thống |
+| Admin | Toàn bộ nhóm thao tác trong console: vận hành, cấu hình, thiết kế workflow, quản trị tri thức | Tạo cấu hình, tổ chức logic bot, theo dõi báo cáo, quản lý hệ thống |
+| Agent | Nhân viên nhận handover từ bot hoặc tham gia xử lý sau cuộc gọi | Tiếp nhận cuộc gọi cần người thật xử lý và khai thác thông tin liên quan |
 
-Nếu người đọc là cấp quản lý, cách hiểu nhanh là:
+Lý do gom như vậy:
 
-- `Campaign Manager` nhìn vào hiệu quả business;
-- `Ops Manager` nhìn vào độ trơn tru của vận hành;
-- `Bot Designer` nhìn vào logic xử lý;
-- `Knowledge Supervisor` nhìn vào chất lượng câu trả lời;
-- `Admin` nhìn vào khả năng đưa hệ thống đi vào thực tế.
+- người đọc cấp quản lý thường chỉ cần phân biệt `người quản trị hệ thống` và `người xử lý cuộc gọi thật`;
+- các vai trò như Campaign Manager, Ops Manager, Bot Designer, Knowledge Supervisor trong prototype đều có thể xem là các biến thể của `Admin` ở mức use case tổng quan;
+- như vậy sơ đồ ngắn gọn hơn và bám đúng yêu cầu trình bày ở mức điều hành.
 
 ---
 
@@ -115,17 +111,16 @@ Nếu người đọc là cấp quản lý, cách hiểu nhanh là:
 
 Sơ đồ này trả lời câu hỏi:
 
-- hệ thống này phục vụ những ai;
-- mỗi vai trò đến đây để làm việc gì;
-- các use case liên kết với nhau ra sao;
-- vì sao `Workflow`, `Knowledge Base` và `Report` là ba khối gần như luôn xuất hiện cùng nhau.
+- trong bối cảnh quản trị, `Admin` thao tác những nhóm việc nào;
+- `Agent` liên quan đến phần nào của hệ thống;
+- các thao tác nào là lõi của prototype này.
 
 Điểm quan trọng:
 
-- `Outbound` và `Inbound` là hai nhánh vận hành chính;
-- cả hai đều phụ thuộc vào `Workflow` và `Knowledge Base`;
-- `Report` là lớp đo lường để biết cấu hình hiện tại có hiệu quả hay không;
-- `Settings` là lớp nền để chuẩn hóa vận hành và giảm phụ thuộc kỹ thuật thủ công.
+- `Admin` là actor chính của console;
+- `Agent` chỉ tham gia ở những điểm giao với cuộc gọi thực tế hoặc dữ liệu hậu kiểm;
+- `Outbound`, `Inbound`, `Workflow`, `KB`, `Report`, `Settings` vẫn là các khối chức năng trung tâm;
+- sơ đồ use case này không nhằm mô tả toàn bộ backend, mà mô tả mục đích sử dụng của prototype.
 
 ---
 
