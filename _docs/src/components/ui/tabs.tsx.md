@@ -1,0 +1,96 @@
+<details>
+<summary>Documentation Metadata (click to expand)</summary>
+
+```json
+{
+  "doc_type": "file_overview",
+  "file_path": "src/components/ui/tabs.tsx",
+  "source_hash": "1040d0ba7fbc85c9190cbf03024451e39ef82ff127e59768adfa8c4207782f63",
+  "last_updated": "2026-03-10T04:12:26.292955+00:00",
+  "git_sha": "ef3145b7655bbfaa527f7d02ea053e6b451cadc1",
+  "tokens_used": 5383,
+  "complexity_score": 2,
+  "estimated_review_time_minutes": 10,
+  "external_dependencies": [
+    "next/link"
+  ]
+}
+```
+
+</details>
+
+[Documentation Home](../../../README.md) > [src](../../README.md) > [components](../README.md) > [ui](./README.md) > **tabs.mdx**
+
+---
+
+# tabs.tsx
+
+> **File:** `src/components/ui/tabs.tsx`
+
+![Complexity: Low](https://img.shields.io/badge/Complexity-Low-green) ![Review Time: 10min](https://img.shields.io/badge/Review_Time-10min-blue)
+
+## 📑 Table of Contents
+
+
+- [Overview](#overview)
+- [Dependencies](#dependencies)
+- [Architecture Notes](#architecture-notes)
+- [Usage Examples](#usage-examples)
+- [Maintenance Notes](#maintenance-notes)
+- [Functions and Classes](#functions-and-classes)
+
+---
+
+## Overview
+
+This file exports a TypeScript interface TabItem and a functional React component TabsNav. TabItem describes the shape of each tab (label: string, href: string, optional active boolean). TabsNav is a stateless presentational component that accepts an array of TabItem objects and renders them as a compact inline-flex group of Next.js Link elements with conditional styling based on the active flag.
+
+The component is marked with the "use client" directive which makes it a client-side React component in a Next.js app. It composes className strings using the imported cn() utility and applies CSS variable-based styling (for example, --line, --accent, --text-dim, --surface-2) to control borders, background and text color. The component does not manage any local state, side effects, or external I/O — it simply maps the provided items array to Link elements and relies on the parent to supply active state and href destinations.
+
+## Dependencies
+
+### External Dependencies
+
+| Module | Usage |
+| --- | --- |
+| `next/link` | Uses the Link component imported as `Link` (import Link from "next/link"). Each TabItem is rendered as a <Link> with href={item.href} and key={item.href} so that Next.js client-side navigation is used for the tab anchors. |
+
+### Internal Dependencies
+
+| Module | Usage |
+| --- | --- |
+| [@/lib/utils](../@/lib/utils.md) | Imports the `cn` utility (import { cn } from "@/lib/utils"). `cn` is used to concatenate base classes and conditional classes depending on `item.active` to produce the final className string for each Link element. |
+
+## 📁 Directory
+
+This file is part of the **ui** directory. View the [directory index](_docs/src/components/ui/README.md) to see all files in this module.
+
+## Architecture Notes
+
+- Implements a stateless functional React component pattern: no internal state, effects, or context are used; parent components supply data via props.
+- Marked with the Next.js client directive `"use client"` at the top, so this component always runs on the client and can use client-only constructs if needed.
+- Styling is driven by CSS classes and CSS variables (e.g., --line, --accent, --text-dim, --surface-2). The component delegates visual state (active tab) to the provided TabItem.active boolean.
+- Simple composition: maps TabItem[] -> Link elements. No error handling or asynchronous flows are present or required.
+
+## Usage Examples
+
+### Page-level tab navigation
+
+A parent page constructs an array of TabItem and passes it to TabsNav. Example input: [{ label: 'Overview', href: '/projects/1', active: true }, { label: 'Settings', href: '/projects/1/settings' }]. TabsNav will render a rounded container with two Link elements; the first will receive the active styles (background and accent border) and the second will render as an inactive tab with hover styles. Navigation is handled by Next.js Link so clicking a tab performs client-side navigation to the href.
+
+## Maintenance Notes
+
+- Accessibility: Links are used correctly, but adding aria-current="page" for the active tab and ensuring keyboard focus styles would improve accessibility.
+- Testing: Unit tests should assert that items.map produces a Link per TabItem, that key uses item.href, and that className includes active vs inactive branches. Snapshot tests can validate output markup and className variations.
+- Performance: The component is trivial and low-cost. Avoid passing a new items array on every render to prevent unnecessary re-renders of Link children.
+- Future enhancements: Consider adding optional props for aria labeling, an id/prefix for keys (rather than using href alone), or supporting an onChange callback for controlled navigation state.
+
+---
+
+## Navigation
+
+**↑ Parent Directory:** [Go up](_docs/src/components/ui/README.md)
+
+---
+
+*This documentation was automatically generated by AI ([Woden DocBot](https://github.com/marketplace/ai-document-creator)) and may contain errors. It is the responsibility of the user to validate the accuracy and completeness of this documentation.*
