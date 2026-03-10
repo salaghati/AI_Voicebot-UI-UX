@@ -1,0 +1,23 @@
+docs_folder: "docs/auto-generated"
+
+allowed_base_branches:
+  - main
+
+include_extensions:
+  - ".ts"
+  - ".tsx"
+  - ".js"
+  - ".jsx"
+  - ".md"
+  - ".json"
+
+exclude:
+  - "node_modules/**"
+  - ".next/**"
+  - "dist/**"
+  - "build/**"
+  - "coverage/**"
+  - "public/slides/**"
+  - "docs/PROJECT_STRUCTURE.md"
+  - "docs/acceptance-checklist.md"
+  - "docs/slide-route-mapping.md"
