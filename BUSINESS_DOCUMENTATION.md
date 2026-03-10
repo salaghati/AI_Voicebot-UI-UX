@@ -137,44 +137,44 @@ AI Voicebot là nền tảng tổng đài tự động sử dụng trí tuệ nh
 
 ```mermaid
 graph TB
-    subgraph External["Hệ thống bên ngoài"]
-        CRM["CRM / CDP<br/>Dữ liệu khách hàng"]
-        PBX["Tổng đài IP<br/>(Asterisk/FreeSWITCH)"]
-        STT["STT Engine<br/>Chuyển giọng nói → text"]
-        TTS["TTS Engine<br/>Chuyển text → giọng nói"]
-        NLU["NLU Engine<br/>Nhận diện intent & entity"]
+    subgraph External["He thong ben ngoai"]
+        CRM["CRM / CDP\nDu lieu khach hang"]
+        PBX["Tong dai IP\nAsterisk/FreeSWITCH"]
+        STT["STT Engine\nGiong noi sang text"]
+        TTS["TTS Engine\nText sang giong noi"]
+        NLU["NLU Engine\nNhan dien intent va entity"]
     end
 
     subgraph Platform["AI Voicebot Platform"]
-        BE["Bot Engine<br/>Outbound / Inbound"]
-        WF["Workflow Engine<br/>Xử lý luồng cuộc gọi"]
-        KB["Knowledge Base<br/>Tri thức trả lời"]
-        RPT["Reporting<br/>Báo cáo & Giám sát"]
-        DASH["Dashboard<br/>Real-time monitoring"]
-        SET["Settings<br/>Cài đặt hệ thống"]
+        BE["Bot Engine\nOutbound / Inbound"]
+        WF["Workflow Engine\nXu ly luong cuoc goi"]
+        KB["Knowledge Base\nTri thuc tra loi"]
+        RPT["Reporting\nBao cao va Giam sat"]
+        DASH["Dashboard\nReal-time monitoring"]
+        SET["Settings\nCai dat he thong"]
     end
 
-    subgraph Users["Người dùng"]
-        KH["Khách hàng<br/>(gọi vào / nhận cuộc gọi)"]
-        AGT["Agent<br/>(tiếp nhận khi bot chuyển)"]
-        OPS["Ops Team<br/>(vận hành hệ thống)"]
+    subgraph Users["Nguoi dung"]
+        KH["Khach hang\nGoi vao / Nhan cuoc goi"]
+        AGT["Agent\nTiep nhan khi bot chuyen"]
+        OPS["Ops Team\nVan hanh he thong"]
     end
 
-    KH <-->|Cuộc gọi| PBX
+    KH <-->|Cuoc goi| PBX
     PBX <-->|Audio stream| STT
     PBX <-->|Audio stream| TTS
     STT -->|Text| NLU
     NLU -->|Intent + Entity| WF
-    WF -->|Tra cứu| KB
-    WF -->|Lấy data| CRM
+    WF -->|Tra cuu| KB
+    WF -->|Lay data| CRM
     WF -->|Response text| TTS
 
-    BE -->|Khởi chạy campaign| PBX
-    BE -->|Cấu hình route| PBX
-    WF -->|Chuyển agent| AGT
+    BE -->|Khoi chay campaign| PBX
+    BE -->|Cau hinh route| PBX
+    WF -->|Chuyen agent| AGT
 
-    OPS -->|Quản trị| Platform
-    RPT -->|Dữ liệu| DASH
+    OPS -->|Quan tri| Platform
+    RPT -->|Du lieu| DASH
 
     style External fill:#fef3c7,stroke:#d97706
     style Platform fill:#dbeafe,stroke:#2563eb
@@ -185,8 +185,8 @@ graph TB
 
 ```mermaid
 sequenceDiagram
-    actor KH as Khách hàng
-    participant PBX as Tổng đài IP
+    actor KH as Khach hang
+    participant PBX as Tong dai IP
     participant STT as STT Engine
     participant NLU as NLU Engine
     participant WF as Workflow Engine
@@ -194,37 +194,37 @@ sequenceDiagram
     participant TTS as TTS Engine
     participant AGT as Agent
 
-    Note over KH,AGT: CUỘC GỌI OUTBOUND
+    Note over KH,AGT: CUOC GOI OUTBOUND
 
-    WF->>PBX: Bot khởi tạo cuộc gọi
-    PBX->>KH: Gọi đến khách hàng
-    KH->>PBX: Nhấc máy
+    WF->>PBX: Bot khoi tao cuoc goi
+    PBX->>KH: Goi den khach hang
+    KH->>PBX: Nhac may
     
-    PBX->>TTS: Lời chào (từ workflow)
-    TTS->>KH: "Xin chào, đây là cuộc gọi từ..."
+    PBX->>TTS: Loi chao (tu workflow)
+    TTS->>KH: Xin chao, day la cuoc goi tu...
 
-    KH->>PBX: Khách nói
-    PBX->>STT: Audio → Text
-    STT->>NLU: "Tôi muốn thanh toán"
-    NLU->>WF: Intent: PAYMENT_REQUEST<br/>Confidence: 0.92
+    KH->>PBX: Khach noi
+    PBX->>STT: Audio to Text
+    STT->>NLU: Toi muon thanh toan
+    NLU->>WF: Intent PAYMENT_REQUEST, Confidence 0.92
 
     alt Confidence >= Threshold
-        WF->>KB: Tra cứu hướng dẫn thanh toán
-        KB->>WF: "Quý khách vui lòng..."
+        WF->>KB: Tra cuu huong dan thanh toan
+        KB->>WF: Quy khach vui long...
         WF->>TTS: Response text
-        TTS->>KH: Bot trả lời hướng dẫn
-    else Confidence < Threshold (Fallback)
-        WF->>WF: Kiểm tra Fallback Rule
+        TTS->>KH: Bot tra loi huong dan
+    else Confidence < Threshold - Fallback
+        WF->>WF: Kiem tra Fallback Rule
         alt nextAction = ASK_AGAIN
-            WF->>TTS: "Xin lỗi, anh/chị có thể nói lại?"
-            TTS->>KH: Bot hỏi lại
+            WF->>TTS: Xin loi, anh/chi co the noi lai?
+            TTS->>KH: Bot hoi lai
         else nextAction = TRANSFER_AGENT
-            WF->>AGT: Chuyển cuộc gọi sang agent
-            AGT->>KH: Agent tiếp nhận
+            WF->>AGT: Chuyen cuoc goi sang agent
+            AGT->>KH: Agent tiep nhan
         end
     end
 
-    Note over KH,AGT: Kết thúc cuộc gọi → Ghi nhận Report
+    Note over KH,AGT: Ket thuc cuoc goi - Ghi nhan Report
 ```
 
 ## 3.3. Kiến trúc Workflow (Cách Bot "Suy Nghĩ")
@@ -233,20 +233,20 @@ Mỗi cuộc gọi được xử lý bởi một **Workflow** — chuỗi các n
 
 ```mermaid
 graph LR
-    START((Bắt đầu)) --> GREET[🎤 Intent Node<br/>Lời chào + Nhận diện ý định]
+    START(("Bat dau")) --> GREET["Intent Node\nLoi chao + Nhan dien y dinh"]
     
-    GREET --> COND{🔀 Condition Node<br/>Phân loại ý định}
+    GREET --> COND{"Condition Node\nPhan loai y dinh"}
     
-    COND -->|Thanh toán| KB1[📚 KB Node<br/>Tra cứu hướng dẫn<br/>thanh toán]
-    COND -->|Khiếu nại| API1[🔌 API Node<br/>Tạo ticket trên CRM]
-    COND -->|Không hiểu| FB[⚠️ Fallback<br/>Hỏi lại / Chuyển agent]
+    COND -->|Thanh toan| KB1["KB Node\nTra cuu huong dan\nthanh toan"]
+    COND -->|Khieu nai| API1["API Node\nTao ticket tren CRM"]
+    COND -->|Khong hieu| FB["Fallback\nHoi lai / Chuyen agent"]
     
-    KB1 --> RESP1[🎤 Intent Node<br/>Đọc kết quả + Hỏi tiếp]
-    API1 --> RESP2[🎤 Intent Node<br/>Xác nhận đã tạo ticket]
+    KB1 --> RESP1["Intent Node\nDoc ket qua + Hoi tiep"]
+    API1 --> RESP2["Intent Node\nXac nhan da tao ticket"]
     
-    RESP1 --> END1((Kết thúc))
-    RESP2 --> END2((Kết thúc))
-    FB --> TRANSFER[👤 Chuyển Agent]
+    RESP1 --> END1(("Ket thuc"))
+    RESP2 --> END2(("Ket thuc"))
+    FB --> TRANSFER["Chuyen Agent"]
 
     style START fill:#10b981,stroke:#059669,color:#fff
     style END1 fill:#ef4444,stroke:#dc2626,color:#fff
@@ -272,22 +272,22 @@ graph LR
 
 ```mermaid
 graph TD
-    A["📋 Bước 1: Thông tin Campaign<br/>Tên chiến dịch, mô tả mục đích"] --> B
-    B["📂 Bước 2: Chọn Data Source<br/>CRM, File CSV, Segment khách hàng"] --> C
-    C["⚡ Bước 3: Chọn Workflow<br/>Luồng xử lý cuộc gọi"] --> D
-    D["📚 Bước 4: Chọn Knowledge Base<br/>Tri thức để bot trả lời"] --> E
-    E["⚠️ Bước 5: Chọn KB Fallback Rule<br/>Xử lý khi bot không hiểu"] --> F
-    F["📅 Bước 6: Lịch gọi & Retry<br/>Giờ gọi, số lần gọi lại"] --> G
-    G["✅ Bước 7: Review & Tạo chiến dịch"]
+    A["Buoc 1: Thong tin Campaign\nTen chien dich, mo ta muc dich"] --> B
+    B["Buoc 2: Chon Data Source\nCRM, File CSV, Segment"] --> C
+    C["Buoc 3: Chon Workflow\nLuong xu ly cuoc goi"] --> D
+    D["Buoc 4: Chon Knowledge Base\nTri thuc de bot tra loi"] --> E
+    E["Buoc 5: Chon KB Fallback Rule\nXu ly khi bot khong hieu"] --> F
+    F["Buoc 6: Lich goi va Retry\nGio goi, so lan goi lai"] --> G
+    G["Buoc 7: Review va Tao chien dich"]
 
-    G --> H{"Chiến dịch đã tạo"}
-    H -->|Kích hoạt| I["🟢 Đang chạy<br/>Bot bắt đầu gọi"]
-    H -->|Chờ| J["📝 Nháp<br/>Chờ kích hoạt"]
+    G --> H{"Chien dich da tao"}
+    H -->|Kich hoat| I["DANG CHAY\nBot bat dau goi"]
+    H -->|Cho| J["NHAP\nCho kich hoat"]
 
-    I --> K["📊 Theo dõi trên Dashboard<br/>Success rate, conversion, lỗi"]
-    I -->|Tạm dừng| L["⏸️ Tạm dừng"]
-    L -->|Tiếp tục| I
-    I --> M["✅ Hoàn tất"]
+    I --> K["Theo doi tren Dashboard\nSuccess rate, conversion, loi"]
+    I -->|Tam dung| L["TAM DUNG"]
+    L -->|Tiep tuc| I
+    I --> M["HOAN TAT"]
 
     style A fill:#e0f2fe,stroke:#0284c7
     style G fill:#d1fae5,stroke:#059669
@@ -304,21 +304,21 @@ graph TD
 
 ```mermaid
 graph TD
-    A["📋 Bước 1: Thông tin Route<br/>Tên tuyến, mô tả"] --> B
-    B["📞 Bước 2: Queue & Extension<br/>Queue: Payment/Sales/VIP<br/>Extension: 801, 812..."] --> C
-    C["⚡ Bước 3: Chọn Workflow<br/>Luồng xử lý cuộc gọi vào"] --> D
-    D["📚 Bước 4: Chọn Knowledge Base<br/>Tri thức để bot trả lời"] --> E
-    E["⚠️ Bước 5: Chọn KB Fallback<br/>Xử lý khi bot không hiểu"] --> F
-    F["✅ Bước 6: Review & Tạo route"]
+    A["Buoc 1: Thong tin Route\nTen tuyen, mo ta"] --> B
+    B["Buoc 2: Queue va Extension\nQueue: Payment/Sales/VIP\nExtension: 801, 812..."] --> C
+    C["Buoc 3: Chon Workflow\nLuong xu ly cuoc goi vao"] --> D
+    D["Buoc 4: Chon Knowledge Base\nTri thuc de bot tra loi"] --> E
+    E["Buoc 5: Chon KB Fallback\nXu ly khi bot khong hieu"] --> F
+    F["Buoc 6: Review va Tao route"]
 
-    F --> G{"Route đã tạo"}
-    G -->|Kích hoạt| H["🟢 Hoạt động<br/>Sẵn sàng nhận cuộc gọi"]
-    G -->|Chờ| I["📝 Nháp"]
+    F --> G{"Route da tao"}
+    G -->|Kich hoat| H["HOAT DONG\nSan sang nhan cuoc goi"]
+    G -->|Cho| I["NHAP"]
 
-    H --> J["📞 Khách gọi vào"]
-    J --> K["🤖 Bot xử lý theo workflow"]
-    K -->|Giải quyết được| L["✅ Kết thúc cuộc gọi"]
-    K -->|Không giải quyết được| M["👤 Chuyển Agent"]
+    H --> J["Khach goi vao"]
+    J --> K["Bot xu ly theo workflow"]
+    K -->|Giai quyet duoc| L["Ket thuc cuoc goi"]
+    K -->|Khong giai quyet duoc| M["Chuyen Agent"]
 
     style A fill:#e0f2fe,stroke:#0284c7
     style F fill:#d1fae5,stroke:#059669
@@ -334,18 +334,18 @@ graph TD
 
 ```mermaid
 graph TD
-    A["🆕 Tạo Workflow mới<br/>Đặt tên, chọn loại Inbound/Outbound"] --> B
-    B["🎨 Mở Workflow Builder<br/>Giao diện kéo thả"] --> C
-    C["➕ Thêm các Node<br/>Intent → Condition → KB → API"] --> D
-    D["⚙️ Cấu hình chi tiết từng Node<br/>Threshold, timeout, retry, mapping..."] --> E
-    E["💾 Lưu bản Draft"] --> F
+    A["Tao Workflow moi\nDat ten, chon loai Inbound/Outbound"] --> B
+    B["Mo Workflow Builder\nGiao dien keo tha"] --> C
+    C["Them cac Node\nIntent - Condition - KB - API"] --> D
+    D["Cau hinh chi tiet tung Node\nThreshold, timeout, retry, mapping..."] --> E
+    E["Luu ban Draft"] --> F
 
-    F --> G["🧪 Preview & Test<br/>Chạy thử trong Playground"]
-    G -->|OK| H["✅ Bật Active<br/>Workflow sẵn sàng dùng"]
-    G -->|Cần sửa| B
+    F --> G["Preview va Test\nChay thu trong Playground"]
+    G -->|OK| H["Bat Active\nWorkflow san sang dung"]
+    G -->|Can sua| B
 
-    H --> I["📦 Được sử dụng trong<br/>Outbound Campaign / Inbound Route"]
-    H --> J["📜 Version History<br/>Lưu lịch sử thay đổi"]
+    H --> I["Duoc su dung trong\nOutbound Campaign / Inbound Route"]
+    H --> J["Version History\nLuu lich su thay doi"]
 
     style A fill:#e0f2fe,stroke:#0284c7
     style H fill:#10b981,stroke:#059669,color:#fff
@@ -358,37 +358,37 @@ graph TD
 
 ```mermaid
 graph TD
-    A["📚 Thêm tài liệu tri thức"] --> B{"Loại nguồn?"}
+    A["Them tai lieu tri thuc"] --> B{"Loai nguon?"}
     
-    B -->|URL| C["🌐 Crawl website<br/>Single page / Entire site"]
-    B -->|Article| D["📝 Viết bài trực tiếp<br/>Tiêu đề, nội dung, tags"]
-    B -->|File| E["📎 Upload file<br/>PDF, DOCX, CSV..."]
+    B -->|URL| C["Crawl website\nSingle page / Entire site"]
+    B -->|Article| D["Viet bai truc tiep\nTieu de, noi dung, tags"]
+    B -->|File| E["Upload file\nPDF, DOCX, CSV..."]
 
-    C --> F["⏳ Training<br/>Đang học"]
+    C --> F["Training\nDang hoc"]
     D --> F
     E --> F
 
-    F --> G["✅ Đã học<br/>Sẵn sàng sử dụng"]
+    F --> G["Da hoc\nSan sang su dung"]
 
-    G --> H["🔗 Gán vào Workflow<br/>(KB Node tra cứu)"]
-    G --> I["🔗 Gán vào Campaign<br/>/ Inbound Route"]
+    G --> H["Gan vao Workflow\nKB Node tra cuu"]
+    G --> I["Gan vao Campaign\n/ Inbound Route"]
 
-    H --> J["🤖 Bot tra cứu khi xử lý<br/>cuộc gọi"]
+    H --> J["Bot tra cuu khi xu ly\ncuoc goi"]
 
-    subgraph Fallback["⚠️ KB Fallback Rules"]
-        K["NLU_NO_MATCH<br/>Bot không nhận diện được intent"]
-        L["SUPPORT_REQUEST<br/>Khách yêu cầu nói chuyện agent"]
-        M["GREETING<br/>Khách chào hỏi chung"]
-        N["END_CONVERSATION<br/>Khách muốn kết thúc"]
+    subgraph Fallback["KB Fallback Rules"]
+        K["NLU_NO_MATCH\nBot khong nhan dien duoc intent"]
+        L["SUPPORT_REQUEST\nKhach yeu cau noi chuyen agent"]
+        M["GREETING\nKhach chao hoi chung"]
+        N["END_CONVERSATION\nKhach muon ket thuc"]
     end
 
-    J -->|Không tìm được câu trả lời| Fallback
+    J -->|Khong tim duoc cau tra loi| Fallback
     
-    K --> O{"Hành động?"}
-    O -->|ASK_AGAIN| P["Hỏi lại khách"]
-    O -->|TRANSFER_AGENT| Q["Chuyển agent"]
-    O -->|END_CALL| R["Kết thúc cuộc gọi"]
-    O -->|CALLBACK| S["Hẹn gọi lại"]
+    K --> O{"Hanh dong?"}
+    O -->|ASK_AGAIN| P["Hoi lai khach"]
+    O -->|TRANSFER_AGENT| Q["Chuyen agent"]
+    O -->|END_CALL| R["Ket thuc cuoc goi"]
+    O -->|CALLBACK| S["Hen goi lai"]
 
     style G fill:#10b981,stroke:#059669,color:#fff
     style Fallback fill:#fef3c7,stroke:#d97706
@@ -632,74 +632,74 @@ Phát hiện lỗi hệ thống: STT timeout, NLU low confidence, API failure, T
 
 ```mermaid
 erDiagram
-    CHIEN_DICH_OUTBOUND {
-        string ten_chien_dich
-        string trang_thai "Nháp | Đang chạy | Tạm dừng | Hoàn tất"
-        string nguon_du_lieu "CRM | File | Segment"
-        int tong_cuoc_goi
-        float ty_le_thanh_cong
-        string nguoi_tao
+    OUTBOUND_CAMPAIGN {
+        string name
+        string status "Draft - Running - Paused - Done"
+        string data_source "CRM - File - Segment"
+        int total_calls
+        float success_rate
+        string owner
     }
 
-    TUYEN_INBOUND {
-        string ten_tuyen
-        string trang_thai "Hoạt động | Nháp | Tạm dừng"
-        string queue "Payment | Sales | VIP"
-        string extension "801, 812..."
+    INBOUND_ROUTE {
+        string name
+        string status "Active - Draft - Paused"
+        string queue "Payment - Sales - VIP"
+        string extension "801 - 812"
         string entry_point
     }
 
     WORKFLOW {
-        string ten_workflow
-        string trang_thai "Active | Draft"
-        string loai "Inbound | Outbound | Playground"
-        string phien_ban
+        string name
+        string status "Active - Draft"
+        string kind "Inbound - Outbound - Playground"
+        string version
     }
 
-    NODE_WORKFLOW {
-        string loai_node "Intent | Condition | KB | API"
-        string nhan
-        string cau_hinh_chi_tiet
+    WORKFLOW_NODE {
+        string node_type "Intent - Condition - KB - API"
+        string label
+        string config_detail
     }
 
-    TAI_LIEU_TRI_THUC {
-        string tieu_de
-        string nguon "URL | Article | File"
-        string trang_thai_hoc "Chưa học | Đang học | Đã học"
+    KB_DOCUMENT {
+        string title
+        string source_type "URL - Article - File"
+        string training_status "Trained - Untrained - Training"
     }
 
-    QUY_TAC_FALLBACK {
-        string ten_quy_tac
-        string danh_muc "NLU_NO_MATCH | SUPPORT_REQUEST | GREETING | END_CONVERSATION"
-        boolean da_bat
-        string hanh_dong "Hỏi lại | Chuyển agent | Kết thúc | Gọi lại"
+    FALLBACK_RULE {
+        string name
+        string category "NLU_NO_MATCH - SUPPORT_REQUEST - GREETING - END_CONVERSATION"
+        boolean is_active
+        string action "Ask again - Transfer - End call - Callback"
     }
 
-    CUOC_GOI {
-        string so_dien_thoai
-        int thoi_luong_giay
-        string trang_thai "Success | Failed | Transferred"
-        string intent_nhan_dien
+    CALL_REPORT {
+        string phone_number
+        int duration_sec
+        string status "Success - Failed - Transferred"
+        string detected_intent
         string transcript
     }
 
-    DAU_SO {
-        string so_dien_thoai
-        string context "outbound | inbound | CSKH"
+    PHONE_NUMBER {
+        string number
+        string context "outbound - inbound - CSKH"
     }
 
-    CHIEN_DICH_OUTBOUND ||--|| WORKFLOW : "dùng workflow"
-    CHIEN_DICH_OUTBOUND ||--o| TAI_LIEU_TRI_THUC : "gán KB"
-    CHIEN_DICH_OUTBOUND ||--o| QUY_TAC_FALLBACK : "gán fallback rule"
-    CHIEN_DICH_OUTBOUND ||--|{ CUOC_GOI : "sinh ra cuộc gọi"
+    OUTBOUND_CAMPAIGN ||--|| WORKFLOW : "uses workflow"
+    OUTBOUND_CAMPAIGN ||--o| KB_DOCUMENT : "assigned KB"
+    OUTBOUND_CAMPAIGN ||--o| FALLBACK_RULE : "assigned fallback"
+    OUTBOUND_CAMPAIGN ||--|{ CALL_REPORT : "generates calls"
 
-    TUYEN_INBOUND ||--|| WORKFLOW : "dùng workflow"
-    TUYEN_INBOUND ||--o| TAI_LIEU_TRI_THUC : "gán KB"
-    TUYEN_INBOUND ||--o| QUY_TAC_FALLBACK : "gán fallback rule"
-    TUYEN_INBOUND ||--|{ CUOC_GOI : "tiếp nhận cuộc gọi"
+    INBOUND_ROUTE ||--|| WORKFLOW : "uses workflow"
+    INBOUND_ROUTE ||--o| KB_DOCUMENT : "assigned KB"
+    INBOUND_ROUTE ||--o| FALLBACK_RULE : "assigned fallback"
+    INBOUND_ROUTE ||--|{ CALL_REPORT : "receives calls"
 
-    WORKFLOW ||--|{ NODE_WORKFLOW : "gồm các node"
-    NODE_WORKFLOW }|--o| TAI_LIEU_TRI_THUC : "KB node tra cứu"
+    WORKFLOW ||--|{ WORKFLOW_NODE : "contains nodes"
+    WORKFLOW_NODE }|--o| KB_DOCUMENT : "KB node lookups"
 ```
 
 ---
