@@ -1,0 +1,88 @@
+<details>
+<summary>Documentation Metadata (click to expand)</summary>
+
+```json
+{
+  "doc_type": "file_overview",
+  "file_path": "src/app/(console)/workflow/[id]/page.tsx",
+  "source_hash": "204fd1f9ea4b40370ac3c9df24725fd7008d282c7542bc8668f318c87145f2e2",
+  "last_updated": "2026-03-10T04:03:20.549548+00:00",
+  "git_sha": "366273d7da755f2508639867fd2b1b33d2abd0a6",
+  "tokens_used": 5285,
+  "complexity_score": 2,
+  "estimated_review_time_minutes": 5,
+  "external_dependencies": []
+}
+```
+
+</details>
+
+[Documentation Home](../../../../../README.md) > [src](../../../../README.md) > [app](../../../README.md) > [(console)](../../README.md) > [workflow](../README.md) > [[id]](./README.md) > **page.mdx**
+
+---
+
+# page.tsx
+
+> **File:** `src/app/(console)/workflow/[id]/page.tsx`
+
+![Complexity: Low](https://img.shields.io/badge/Complexity-Low-green) ![Review Time: 5min](https://img.shields.io/badge/Review_Time-5min-blue)
+
+## 📑 Table of Contents
+
+
+- [Overview](#overview)
+- [Dependencies](#dependencies)
+- [Architecture Notes](#architecture-notes)
+- [Usage Examples](#usage-examples)
+- [Maintenance Notes](#maintenance-notes)
+- [Functions and Classes](#functions-and-classes)
+
+---
+
+## Overview
+
+This file defines a default-exported async React component (page) used by the Next.js App Router at the dynamic route src/app/(console)/workflow/[id]/page.tsx. It imports WorkflowDetailView from the project's internal features module and, at render time, awaits the provided params promise, destructures the id string, and returns the WorkflowDetailView JSX element with workflowId={id}.
+
+In the larger application, this page acts as the route entry point for a workflow detail view keyed by a dynamic id. The file relies on the app router's convention of passing params as a Promise<{ id: string }> to server components; by awaiting params it ensures the id is available before rendering WorkflowDetailView. There is no local state, side effects, or external API calls in this file — its sole responsibility is extracting the route parameter and passing it into the imported presentational/container component.
+
+## Dependencies
+
+### Internal Dependencies
+
+| Module | Usage |
+| --- | --- |
+| [@/features/workflow](../@/features/workflow.md) | Imports the named export WorkflowDetailView and renders it as the returned JSX: return <WorkflowDetailView workflowId={id} />; the file does not access any other exports from the module. |
+
+## 📁 Directory
+
+This file is part of the **[id]** directory. View the [directory index](_docs/src/app/(console)/workflow/[id]/README.md) to see all files in this module.
+
+## Architecture Notes
+
+- Implements an async server component pattern from Next.js App Router: the component signature is an async function that awaits params (type Promise<{ id: string }>), ensuring route params are resolved before rendering.
+- Minimal single-responsibility route handler: no state, no data fetching here — those responsibilities are expected to live inside WorkflowDetailView or its children.
+- Error handling strategy: none in this file; if params rejects or id is missing/invalid, the thrown error would propagate to Next.js error handling for the route.
+- Type usage: inline TypeScript props annotation describes params as Promise<{ id: string }>, making the expected parameter shape explicit at the page entry point.
+
+## Usage Examples
+
+### Rendering the workflow detail page for a specific workflow id
+
+When a user navigates to the route matching /console/workflow/[id], Next.js will invoke the exported async function WorkflowDetailPage and provide params as a Promise<{ id: string }>. The component awaits params, extracts const { id } = await params;, and returns <WorkflowDetailView workflowId={id} />. The rendered page is the WorkflowDetailView component with its workflowId prop set to the route's id parameter. Any detailed data fetching, loading states, or error UI should be implemented inside WorkflowDetailView or its child components.
+
+## Maintenance Notes
+
+- Verify that WorkflowDetailView accepts a prop named workflowId (string) — mismatched prop names/types will cause runtime/TypeScript errors.
+- If server-side data fetching is required before rendering, consider performing it either inside this async page (before returning the JSX) or keep this file thin and implement fetching in WorkflowDetailView to preserve separation of concerns.
+- Be cautious when changing the params type: Next.js app router provides params shaped by the route segments; altering the route filename (e.g., renaming [id]) requires updating type annotations and any consuming code.
+- Add explicit error handling if you need custom behavior when params is missing or invalid (for example, return notFound() or redirect from Next.js).
+
+---
+
+## Navigation
+
+**↑ Parent Directory:** [Go up](_docs/src/app/(console)/workflow/[id]/README.md)
+
+---
+
+*This documentation was automatically generated by AI ([Woden DocBot](https://github.com/marketplace/ai-document-creator)) and may contain errors. It is the responsibility of the user to validate the accuracy and completeness of this documentation.*

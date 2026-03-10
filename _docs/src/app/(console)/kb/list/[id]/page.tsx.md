@@ -1,0 +1,88 @@
+<details>
+<summary>Documentation Metadata (click to expand)</summary>
+
+```json
+{
+  "doc_type": "file_overview",
+  "file_path": "src/app/(console)/kb/list/[id]/page.tsx",
+  "source_hash": "df84b854d299f6cc6fe92ef6a44460833ab3cde42fb87a5fd2f384ed7f24ed72",
+  "last_updated": "2026-03-10T03:54:52.194621+00:00",
+  "git_sha": "bca540579a29aae8718c158f809af31549c931be",
+  "tokens_used": 5544,
+  "complexity_score": 2,
+  "estimated_review_time_minutes": 5,
+  "external_dependencies": []
+}
+```
+
+</details>
+
+[Documentation Home](../../../../../../README.md) > [src](../../../../../README.md) > [app](../../../../README.md) > [(console)](../../../README.md) > [kb](../../README.md) > [list](../README.md) > [[id]](./README.md) > **page.mdx**
+
+---
+
+# page.tsx
+
+> **File:** `src/app/(console)/kb/list/[id]/page.tsx`
+
+![Complexity: Low](https://img.shields.io/badge/Complexity-Low-green) ![Review Time: 5min](https://img.shields.io/badge/Review_Time-5min-blue)
+
+## 📑 Table of Contents
+
+
+- [Overview](#overview)
+- [Dependencies](#dependencies)
+- [Architecture Notes](#architecture-notes)
+- [Usage Examples](#usage-examples)
+- [Maintenance Notes](#maintenance-notes)
+- [Functions and Classes](#functions-and-classes)
+
+---
+
+## Overview
+
+This file exports a single default async React server component named KbItemPage and imports KbDetailView from an internal feature module. The import line in the file is: "import { KbDetailView } from \"@/features/kb\";" and the function declaration begins exactly as in the source: "export default async function KbItemPage({\n  params,\n}: {\n  params: Promise<{ id: string }>;\n}) {". The component awaits the provided params promise, extracts the id, and returns JSX that renders <KbDetailView kbId={id} />.
+
+Within a Next.js (App Router) application, this page acts as the dynamic route handler for a KB item under the path that maps to this file. It follows the server-component pattern: the page is async so it can await the route params (a Promise<{ id: string }>) provided by the framework, and it performs no additional I/O in this file itself. Instead it delegates display and any data fetching or side effects to the imported KbDetailView component by supplying the id via the kbId prop. The file contains no error handling, side-effectful logic, or other imports; its sole responsibility is parameter extraction and rendering the detail view component.
+
+## Dependencies
+
+### Internal Dependencies
+
+| Module | Usage |
+| --- | --- |
+| [@/features/kb](../@/features/kb.md) | Imports the named export KbDetailView and uses it as the returned JSX element in KbItemPage: the file returns <KbDetailView kbId={id} /> with the id extracted from route params. |
+
+## 📁 Directory
+
+This file is part of the **[id]** directory. View the [directory index](_docs/src/app/(console)/kb/list/[id]/README.md) to see all files in this module.
+
+## Architecture Notes
+
+- Implements a Next.js App Router server component pattern: the page is async and awaits a params Promise provided by the framework before rendering.
+- Minimal responsibility: parameter extraction and composition — rendering is delegated to the imported KbDetailView component, keeping this page thin and focused.
+- No error handling or validation is present; any data fetching or error boundaries are expected to be handled inside KbDetailView or by higher-level framework behavior.
+- Uses async/await for non-blocking parameter resolution (params: Promise<{ id: string }>) and returns JSX directly from the server component.
+
+## Usage Examples
+
+### Render a knowledge-base item page from a dynamic route
+
+When Next.js invokes the route for this page it passes a params object as a Promise<{ id: string }>. KbItemPage awaits that promise (const { id } = await params;), then renders the imported KbDetailView component with the extracted id via the kbId prop. Expected outcome: the KbDetailView component receives a string id and is responsible for loading and presenting the KB item. If params does not resolve to an object with an id string, this page will throw at runtime (no validation is performed here).
+
+## Maintenance Notes
+
+- Ensure the App Router actually provides params as a Promise<{ id: string }> for this route; changes to routing or param shapes require updating the function signature or adding validation.
+- KbDetailView must accept a prop named kbId of type string — mismatches will cause TypeScript errors or runtime bugs. Keep the prop contract in sync between these modules.
+- Consider adding basic validation and error boundaries here if you want to handle missing/invalid params at the page level rather than relying on KbDetailView.
+- Because this file is intentionally minimal, unit testing should target integration with KbDetailView (mocking the component) or test KbDetailView separately for data fetching and rendering logic.
+
+---
+
+## Navigation
+
+**↑ Parent Directory:** [Go up](_docs/src/app/(console)/kb/list/[id]/README.md)
+
+---
+
+*This documentation was automatically generated by AI ([Woden DocBot](https://github.com/marketplace/ai-document-creator)) and may contain errors. It is the responsibility of the user to validate the accuracy and completeness of this documentation.*

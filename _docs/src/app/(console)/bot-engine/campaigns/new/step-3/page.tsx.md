@@ -1,0 +1,90 @@
+<details>
+<summary>Documentation Metadata (click to expand)</summary>
+
+```json
+{
+  "doc_type": "file_overview",
+  "file_path": "src/app/(console)/bot-engine/campaigns/new/step-3/page.tsx",
+  "source_hash": "977efc4bf1c456d3806d6eea4063d04df9c886b16c14e25d7b117cdec823615e",
+  "last_updated": "2026-03-10T03:49:14.245606+00:00",
+  "git_sha": "2af1fb792109cf9e21aefba6d9c0d7b71f8c4429",
+  "tokens_used": 5125,
+  "complexity_score": 1,
+  "estimated_review_time_minutes": 5,
+  "external_dependencies": [
+    "next/navigation"
+  ]
+}
+```
+
+</details>
+
+[Documentation Home](../../../../../../../README.md) > [src](../../../../../../README.md) > [app](../../../../../README.md) > [(console)](../../../../README.md) > [bot-engine](../../../README.md) > [campaigns](../../README.md) > [new](../README.md) > [step-3](./README.md) > **page.mdx**
+
+---
+
+# page.tsx
+
+> **File:** `src/app/(console)/bot-engine/campaigns/new/step-3/page.tsx`
+
+![Complexity: Low](https://img.shields.io/badge/Complexity-Low-green) ![Review Time: 5min](https://img.shields.io/badge/Review_Time-5min-blue)
+
+## 📑 Table of Contents
+
+
+- [Overview](#overview)
+- [Dependencies](#dependencies)
+- [Architecture Notes](#architecture-notes)
+- [Usage Examples](#usage-examples)
+- [Maintenance Notes](#maintenance-notes)
+- [Functions and Classes](#functions-and-classes)
+
+---
+
+## Overview
+
+This file exports a single default page component named exactly: export default function CampaignStep3AliasPage() { redirect("/bot-engine/outbound/new/step-3"); }. The component does not render UI — it calls the redirect function imported from next/navigation and immediately performs a redirect to the specified path. The implementation is a minimal server-side redirect performed during the Next.js app-router render cycle and contains no state, props, or side effects beyond issuing the redirect.
+
+In the larger application this file lives under an app route (src/app/(console)/bot-engine/campaigns/new/step-3) and functions as an alias or compatibility endpoint that forwards requests to /bot-engine/outbound/new/step-3. It does not interact with databases, external APIs, or application state; its only dependency is the Next.js navigation helper. Important developer context: because redirect is invoked at top-level inside the exported server component, the framework will perform the redirect during SSR or server component rendering, so no client-side markup from this file is produced. Keep this file minimal to avoid accidental rendering logic or imports that would change its execution context.
+
+## Dependencies
+
+### External Dependencies
+
+| Module | Usage |
+| --- | --- |
+| `next/navigation` | Imports the redirect function (import { redirect } from "next/navigation"); redirect is called inside the exported page component to perform an immediate server-side route change to "/bot-engine/outbound/new/step-3". |
+
+## 📁 Directory
+
+This file is part of the **step-3** directory. View the [directory index](_docs/src/app/(console)/bot-engine/campaigns/new/step-3/README.md) to see all files in this module.
+
+## Architecture Notes
+
+- Pattern: route alias/forwarding implemented as a server-side redirect inside a minimal Next.js app-router page component.
+- Design decision: keep this file minimal and free of rendering logic so the redirect happens deterministically during server rendering.
+- No error handling is present; redirect is assumed to succeed. If the target route itself redirects, a redirect loop could occur — avoid mutual redirects.
+- State and data flow: none local to this file. Control flow: request → this route → immediate redirect → target route.
+
+## Usage Examples
+
+### Providing a compatibility alias for a moved route
+
+When a user requests the legacy path represented by this file's route, Next.js invokes the exported CampaignStep3AliasPage server component. The component calls redirect("/bot-engine/outbound/new/step-3"), causing the framework to send a redirect response and route the client to the new outbound step-3 path. No rendering or data fetching occurs in this file; the expected outcome is that the browser ends up at /bot-engine/outbound/new/step-3.
+
+## Maintenance Notes
+
+- Performance: negligible — the file only issues a redirect and has no heavy logic or I/O.
+- Common pitfalls: accidental addition of client-side code or asynchronous work in this file could prevent the immediate redirect behavior or change execution context. Avoid adding React state, useEffect, or client-only imports here.
+- Testing: verify that visiting the legacy route results in navigation to the target route and that there are no redirect loops. Include integration tests that assert the final URL after navigation.
+- Future enhancements: if query parameters or hash fragments need to be preserved, update the redirect call to include them explicitly.
+
+---
+
+## Navigation
+
+**↑ Parent Directory:** [Go up](_docs/src/app/(console)/bot-engine/campaigns/new/step-3/README.md)
+
+---
+
+*This documentation was automatically generated by AI ([Woden DocBot](https://github.com/marketplace/ai-document-creator)) and may contain errors. It is the responsibility of the user to validate the accuracy and completeness of this documentation.*
