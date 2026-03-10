@@ -1,0 +1,18 @@
+sequenceDiagram
+    actor OM as Ops Manager
+    participant UI as Dashboard / Report Console
+    participant RPT as Reporting Engine
+    participant OWN as Workflow / KB / Settings Owners
+
+    OM->>UI: Mở dashboard và report
+    UI->>RPT: Tải overview, inbound, outbound, error, agent analysis
+    RPT-->>UI: Trả số liệu vận hành và tín hiệu rủi ro
+    OM->>UI: Drill-down vào cuộc gọi, lỗi hoặc workflow có vấn đề
+    UI->>RPT: Lấy call detail, transcript, intent, entity, error trend
+    RPT-->>UI: Trả dữ liệu chẩn đoán
+    OM->>OWN: Giao việc tối ưu workflow, KB hoặc cấu hình hệ thống
+    OWN-->>OM: Cập nhật logic / tri thức / cấu hình
+    OM->>UI: Theo dõi kết quả sau thay đổi
+    UI->>RPT: So sánh hiệu quả trước và sau
+    RPT-->>UI: Thể hiện vòng lặp cải tiến liên tục
+    Note over OM,OWN: Kết quả business: hệ thống không đứng yên mà được tối ưu liên tục dựa trên dữ liệu thực tế

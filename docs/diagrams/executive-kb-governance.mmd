@@ -1,0 +1,19 @@
+sequenceDiagram
+    actor KS as Knowledge Supervisor
+    participant UI as KB Console
+    participant KBE as Knowledge Base Engine
+    participant BOT as Workflow / Bot Runtime
+
+    KS->>UI: Tạo KB từ URL, bài viết hoặc file
+    UI->>KBE: Lưu metadata và nội dung nguồn
+    KBE-->>UI: Trạng thái "Chưa học"
+    KS->>UI: Bấm học KB hoặc chỉnh sửa nội dung
+    UI->>KBE: Kích hoạt quá trình học / indexing
+    KBE-->>UI: Chuyển trạng thái "Đang học" -> "Đã học"
+    KS->>UI: Kiểm tra KB Usage và fallback
+    UI->>BOT: Truy vết workflow / hội thoại đang dùng KB
+    BOT-->>UI: Trả usage, match và điểm nghẽn
+    KS->>UI: Cập nhật fallback rule cho trường hợp bot không hiểu
+    UI->>KBE: Lưu fallback và trạng thái active
+    KBE-->>UI: KB và fallback sẵn sàng cho runtime
+    Note over KS,BOT: Kết quả business: tri thức được cập nhật liên tục và có cơ chế bảo vệ khi câu trả lời không đủ chắc chắn

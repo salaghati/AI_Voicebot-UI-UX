@@ -88,7 +88,48 @@ Prototype này mô phỏng đầy đủ bức tranh vận hành:
 
 ---
 
-## 5. Bản đồ điều hướng của prototype
+## 5. Ai dùng hệ thống và họ cần đạt điều gì
+
+| Vai trò | Họ vào hệ thống để làm gì | Màn hình họ quan tâm nhất |
+| --- | --- | --- |
+| Campaign Manager | Tạo và vận hành các chiến dịch gọi ra | Outbound, Report Outbound, Dashboard |
+| Ops Manager | Theo dõi chất lượng vận hành và xử lý các điểm nghẽn | Dashboard, Inbound, Report, Settings |
+| Bot Designer | Thiết kế logic bot và kiểm tra runtime | Workflow, Preview, Playground |
+| Knowledge Supervisor | Cập nhật tri thức và fallback để bot trả lời đúng hơn | KB List, KB Fallback, KB Usage |
+| Admin / Tech Ops | Cấu hình nền tảng, tích hợp, phân quyền | Settings |
+| Khách hàng / người gọi | Nhận hoặc thực hiện cuộc gọi với bot | Không dùng console, nhưng là đầu ra trực tiếp của toàn bộ hệ thống |
+
+Nếu người đọc là cấp quản lý, cách hiểu nhanh là:
+
+- `Campaign Manager` nhìn vào hiệu quả business;
+- `Ops Manager` nhìn vào độ trơn tru của vận hành;
+- `Bot Designer` nhìn vào logic xử lý;
+- `Knowledge Supervisor` nhìn vào chất lượng câu trả lời;
+- `Admin` nhìn vào khả năng đưa hệ thống đi vào thực tế.
+
+---
+
+## 6. Bản đồ use case
+
+![Bản đồ use case](./diagrams/executive-usecase-overview.svg)
+
+Sơ đồ này trả lời câu hỏi:
+
+- hệ thống này phục vụ những ai;
+- mỗi vai trò đến đây để làm việc gì;
+- các use case liên kết với nhau ra sao;
+- vì sao `Workflow`, `Knowledge Base` và `Report` là ba khối gần như luôn xuất hiện cùng nhau.
+
+Điểm quan trọng:
+
+- `Outbound` và `Inbound` là hai nhánh vận hành chính;
+- cả hai đều phụ thuộc vào `Workflow` và `Knowledge Base`;
+- `Report` là lớp đo lường để biết cấu hình hiện tại có hiệu quả hay không;
+- `Settings` là lớp nền để chuẩn hóa vận hành và giảm phụ thuộc kỹ thuật thủ công.
+
+---
+
+## 7. Bản đồ điều hướng của prototype
 
 ![Bản đồ điều hướng prototype](./diagrams/executive-navigation-map.svg)
 
@@ -100,7 +141,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 ---
 
-## 6. Các khái niệm cốt lõi cần hiểu
+## 8. Các khái niệm cốt lõi cần hiểu
 
 | Khái niệm | Giải thích ngắn |
 | --- | --- |
@@ -115,9 +156,9 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 ---
 
-## 7. Ý nghĩa từng module
+## 9. Ý nghĩa từng module
 
-### 7.1. Dashboard
+### 9.1. Dashboard
 
 `Mục đích:` cho người vận hành biết hệ thống đang khỏe hay không.
 
@@ -133,7 +174,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Thông điệp cho sếp:` đây là màn hình điều hành, dùng để nhìn ngay tình trạng vận hành bot ở mức tổng quan.
 
-### 7.2. Bot Engine Outbound
+### 9.2. Bot Engine Outbound
 
 `Mục đích:` tạo và quản lý chiến dịch gọi ra.
 
@@ -152,7 +193,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Ý nghĩa nghiệp vụ:` giúp doanh nghiệp mở rộng gọi ra tự động mà không phụ thuộc hoàn toàn vào nhân sự gọi thủ công.
 
-### 7.3. Bot Engine Inbound
+### 9.3. Bot Engine Inbound
 
 `Mục đích:` cấu hình cách hệ thống tiếp nhận cuộc gọi vào.
 
@@ -169,7 +210,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Ý nghĩa nghiệp vụ:` mỗi hotline hoặc đầu số có thể được định nghĩa cách xử lý riêng mà không phải sửa hệ thống lõi.
 
-### 7.4. Workflow
+### 9.4. Workflow
 
 `Mục đích:` là nơi mô hình hóa “bộ não xử lý” của bot.
 
@@ -187,7 +228,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Ý nghĩa nghiệp vụ:` đây là nơi chuyển yêu cầu nghiệp vụ thành logic bot có thể thực thi.
 
-### 7.5. Knowledge Base
+### 9.5. Knowledge Base
 
 `Mục đích:` quản lý nội dung tri thức cho bot.
 
@@ -204,7 +245,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Ý nghĩa nghiệp vụ:` giảm việc hard-code câu trả lời trong workflow, cho phép bot trả lời linh hoạt theo kho tri thức được cập nhật.
 
-### 7.6. Report
+### 9.6. Report
 
 `Mục đích:` đo hiệu quả và kiểm tra chất lượng vận hành.
 
@@ -221,7 +262,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Ý nghĩa nghiệp vụ:` trả lời câu hỏi “bot đang mang lại hiệu quả gì” và “điểm nghẽn đang nằm ở đâu”.
 
-### 7.7. Settings
+### 9.7. Settings
 
 `Mục đích:` cấu hình nền tảng và các tham số vận hành.
 
@@ -240,7 +281,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Ý nghĩa nghiệp vụ:` gom toàn bộ cấu hình nền về một nơi để đội vận hành không phải chỉnh sửa kỹ thuật thủ công.
 
-### 7.8. Preview / Playground
+### 9.8. Preview / Playground
 
 `Mục đích:` mô phỏng cuộc hội thoại và quan sát log runtime.
 
@@ -257,43 +298,76 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 ---
 
-## 8. Luồng vận hành chính
+## 10. Swimlane các use case chính
 
-### 8.1. Luồng tạo một campaign outbound
+### 10.1. Tạo và cấu hình một campaign outbound
 
-![Luồng tạo campaign outbound](./diagrams/executive-outbound-flow.svg)
+![Swimlane tạo campaign outbound](./diagrams/executive-outbound-flow.svg)
 
-Ý nghĩa:
+Cách đọc sơ đồ:
 
-- campaign không nhúng toàn bộ logic;
+- lane 1 là người thao tác trong console;
+- lane 2 là giao diện `Ops Console`;
+- lane 3 là lớp xử lý phía hệ thống;
+- note cuối cho thấy kết quả business mà thao tác này tạo ra.
+
+Ý nghĩa nghiệp vụ:
+
+- campaign không tự chứa tất cả logic;
 - campaign chỉ tham chiếu đến workflow, KB và fallback;
-- nhờ vậy có thể tái sử dụng cùng một workflow cho nhiều chiến dịch khác nhau.
+- doanh nghiệp có thể nhân bản cách làm giữa nhiều chiến dịch nhưng vẫn kiểm soát tập trung logic.
 
-### 8.2. Luồng tạo một inbound route
+### 10.2. Khách hàng gọi vào và hệ thống xử lý inbound
 
-![Luồng tạo inbound route](./diagrams/executive-inbound-flow.svg)
+![Swimlane xử lý inbound](./diagrams/executive-inbound-flow.svg)
 
-Ý nghĩa:
+Cách đọc sơ đồ:
 
-- hotline đi vào hệ thống sẽ không xử lý theo một kịch bản cố định cho tất cả;
-- mỗi route có thể map tới workflow và tri thức riêng.
+- lane khách hàng cho thấy trải nghiệm bên ngoài;
+- lane platform cho thấy bot phải đi qua các bước hiểu ý định, lấy dữ liệu, tra tri thức và quyết định handover;
+- lane agent chỉ xuất hiện khi bot không nên hoặc không thể xử lý tiếp.
 
-### 8.3. Luồng hoạt động của workflow
+Ý nghĩa nghiệp vụ:
 
-![Luồng hoạt động của workflow](./diagrams/executive-workflow-runtime.svg)
+- hotline không chỉ là trả lời tự động;
+- hệ thống đang mô phỏng một chuỗi xử lý có điều kiện, có tri thức, có dữ liệu, và có cơ chế chuyển người thật khi cần;
+- đây là điểm khác biệt giữa voicebot vận hành được và IVR đơn giản.
 
-Ý nghĩa:
+### 10.3. Thiết kế, preview và publish workflow
 
-- `Intent` dùng để hiểu khách nói gì;
-- `Condition` dùng để rẽ nhánh;
-- `API` dùng để lấy dữ liệu doanh nghiệp;
-- `KB` dùng để trả lời từ kho tri thức.
+![Swimlane vòng đời workflow](./diagrams/executive-workflow-runtime.svg)
+
+Ý nghĩa nghiệp vụ:
+
+- workflow là nơi chuyển yêu cầu nghiệp vụ thành logic cụ thể;
+- preview và versioning giúp giảm rủi ro khi chỉnh sửa;
+- đội nghiệp vụ có thể review logic trước khi mang vào campaign hoặc route thật.
+
+### 10.4. Cập nhật tri thức và fallback
+
+![Swimlane quản trị tri thức](./diagrams/executive-kb-governance.svg)
+
+Ý nghĩa nghiệp vụ:
+
+- bot không thể tốt hơn nếu tri thức không được quản trị;
+- KB và fallback là hai lớp đi cùng nhau: một lớp để trả lời đúng, một lớp để thoát hiểm khi không đủ chắc chắn;
+- phần này giải thích vì sao prototype có riêng module `KB`, `KB Usage` và `KB Fallback`.
+
+### 10.5. Theo dõi báo cáo và vòng lặp cải tiến
+
+![Swimlane giám sát và cải tiến](./diagrams/executive-reporting-improvement.svg)
+
+Ý nghĩa nghiệp vụ:
+
+- report không chỉ để xem số liệu;
+- report là đầu vào để quyết định sửa workflow, đổi tri thức, tối ưu campaign hoặc chỉnh cấu hình hệ thống;
+- đây là vòng lặp cải tiến liên tục của một hệ thống voicebot thực thụ.
 
 ---
 
-## 9. Cách thao tác khi trình diễn cho sếp
+## 11. Cách thao tác khi trình diễn cho sếp
 
-### 9.1. Kịch bản demo 10-15 phút
+### 11.1. Kịch bản demo 10-15 phút
 
 | Bước | Route gợi ý | Mục tiêu trình bày |
 | --- | --- | --- |
@@ -309,7 +383,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 | 10 | `/report/overview` | Chốt lại bằng dữ liệu đo hiệu quả |
 | 11 | `/settings/stt-tts` | Kết luận rằng hệ thống có đủ màn hình quản trị nền |
 
-### 9.2. Mẫu lời dẫn ngắn khi demo
+### 11.2. Mẫu lời dẫn ngắn khi demo
 
 1. `Dashboard` cho thấy hệ thống đang chạy ra sao.
 2. `Bot Engine` cho thấy chúng ta cấu hình chiến dịch và hotline như thế nào.
@@ -320,7 +394,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 ---
 
-## 10. Cách hiểu các màn hình khi thao tác
+## 12. Cách hiểu các màn hình khi thao tác
 
 | Màn hình | Người xem nên chú ý điều gì |
 | --- | --- |
@@ -336,7 +410,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 ---
 
-## 11. Giới hạn hiện tại của prototype
+## 13. Giới hạn hiện tại của prototype
 
 Để tránh hiểu sai khi trình bày, cần nói rõ:
 
@@ -352,7 +426,7 @@ Nói cách khác:
 
 ---
 
-## 12. Kết luận cho người đọc
+## 14. Kết luận cho người đọc
 
 Nếu chỉ nhớ 4 ý, hãy nhớ:
 
@@ -363,7 +437,7 @@ Nếu chỉ nhớ 4 ý, hãy nhớ:
 
 ---
 
-## 13. Tài liệu liên quan
+## 15. Tài liệu liên quan
 
 - [README](../README.md)
 - [Business Documentation](../BUSINESS_DOCUMENTATION.md)

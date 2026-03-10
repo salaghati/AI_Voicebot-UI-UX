@@ -1,9 +1,21 @@
-flowchart LR
-    A["Tạo Campaign"] --> B["Nhập thông tin campaign"]
-    B --> C["Chọn nguồn dữ liệu"]
-    C --> D["Chọn workflow outbound"]
-    D --> E["Chọn Knowledge Base"]
-    E --> F["Chọn KB fallback đang active"]
-    F --> G["Cấu hình lịch gọi và retry"]
-    G --> H["Review"]
-    H --> I["Campaign sẵn sàng chạy"]
+sequenceDiagram
+    actor CM as Campaign Manager
+    participant UI as Ops Console
+    participant SYS as Bot Engine + Mock API
+    participant REF as Workflow / KB / Fallback
+
+    CM->>UI: Mở "Tạo Outbound Campaign"
+    UI-->>CM: Hiển thị wizard nhiều bước
+    CM->>UI: Nhập tên campaign, mô tả, nguồn dữ liệu
+    UI->>REF: Tải workflow outbound khả dụng
+    REF-->>UI: Trả về danh sách workflow
+    UI->>REF: Tải KB và fallback đang active
+    REF-->>UI: Trả về KB / fallback có thể dùng
+    CM->>UI: Chọn workflow, KB, fallback, lịch gọi, retry
+    UI->>SYS: Validate dữ liệu bắt buộc
+    SYS-->>UI: Dữ liệu hợp lệ
+    CM->>UI: Bấm tạo campaign
+    UI->>SYS: Lưu campaign với các reference đã chọn
+    SYS-->>UI: Tạo campaign thành công
+    UI-->>CM: Hiển thị campaign sẵn sàng vận hành
+    Note over CM,SYS: Kết quả business: có một chiến dịch gọi ra có thể tái sử dụng logic workflow và tri thức đã chuẩn hóa

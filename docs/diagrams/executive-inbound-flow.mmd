@@ -1,8 +1,23 @@
-flowchart LR
-    A["Tạo Inbound Route"] --> B["Thông tin route"]
-    B --> C["Queue và extension"]
-    C --> D["Chọn workflow"]
-    D --> E["Chọn Knowledge Base"]
-    E --> F["Chọn KB fallback"]
-    F --> G["Review"]
-    G --> H["Route sẵn sàng nhận cuộc gọi"]
+sequenceDiagram
+    actor KH as Khách hàng
+    participant PBX as Tổng đài / Voice Platform
+    participant WF as Workflow Engine
+    participant KB as KB / API / Fallback
+    actor AG as Agent
+
+    KH->>PBX: Gọi vào hotline
+    PBX->>WF: Xác định inbound route theo số gọi vào
+    WF-->>PBX: Nạp workflow, KB và rule xử lý tương ứng
+    PBX-->>KH: Bot phát lời chào
+    KH->>PBX: Trình bày nhu cầu
+    PBX->>WF: STT + nhận diện intent / entity
+    WF->>KB: Tra KB hoặc gọi API nếu cần
+    KB-->>WF: Trả dữ liệu / tri thức / fallback result
+    alt Bot xử lý được
+        WF-->>PBX: Tạo nội dung phản hồi
+        PBX-->>KH: Bot trả lời và kết thúc / hỏi tiếp
+    else Cần chuyển người thật
+        WF-->>AG: Chuyển ngữ cảnh sang agent
+        AG-->>KH: Agent tiếp nhận cuộc gọi
+    end
+    Note over KH,AG: Kết quả business: hotline được tự động hóa nhưng vẫn giữ khả năng escalate sang agent khi cần

@@ -1,10 +1,21 @@
-flowchart TD
-    A["Khách nói"] --> B["Intent Node: nghe và nhận diện"]
-    B --> C{"Condition Node: phân loại"}
-    C -->|Cần dữ liệu| D["API Node"]
-    C -->|Cần tri thức| E["KB Node"]
-    C -->|Không chắc chắn| F["Fallback hoặc hỏi lại"]
-    D --> G["Bot phản hồi"]
-    E --> G
-    F --> H["Chuyển agent hoặc kết thúc"]
-    G --> I["Kết thúc hoặc sang bước tiếp"]
+sequenceDiagram
+    actor BD as Bot Designer
+    participant UI as Workflow Console
+    participant WF as Workflow Engine
+    participant PRE as Preview / Versioning
+
+    BD->>UI: Tạo mới hoặc mở workflow hiện có
+    UI-->>BD: Hiển thị diagram và properties panel
+    BD->>UI: Thêm / sửa node Intent, Condition, API, KB
+    UI->>WF: Chuẩn hóa dữ liệu node và quan hệ
+    WF-->>UI: Cập nhật graph workflow
+    BD->>UI: Lưu draft
+    UI->>PRE: Ghi version nháp
+    PRE-->>UI: Tạo mốc version
+    BD->>UI: Mở preview session / conversation / api-log
+    UI->>PRE: Chạy mô phỏng runtime theo workflow
+    PRE-->>UI: Transcript, log node, dữ liệu API / KB
+    BD->>UI: Review logic và publish
+    UI->>WF: Kích hoạt workflow để campaign / route tham chiếu
+    WF-->>UI: Workflow sẵn sàng sử dụng
+    Note over BD,WF: Kết quả business: logic bot được thiết kế, kiểm thử và kiểm soát version trước khi đưa vào vận hành
