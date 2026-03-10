@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1080" viewBox="0 0 1620 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Business call flow</title>
+  <desc id="desc">Business-level call flow showing the main processing stages between customer, voice platform, AI engine and agent.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f7fb; }
+      .border { stroke: #b8c6d8; stroke-width: 2; }
+      .laneA { fill: #fdfefe; }
+      .laneB { fill: #f6f9ff; }
+      .laneC { fill: #fdfefe; }
+      .laneD { fill: #f6f9ff; }
+      .title { font: 700 30px Arial, sans-serif; fill: #173a66; }
+      .subtitle { font: 400 17px Arial, sans-serif; fill: #60758d; }
+      .lane-title { font: 700 21px Arial, sans-serif; fill: #173a66; }
+      .box { fill: #eaf3ff; stroke: #2d6cb3; stroke-width: 2.2; rx: 14; ry: 14; }
+      .decision { fill: #fff6d9; stroke: #cc9a06; stroke-width: 2.2; }
+      .text { font: 600 17px Arial, sans-serif; fill: #16324f; }
+      .small { font: 600 15px Arial, sans-serif; fill: #6c7e92; }
+      .line { stroke: #4c647c; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .start { fill: #1d4f91; }
+      .end1 { fill: #ffffff; stroke: #1d4f91; stroke-width: 3; }
+      .end2 { fill: #1d4f91; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#4c647c"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1620" height="1080"/>
+  <text class="title" x="810" y="55" text-anchor="middle">Luồng xử lý một cuộc gọi ở mức business</text>
+  <text class="subtitle" x="810" y="85" text-anchor="middle">Phiên bản màu sáng và contrast cao để đọc ổn trên GitHub dark mode</text>
+
+  <rect class="laneA border" x="50" y="120" width="300" height="900"/>
+  <rect class="laneB border" x="350" y="120" width="350" height="900"/>
+  <rect class="laneC border" x="700" y="120" width="460" height="900"/>
+  <rect class="laneD border" x="1160" y="120" width="410" height="900"/>
+  <text class="lane-title" x="200" y="155" text-anchor="middle">Khách hàng</text>
+  <text class="lane-title" x="525" y="155" text-anchor="middle">Voice Platform / PBX</text>
+  <text class="lane-title" x="930" y="155" text-anchor="middle">AI Engine: STT / NLU / Workflow / KB / TTS</text>
+  <text class="lane-title" x="1365" y="155" text-anchor="middle">Agent</text>
+
+  <circle class="start" cx="200" cy="205" r="16"/>
+  <rect class="box" x="85" y="245" width="230" height="64"/>
+  <text class="text" x="200" y="284" text-anchor="middle">Nhấc máy hoặc gọi vào</text>
+
+  <rect class="box" x="405" y="245" width="240" height="64"/>
+  <text class="text" x="525" y="284" text-anchor="middle">Thiết lập kênh thoại</text>
+
+  <rect class="box" x="800" y="245" width="260" height="72"/>
+  <text class="text" x="930" y="285" text-anchor="middle">Bot phát lời chào và</text>
+  <text class="text" x="930" y="309" text-anchor="middle">thu nội dung khách nói</text>
+
+  <rect class="box" x="405" y="385" width="240" height="64"/>
+  <text class="text" x="525" y="424" text-anchor="middle">Gửi audio sang AI engine</text>
+
+  <rect class="box" x="790" y="385" width="280" height="72"/>
+  <text class="text" x="930" y="425" text-anchor="middle">STT, NLU, tra KB hoặc API</text>
+  <text class="text" x="930" y="449" text-anchor="middle">để xây phản hồi</text>
+
+  <polygon class="decision" points="930,520 1010,580 930,640 850,580"/>
+  <text class="text" x="930" y="572" text-anchor="middle">Bot có</text>
+  <text class="text" x="930" y="596" text-anchor="middle">giải quyết được?</text>
+
+  <rect class="box" x="800" y="715" width="260" height="72"/>
+  <text class="text" x="930" y="755" text-anchor="middle">Tạo câu trả lời hoặc hướng dẫn</text>
+
+  <rect class="box" x="405" y="835" width="240" height="64"/>
+  <text class="text" x="525" y="874" text-anchor="middle">Phát audio trả lời</text>
+
+  <rect class="box" x="85" y="835" width="230" height="64"/>
+  <text class="text" x="200" y="874" text-anchor="middle">Nghe phản hồi và kết thúc</text>
+
+  <rect class="box" x="1235" y="715" width="260" height="72"/>
+  <text class="text" x="1365" y="755" text-anchor="middle">Nhận handover kèm ngữ cảnh</text>
+
+  <rect class="box" x="1235" y="835" width="260" height="64"/>
+  <text class="text" x="1365" y="874" text-anchor="middle">Xử lý cuộc gọi</text>
+
+  <circle class="end1" cx="200" cy="965" r="18"/>
+  <circle class="end2" cx="200" cy="965" r="10"/>
+  <circle class="end1" cx="1365" cy="965" r="18"/>
+  <circle class="end2" cx="1365" cy="965" r="10"/>
+
+  <path class="line" d="M200 221 L200 245"/>
+  <path class="line" d="M315 277 L405 277"/>
+  <path class="line" d="M645 277 L800 277"/>
+  <path class="line" d="M930 317 L930 355 L525 355 L525 385"/>
+  <path class="line" d="M645 417 L790 417"/>
+  <path class="line" d="M930 457 L930 520"/>
+  <path class="line" d="M930 640 L930 715"/>
+  <path class="line" d="M1010 580 L1235 580 L1235 715"/>
+  <path class="line" d="M930 787 L930 810 L525 810 L525 835"/>
+  <path class="line" d="M405 867 L315 867"/>
+  <path class="line" d="M200 899 L200 947"/>
+  <path class="line" d="M1365 787 L1365 835"/>
+  <path class="line" d="M1365 899 L1365 947"/>
+  <text class="small" x="940" y="668">Có</text>
+  <text class="small" x="1025" y="570">Không</text>
+</svg>

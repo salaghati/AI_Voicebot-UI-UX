@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="860" viewBox="0 0 1480 860" role="img" aria-labelledby="title desc">
+  <title id="title">Business workflow logic</title>
+  <desc id="desc">High-contrast workflow logic diagram showing intent, condition, KB, API, fallback and endings.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f7fb; }
+      .title { font: 700 30px Arial, sans-serif; fill: #173a66; }
+      .subtitle { font: 400 17px Arial, sans-serif; fill: #60758d; }
+      .node { stroke-width: 2.4; rx: 14; ry: 14; }
+      .intent { fill: #dcedff; stroke: #2563eb; }
+      .condition { fill: #fff4d6; stroke: #d97706; }
+      .kb { fill: #ddf5ea; stroke: #0f766e; }
+      .api { fill: #ede9fe; stroke: #7c3aed; }
+      .fallback { fill: #fde2e2; stroke: #dc2626; }
+      .end { fill: #c7f9e4; stroke: #059669; }
+      .start { fill: #1d4f91; }
+      .text { font: 600 18px Arial, sans-serif; fill: #16324f; }
+      .line { stroke: #4c647c; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#4c647c"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1480" height="860"/>
+  <text class="title" x="740" y="55" text-anchor="middle">Kiến trúc workflow: cách bot suy nghĩ và rẽ nhánh</text>
+  <text class="subtitle" x="740" y="85" text-anchor="middle">Bản màu sáng, chữ đậm và dễ đọc hơn bản Mermaid mặc định</text>
+
+  <circle class="start" cx="160" cy="430" r="24"/>
+  <rect class="node intent" x="250" y="370" width="240" height="120"/>
+  <text class="text" x="370" y="420" text-anchor="middle">Intent Node</text>
+  <text class="text" x="370" y="448" text-anchor="middle">Lời chào và nhận diện ý định</text>
+
+  <polygon class="condition" points="650,330 770,430 650,530 530,430"/>
+  <text class="text" x="650" y="420" text-anchor="middle">Condition Node</text>
+  <text class="text" x="650" y="448" text-anchor="middle">Phân loại ý định khách hàng</text>
+
+  <rect class="node kb" x="900" y="180" width="250" height="110"/>
+  <text class="text" x="1025" y="225" text-anchor="middle">KB Node</text>
+  <text class="text" x="1025" y="253" text-anchor="middle">Tra cứu hướng dẫn / FAQ</text>
+
+  <rect class="node api" x="900" y="375" width="250" height="110"/>
+  <text class="text" x="1025" y="420" text-anchor="middle">API Node</text>
+  <text class="text" x="1025" y="448" text-anchor="middle">Gọi CRM / ERP / billing</text>
+
+  <rect class="node fallback" x="900" y="570" width="250" height="110"/>
+  <text class="text" x="1025" y="615" text-anchor="middle">Fallback</text>
+  <text class="text" x="1025" y="643" text-anchor="middle">Hỏi lại hoặc chuyển agent</text>
+
+  <rect class="node end" x="1240" y="180" width="180" height="90"/>
+  <text class="text" x="1330" y="230" text-anchor="middle">Kết thúc êm</text>
+
+  <rect class="node end" x="1240" y="390" width="180" height="90"/>
+  <text class="text" x="1330" y="440" text-anchor="middle">Phản hồi có dữ liệu</text>
+
+  <rect class="node end" x="1240" y="600" width="180" height="90"/>
+  <text class="text" x="1330" y="650" text-anchor="middle">Chuyển Agent</text>
+
+  <path class="line" d="M184 430 L250 430"/>
+  <path class="line" d="M490 430 L530 430"/>
+  <path class="line" d="M736 360 L900 250"/>
+  <path class="line" d="M770 430 L900 430"/>
+  <path class="line" d="M736 500 L900 625"/>
+  <path class="line" d="M1150 235 L1240 225"/>
+  <path class="line" d="M1150 430 L1240 435"/>
+  <path class="line" d="M1150 625 L1240 645"/>
+
+  <text class="text" x="810" y="320">Tra cứu tri thức</text>
+  <text class="text" x="820" y="415">Lấy dữ liệu hệ thống</text>
+  <text class="text" x="800" y="560">Bot không chắc chắn</text>
+</svg>

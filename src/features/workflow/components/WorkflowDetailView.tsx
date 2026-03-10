@@ -65,6 +65,10 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
     },
     [wf?.nodes, selectedId],
   );
+  const versionHistory = useMemo(
+    () => wf ? buildVersionHistory(wf.version, wf.status, wf.updatedAt) : [],
+    [wf],
+  );
 
   if (query.isLoading) {
     return <AsyncState state="loading" />;
@@ -75,10 +79,6 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
   }
 
   const currentWorkflow = query.data.data;
-  const versionHistory = useMemo(
-    () => buildVersionHistory(currentWorkflow.version, currentWorkflow.status, currentWorkflow.updatedAt),
-    [currentWorkflow.version, currentWorkflow.status, currentWorkflow.updatedAt],
-  );
 
   return (
     <div className="space-y-4">

@@ -43,6 +43,13 @@ Prototype này mô phỏng đầy đủ bức tranh vận hành:
 - người xem vẫn có thể thao tác gần như thật: tạo mới, chuyển bước, filter, xem chi tiết, preview, bật tắt trạng thái, xem log;
 - mục tiêu của prototype là chứng minh `luồng sản phẩm`, `trải nghiệm quản trị`, và `cách vận hành end-to-end`.
 
+Để bám sát code hiện tại, cần hiểu thêm:
+
+- các màn hình thao tác chính đang nằm ở `Dashboard`, `Bot Engine`, `Workflow`, `KB`, `Report`, `Settings`, `Preview`;
+- các màn hình tạo mới chính trong code là `/bot-engine/outbound/create`, `/bot-engine/inbound/create`, `/workflow/new`, `/kb/add`;
+- `/settings` trong app hiện redirect về `/settings/stt-tts`;
+- một số route phụ như `preview/platform-review/*` tồn tại để thử pattern UX, nhưng không phải luồng chính của executive demo.
+
 ---
 
 ## 3. Prototype đang bao phủ những gì
@@ -71,6 +78,15 @@ Prototype này mô phỏng đầy đủ bức tranh vận hành:
 | CRM / CDP / ticketing thật | Chỉ mô phỏng |
 | Tài khoản thật và phân quyền thật | Chỉ mô phỏng |
 | Research app ở slide 61-101 | Không nằm trong repo này |
+
+### 3.3. Có trong code nhưng không phải luồng trình bày chính
+
+| Nhóm route | Vai trò trong repo | Có nên đưa vào demo executive không |
+| --- | --- | --- |
+| `/preview/platform-review/*` | Thử nghiệm pattern UX thay thế | Không cần, trừ khi đang so sánh thiết kế |
+| `/bot-engine/campaigns/*` | Nhánh phụ trong prototype | Không cần nếu mục tiêu là hiểu sản phẩm chính |
+| `/bot-engine/outbound/new/step-*` và `/bot-engine/inbound/new/step-*` | Các màn wizard theo bước riêng | Không ưu tiên, vì route `/create` hiện dễ demo hơn |
+| `/settings/agent/queue-new`, `/settings/users/new`, `/settings/roles/editor` | Màn hình cấu hình chi tiết | Chỉ mở khi cần đào sâu |
 
 ---
 
@@ -103,6 +119,12 @@ Lý do gom như vậy:
 - các vai trò như Campaign Manager, Ops Manager, Bot Designer, Knowledge Supervisor trong prototype đều có thể xem là các biến thể của `Admin` ở mức use case tổng quan;
 - như vậy sơ đồ ngắn gọn hơn và bám đúng yêu cầu trình bày ở mức điều hành.
 
+Lưu ý để bám đúng code:
+
+- trong prototype hiện tại `Admin` là nhóm người dùng thao tác trên UI;
+- `Agent` là actor nghiệp vụ ở ngoài luồng UI, không có một portal riêng trong code hiện tại;
+- vì vậy khi tài liệu nói tới `Agent`, đó là để giải thích ý nghĩa nghiệp vụ của handover, không phải để mô tả một màn hình đang có trong app.
+
 ---
 
 ## 6. Bản đồ use case
@@ -133,6 +155,26 @@ Nếu cần demo nhanh, chỉ cần đi theo chuỗi:
 `Login -> Dashboard -> Outbound -> Workflow -> KB -> Report -> Settings -> Preview`
 
 Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
+
+### 7.1. Bản đồ màn hình chính theo route thật trong code
+
+| Nhóm | Route chính | Màn hình / ý nghĩa trong prototype |
+| --- | --- | --- |
+| Auth | `/auth/login`, `/auth/forgot-password` | Đăng nhập và quên mật khẩu |
+| Dashboard | `/dashboard` | Bảng điều hành tổng quan |
+| Outbound | `/bot-engine/outbound`, `/bot-engine/outbound/create`, `/bot-engine/outbound/[id]` | Danh sách, tạo mới, xem chi tiết campaign |
+| Inbound | `/bot-engine/inbound`, `/bot-engine/inbound/create`, `/bot-engine/inbound/[id]` | Danh sách, tạo mới, xem chi tiết route |
+| Workflow | `/workflow`, `/workflow/new`, `/workflow/[id]`, `/workflow/[id]/edit`, `/workflow/[id]/versions`, `/workflow/[id]/preview/*` | Danh sách, builder, chi tiết, version, preview |
+| KB | `/kb/list`, `/kb/add`, `/kb/list/[id]`, `/kb/fallback`, `/kb/usage` | Danh sách KB, thêm mới, chi tiết, fallback, usage |
+| Report | `/report/overview`, `/report/inbound`, `/report/outbound`, `/report/call-detail/[id]`, `/report/error-monitor`, `/report/agent-analysis` | Tổng quan, chi tiết, lỗi, agent |
+| Settings | `/settings/stt-tts`, `/settings/users`, `/settings/api`, `/settings/agent`, `/settings/fallback`, `/settings/phone-numbers`, `/settings/extensions`, `/settings/roles` | Các màn cấu hình hệ thống |
+| Preview | `/preview/playground` | Transcript mô phỏng và technical log |
+
+### 7.2. Quy tắc đọc tài liệu này cho đúng với prototype
+
+- nếu nội dung có route cụ thể, đó là phần đang có màn hình thật trong code;
+- nếu nội dung nói về `runtime`, `handover`, `vòng lặp cải tiến`, đó là lớp giải thích sản phẩm ở mức nghiệp vụ;
+- nếu cần demo bám chặt prototype, ưu tiên bám theo bảng route ở trên thay vì chỉ nhìn sơ đồ khái niệm.
 
 ---
 
@@ -186,6 +228,12 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 - gắn KB Fallback đang active;
 - cấu hình lịch gọi và retry.
 
+`Bám theo code hiện tại:`
+
+- danh sách ở `/bot-engine/outbound`;
+- màn tạo mới dễ demo nhất ở `/bot-engine/outbound/create`;
+- ngoài ra repo vẫn có các route `/bot-engine/outbound/new/step-1..4`, nhưng không cần dùng làm luồng chính của tài liệu này.
+
 `Ý nghĩa nghiệp vụ:` giúp doanh nghiệp mở rộng gọi ra tự động mà không phụ thuộc hoàn toàn vào nhân sự gọi thủ công.
 
 ### 9.3. Bot Engine Inbound
@@ -202,6 +250,12 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 - gắn workflow xử lý;
 - gắn KB và fallback;
 - kiểm tra chi tiết route.
+
+`Bám theo code hiện tại:`
+
+- danh sách ở `/bot-engine/inbound`;
+- màn tạo mới dễ demo nhất ở `/bot-engine/inbound/create`;
+- repo cũng có các route `/bot-engine/inbound/new/step-1..4`, nhưng tài liệu này không lấy chúng làm trung tâm.
 
 `Ý nghĩa nghiệp vụ:` mỗi hotline hoặc đầu số có thể được định nghĩa cách xử lý riêng mà không phải sửa hệ thống lõi.
 
@@ -221,6 +275,14 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 - xem version history;
 - chạy preview để xem transcript và log.
 
+`Bám theo code hiện tại:`
+
+- list ở `/workflow`;
+- builder ở `/workflow/new` và `/workflow/[id]/edit`;
+- chi tiết ở `/workflow/[id]`;
+- preview ở `/workflow/[id]/preview/session`, `/conversation`, `/api-log`, `/kb`;
+- version history ở `/workflow/[id]/versions`.
+
 `Ý nghĩa nghiệp vụ:` đây là nơi chuyển yêu cầu nghiệp vụ thành logic bot có thể thực thi.
 
 ### 9.5. Knowledge Base
@@ -237,6 +299,14 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 - xóa tài liệu;
 - xem KB nào đang được workflow hoặc hội thoại sử dụng;
 - cấu hình fallback khi KB không đủ tốt.
+
+`Bám theo code hiện tại:`
+
+- danh sách ở `/kb/list`;
+- thêm mới ở `/kb/add`;
+- chi tiết tài liệu ở `/kb/list/[id]`;
+- fallback ở `/kb/fallback`;
+- usage ở `/kb/usage`.
 
 `Ý nghĩa nghiệp vụ:` giảm việc hard-code câu trả lời trong workflow, cho phép bot trả lời linh hoạt theo kho tri thức được cập nhật.
 
@@ -276,6 +346,11 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Ý nghĩa nghiệp vụ:` gom toàn bộ cấu hình nền về một nơi để đội vận hành không phải chỉnh sửa kỹ thuật thủ công.
 
+`Bám theo code hiện tại:`
+
+- trang gốc `/settings` chỉ redirect;
+- các trang cấu hình thật nằm ở các route con như `/settings/stt-tts`, `/settings/users`, `/settings/api`, `/settings/agent`, `/settings/fallback`, `/settings/phone-numbers`, `/settings/extensions`, `/settings/roles`.
+
 ### 9.8. Preview / Playground
 
 `Mục đích:` mô phỏng cuộc hội thoại và quan sát log runtime.
@@ -291,9 +366,20 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Ý nghĩa nghiệp vụ:` giúp giải thích bot hoạt động như thế nào mà không cần tích hợp thật vào tổng đài.
 
+`Bám theo code hiện tại:`
+
+- route chính là `/preview/playground`;
+- ngoài ra repo có thêm `preview/platform-review/*` nhưng đó là nhánh review UX, không phải luồng chuẩn mà tài liệu này đang mô tả.
+
 ---
 
 ## 10. Activity diagram theo từng quy trình
+
+Lưu ý quan trọng:
+
+- mục này gồm cả `screen flow` và `conceptual flow`;
+- `10.1`, `10.3`, `10.4` bám khá sát các màn hình thật trong prototype;
+- `10.2` và `10.5` mang tính giải thích sản phẩm và runtime nhiều hơn, không phải chuỗi click từng page trong app.
 
 ### 10.1. Tạo và cấu hình một campaign outbound
 
@@ -328,6 +414,8 @@ Cách đọc sơ đồ:
 - hệ thống đang mô phỏng một chuỗi xử lý có điều kiện, có tri thức, có dữ liệu, và có cơ chế chuyển người thật khi cần;
 - đây là điểm khác biệt giữa voicebot vận hành được và IVR đơn giản.
 
+`Độ bám code:` đây là sơ đồ giải thích logic nghiệp vụ/runtme, không phải một chuỗi page UI đầy đủ đang có trong app.
+
 ### 10.3. Thiết kế, preview và publish workflow
 
 ![Activity diagram vòng đời workflow](./diagrams/activity-workflow-lifecycle-v2.svg)
@@ -337,6 +425,8 @@ Cách đọc sơ đồ:
 - workflow là nơi chuyển yêu cầu nghiệp vụ thành logic cụ thể;
 - preview và versioning giúp giảm rủi ro khi chỉnh sửa;
 - đội nghiệp vụ có thể review logic trước khi mang vào campaign hoặc route thật.
+
+`Độ bám code:` cao, vì prototype đang có list, builder, detail, version history và các tab preview tương ứng.
 
 ### 10.4. Cập nhật tri thức và fallback
 
@@ -348,6 +438,8 @@ Cách đọc sơ đồ:
 - KB và fallback là hai lớp đi cùng nhau: một lớp để trả lời đúng, một lớp để thoát hiểm khi không đủ chắc chắn;
 - phần này giải thích vì sao prototype có riêng module `KB`, `KB Usage` và `KB Fallback`.
 
+`Độ bám code:` cao ở mức UI quản trị KB; phần “đi vào runtime” vẫn là diễn giải sản phẩm, không phải luồng click màn hình đơn thuần.
+
 ### 10.5. Theo dõi báo cáo và vòng lặp cải tiến
 
 ![Activity diagram giám sát và cải tiến](./diagrams/activity-reporting-loop-v2.svg)
@@ -357,6 +449,8 @@ Cách đọc sơ đồ:
 - report không chỉ để xem số liệu;
 - report là đầu vào để quyết định sửa workflow, đổi tri thức, tối ưu campaign hoặc chỉnh cấu hình hệ thống;
 - đây là vòng lặp cải tiến liên tục của một hệ thống voicebot thực thụ.
+
+`Độ bám code:` trung bình; phần dashboard/report là màn hình thật, nhưng phần “giao việc tối ưu và theo dõi sau thay đổi” là diễn giải operating model.
 
 ---
 
@@ -403,6 +497,15 @@ Cách đọc sơ đồ:
 | Reports | Kết quả và chất lượng sau vận hành |
 | Settings | Cấu hình nền, không phải dữ liệu business trực tiếp |
 
+### 12.1. Màn nào là “chuẩn màn”, màn nào là “chuẩn ý nghĩa”
+
+| Loại nội dung | Nên hiểu thế nào |
+| --- | --- |
+| Route cụ thể như `/workflow/[id]/preview/session` | Đây là màn hình có thật trong code |
+| Bảng mô tả module | Đây là cách giải thích ý nghĩa của nhóm màn hình |
+| Activity diagram gắn với create/list/detail | Đây là flow gần với UI thật |
+| Activity diagram gắn với runtime, handover, improvement loop | Đây là flow nghiệp vụ, không phải màn hình 1:1 |
+
 ---
 
 ## 13. Giới hạn hiện tại của prototype
@@ -414,6 +517,7 @@ Cách đọc sơ đồ:
 - một số màn có tính chất phase 2 hoặc preview UX;
 - dữ liệu trong report và dashboard là dữ liệu mô phỏng;
 - chưa có tích hợp thật với tổng đài, CRM, ticketing, STT/TTS provider.
+- actor `Agent` trong tài liệu là actor nghiệp vụ bên ngoài, không đồng nghĩa với một màn hình riêng trong app.
 
 Nói cách khác:
 
