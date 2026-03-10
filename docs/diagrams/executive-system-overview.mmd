@@ -1,0 +1,13 @@
+graph TD
+    A["Khách hàng"] --> B["Bot Engine"]
+    B --> C["Workflow Engine"]
+    C --> D["Knowledge Base"]
+    C --> E["API / CRM / Hệ thống ngoài"]
+    C --> F["Agent Handover"]
+    B --> G["Báo cáo và Dashboard"]
+    H["Ops / Admin / Campaign Manager"] --> I["Ops Console"]
+    I --> B
+    I --> C
+    I --> D
+    I --> G
+    I --> J["Settings"]

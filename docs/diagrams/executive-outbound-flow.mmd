@@ -1,0 +1,9 @@
+flowchart LR
+    A["Tạo Campaign"] --> B["Nhập thông tin campaign"]
+    B --> C["Chọn nguồn dữ liệu"]
+    C --> D["Chọn workflow outbound"]
+    D --> E["Chọn Knowledge Base"]
+    E --> F["Chọn KB fallback đang active"]
+    F --> G["Cấu hình lịch gọi và retry"]
+    G --> H["Review"]
+    H --> I["Campaign sẵn sàng chạy"]

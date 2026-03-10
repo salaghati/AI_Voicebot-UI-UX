@@ -1,0 +1,10 @@
+flowchart TD
+    A["Khách nói"] --> B["Intent Node: nghe và nhận diện"]
+    B --> C{"Condition Node: phân loại"}
+    C -->|Cần dữ liệu| D["API Node"]
+    C -->|Cần tri thức| E["KB Node"]
+    C -->|Không chắc chắn| F["Fallback hoặc hỏi lại"]
+    D --> G["Bot phản hồi"]
+    E --> G
+    F --> H["Chuyển agent hoặc kết thúc"]
+    G --> I["Kết thúc hoặc sang bước tiếp"]

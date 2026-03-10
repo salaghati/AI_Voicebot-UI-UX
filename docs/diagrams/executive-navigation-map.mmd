@@ -1,0 +1,16 @@
+graph LR
+    Login["/auth/login"] --> Dashboard["/dashboard"]
+    Dashboard --> Outbound["/bot-engine/outbound"]
+    Dashboard --> Inbound["/bot-engine/inbound"]
+    Dashboard --> Workflow["/workflow"]
+    Dashboard --> KB["/kb/list"]
+    Dashboard --> Report["/report/overview"]
+    Dashboard --> Settings["/settings/stt-tts"]
+    Dashboard --> Preview["/preview/playground"]
+
+    Outbound --> OutboundCreate["/bot-engine/outbound/create"]
+    Inbound --> InboundCreate["/bot-engine/inbound/create"]
+    Workflow --> WorkflowDetail["/workflow/:id"]
+    WorkflowDetail --> WorkflowPreview["/workflow/:id/preview/session"]
+    KB --> KBFallback["/kb/fallback"]
+    KB --> KBUsage["/kb/usage"]

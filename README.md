@@ -44,3 +44,4 @@ npm run test:e2e
 - Slide mapping: `docs/slide-route-mapping.md`
 - Acceptance checklist: `docs/acceptance-checklist.md`
 - Refactored structure guide: `docs/PROJECT_STRUCTURE.md`
+- Executive prototype guide: `docs/EXECUTIVE_PROTOTYPE_GUIDE.md`
