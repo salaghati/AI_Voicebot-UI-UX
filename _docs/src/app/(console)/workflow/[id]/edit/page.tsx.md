@@ -1,0 +1,88 @@
+<details>
+<summary>Documentation Metadata (click to expand)</summary>
+
+```json
+{
+  "doc_type": "file_overview",
+  "file_path": "src/app/(console)/workflow/[id]/edit/page.tsx",
+  "source_hash": "161ffc80b3c5eec3b616cd0b440ae41819e1a9ba38e9e75858016a07532be71c",
+  "last_updated": "2026-03-10T04:03:28.204126+00:00",
+  "git_sha": "17bacc6b252bfb9a2b4468b50132a48c8ff40966",
+  "tokens_used": 5465,
+  "complexity_score": 2,
+  "estimated_review_time_minutes": 5,
+  "external_dependencies": []
+}
+```
+
+</details>
+
+[Documentation Home](../../../../../../README.md) > [src](../../../../../README.md) > [app](../../../../README.md) > [(console)](../../../README.md) > [workflow](../../README.md) > [[id]](../README.md) > [edit](./README.md) > **page.mdx**
+
+---
+
+# page.tsx
+
+> **File:** `src/app/(console)/workflow/[id]/edit/page.tsx`
+
+![Complexity: Low](https://img.shields.io/badge/Complexity-Low-green) ![Review Time: 5min](https://img.shields.io/badge/Review_Time-5min-blue)
+
+## 📑 Table of Contents
+
+
+- [Overview](#overview)
+- [Dependencies](#dependencies)
+- [Architecture Notes](#architecture-notes)
+- [Usage Examples](#usage-examples)
+- [Maintenance Notes](#maintenance-notes)
+- [Functions and Classes](#functions-and-classes)
+
+---
+
+## Overview
+
+This file defines a single default-exported async function component named WorkflowEditPage which expects a props object containing params typed as Promise<{ id: string }>. It awaits the params promise, destructures the id, and returns a JSX element: <WorkflowBuilder workflowId={id} />. The only import is WorkflowBuilder from the internal module "@/features/workflow".
+
+The file is minimal and intended to act as a route/page-level component: it bridges route-provided parameters (the workflow id) into the WorkflowBuilder UI/feature by passing the id as the workflowId prop. There is no additional logic, validation, side effects, or error handling in this component — its sole responsibility is parameter extraction and delegating rendering to the imported WorkflowBuilder component. The code uses async/await at the top-level of the component (pattern used for server-side async components), and it returns JSX directly.
+
+## Dependencies
+
+### Internal Dependencies
+
+| Module | Usage |
+| --- | --- |
+| [@/features/workflow](../@/features/workflow.md) | Imports the named export WorkflowBuilder and uses it in the returned JSX: <WorkflowBuilder workflowId={id} />. The component supplies the extracted id as the workflowId prop. |
+
+## 📁 Directory
+
+This file is part of the **edit** directory. View the [directory index](_docs/src/app/(console)/workflow/[id]/edit/README.md) to see all files in this module.
+
+## Architecture Notes
+
+- Pattern: Single-page async React component that awaits route params and returns a child component; aligns with server-side async page components (commonly used in frameworks like Next.js App Router).
+- Uses async/await for non-blocking retrieval of params: const { id } = await params; no additional concurrency or I/O is performed here.
+- Data flow: route params (Promise<{id:string}>) -> awaited to produce id -> passed as workflowId prop to WorkflowBuilder; this module does not manage state or perform side effects.
+- Error handling: none present. If params rejects or id is missing/invalid, the function will throw; caller or framework must provide error boundaries or handle missing params.
+
+## Usage Examples
+
+### Render the workflow edit page for a given route parameter id
+
+When the routing layer mounts this page component it provides a params object (a Promise resolving to { id: string }). WorkflowEditPage awaits params, extracts id, and renders <WorkflowBuilder workflowId={id} />. Expected outcome: the WorkflowBuilder receives the workflowId prop and renders the edit UI. If params rejects or does not contain id, this component will throw and rely on the surrounding framework to surface an error or fallback UI.
+
+## Maintenance Notes
+
+- Validate the shape and availability of params if the application environment may supply a different type (currently typed as Promise<{ id: string }>); consider defensive checks and a clear error or fallback UI for missing/invalid id.
+- Consider adding try/catch and an explicit loading/error state if WorkflowBuilder or the routing infrastructure requires more robust handling during server/client transition.
+- Ensure the import path "@/features/workflow" and the named export WorkflowBuilder remain stable; breaking changes in that module (e.g., renaming the export or changing expected props) will break this page.
+- If WorkflowBuilder is a client component, ensure this page’s usage conforms to the framework rules (e.g., marking parent as client or moving the component into a client boundary) to avoid runtime errors.
+
+---
+
+## Navigation
+
+**↑ Parent Directory:** [Go up](_docs/src/app/(console)/workflow/[id]/edit/README.md)
+
+---
+
+*This documentation was automatically generated by AI ([Woden DocBot](https://github.com/marketplace/ai-document-creator)) and may contain errors. It is the responsibility of the user to validate the accuracy and completeness of this documentation.*
