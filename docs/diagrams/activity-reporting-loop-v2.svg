@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1580" height="1110" viewBox="0 0 1580 1110" role="img" aria-labelledby="title desc">
+  <title id="title">Activity reporting improvement loop</title>
+  <desc id="desc">Swimlane activity diagram for dashboard and reporting improvement loop.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f7fb; }
+      .border { stroke: #b8c6d8; stroke-width: 2; }
+      .lane1 { fill: #fdfefe; }
+      .lane2 { fill: #f6f9ff; }
+      .lane3 { fill: #fdfefe; }
+      .title { font: 700 30px Arial, sans-serif; fill: #173a66; }
+      .subtitle { font: 400 17px Arial, sans-serif; fill: #60758d; }
+      .lane-title { font: 700 21px Arial, sans-serif; fill: #173a66; }
+      .box { fill: #eaf3ff; stroke: #2d6cb3; stroke-width: 2.2; rx: 14; ry: 14; }
+      .decision { fill: #fff6d9; stroke: #cc9a06; stroke-width: 2.2; }
+      .text { font: 600 17px Arial, sans-serif; fill: #16324f; }
+      .small { font: 600 15px Arial, sans-serif; fill: #6c7e92; }
+      .line { stroke: #4c647c; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .start { fill: #1d4f91; }
+      .end1 { fill: #ffffff; stroke: #1d4f91; stroke-width: 3; }
+      .end2 { fill: #1d4f91; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#4c647c"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1580" height="1110"/>
+  <text class="title" x="790" y="55" text-anchor="middle">Activity Diagram: Theo dõi báo cáo và vòng lặp cải tiến</text>
+  <text class="subtitle" x="790" y="85" text-anchor="middle">Swimlane cho thấy báo cáo được dùng như thế nào để tạo ra cải tiến vận hành</text>
+
+  <rect class="lane1 border" x="70" y="120" width="360" height="930"/>
+  <rect class="lane2 border" x="430" y="120" width="500" height="930"/>
+  <rect class="lane3 border" x="930" y="120" width="580" height="930"/>
+  <text class="lane-title" x="250" y="155" text-anchor="middle">Admin</text>
+  <text class="lane-title" x="680" y="155" text-anchor="middle">Dashboard / Report Console</text>
+  <text class="lane-title" x="1220" y="155" text-anchor="middle">Owners: Workflow / KB / Settings</text>
+
+  <circle class="start" cx="250" cy="205" r="16"/>
+  <rect class="box" x="145" y="245" width="210" height="64"/>
+  <text class="text" x="250" y="284" text-anchor="middle">Mở dashboard và report</text>
+
+  <rect class="box" x="545" y="245" width="270" height="64"/>
+  <text class="text" x="680" y="284" text-anchor="middle">Tải overview, inbound, outbound</text>
+
+  <rect class="box" x="535" y="355" width="290" height="72"/>
+  <text class="text" x="680" y="395" text-anchor="middle">Hiển thị chỉ số, lỗi, agent analysis</text>
+
+  <rect class="box" x="115" y="355" width="270" height="72"/>
+  <text class="text" x="250" y="395" text-anchor="middle">Drill-down vào cuộc gọi hoặc lỗi</text>
+
+  <rect class="box" x="530" y="490" width="300" height="72"/>
+  <text class="text" x="680" y="530" text-anchor="middle">Mở call detail, transcript, intent, entity</text>
+
+  <polygon class="decision" points="680,640 760,700 680,760 600,700"/>
+  <text class="text" x="680" y="692" text-anchor="middle">Phát hiện</text>
+  <text class="text" x="680" y="716" text-anchor="middle">điểm nghẽn?</text>
+
+  <rect class="box" x="1030" y="640" width="380" height="72"/>
+  <text class="text" x="1220" y="680" text-anchor="middle">Nhận yêu cầu tối ưu workflow, KB hoặc cấu hình</text>
+
+  <rect class="box" x="1035" y="790" width="370" height="72"/>
+  <text class="text" x="1220" y="830" text-anchor="middle">Thực hiện thay đổi và bàn giao lại kết quả</text>
+
+  <rect class="box" x="145" y="790" width="210" height="64"/>
+  <text class="text" x="250" y="829" text-anchor="middle">Theo dõi sau thay đổi</text>
+
+  <rect class="box" x="530" y="790" width="300" height="72"/>
+  <text class="text" x="680" y="830" text-anchor="middle">So sánh số liệu trước và sau tối ưu</text>
+
+  <circle class="end1" cx="680" cy="965" r="18"/>
+  <circle class="end2" cx="680" cy="965" r="10"/>
+
+  <path class="line" d="M250 221 L250 245"/>
+  <path class="line" d="M355 277 L545 277"/>
+  <path class="line" d="M680 309 L680 355"/>
+  <path class="line" d="M535 391 L385 391"/>
+  <path class="line" d="M250 427 L250 460 L680 460 L680 490"/>
+  <path class="line" d="M680 562 L680 640"/>
+  <path class="line" d="M760 700 L1030 700"/>
+  <path class="line" d="M1220 712 L1220 790"/>
+  <path class="line" d="M1035 826 L830 826"/>
+  <path class="line" d="M530 826 L355 826"/>
+  <path class="line" d="M250 854 L250 890 L680 890"/>
+  <path class="line" d="M680 760 L680 790"/>
+  <path class="line" d="M680 862 L680 947"/>
+  <text class="small" x="780" y="690">Có</text>
+  <text class="small" x="695" y="780">Không</text>
+</svg>

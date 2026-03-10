@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1540" height="1100" viewBox="0 0 1540 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Activity KB governance</title>
+  <desc id="desc">Swimlane activity diagram for KB and fallback governance.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f7fb; }
+      .border { stroke: #b8c6d8; stroke-width: 2; }
+      .lane1 { fill: #fdfefe; }
+      .lane2 { fill: #f6f9ff; }
+      .lane3 { fill: #fdfefe; }
+      .title { font: 700 30px Arial, sans-serif; fill: #173a66; }
+      .subtitle { font: 400 17px Arial, sans-serif; fill: #60758d; }
+      .lane-title { font: 700 21px Arial, sans-serif; fill: #173a66; }
+      .box { fill: #eaf3ff; stroke: #2d6cb3; stroke-width: 2.2; rx: 14; ry: 14; }
+      .decision { fill: #fff6d9; stroke: #cc9a06; stroke-width: 2.2; }
+      .text { font: 600 17px Arial, sans-serif; fill: #16324f; }
+      .small { font: 600 15px Arial, sans-serif; fill: #6c7e92; }
+      .line { stroke: #4c647c; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .start { fill: #1d4f91; }
+      .end1 { fill: #ffffff; stroke: #1d4f91; stroke-width: 3; }
+      .end2 { fill: #1d4f91; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#4c647c"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1540" height="1100"/>
+  <text class="title" x="770" y="55" text-anchor="middle">Activity Diagram: Quản trị Knowledge Base và fallback</text>
+  <text class="subtitle" x="770" y="85" text-anchor="middle">Swimlane thể hiện cách tri thức được tạo, học, kiểm tra và bổ sung fallback</text>
+
+  <rect class="lane1 border" x="70" y="120" width="360" height="920"/>
+  <rect class="lane2 border" x="430" y="120" width="470" height="920"/>
+  <rect class="lane3 border" x="900" y="120" width="570" height="920"/>
+  <text class="lane-title" x="250" y="155" text-anchor="middle">Admin</text>
+  <text class="lane-title" x="665" y="155" text-anchor="middle">KB Console</text>
+  <text class="lane-title" x="1185" y="155" text-anchor="middle">KB Engine / Runtime</text>
+
+  <circle class="start" cx="250" cy="205" r="16"/>
+  <rect class="box" x="125" y="245" width="250" height="72"/>
+  <text class="text" x="250" y="285" text-anchor="middle">Tạo KB từ URL, bài viết</text>
+  <text class="text" x="250" y="309" text-anchor="middle">hoặc file</text>
+
+  <rect class="box" x="545" y="245" width="240" height="72"/>
+  <text class="text" x="665" y="285" text-anchor="middle">Lưu metadata và nội dung</text>
+  <text class="text" x="665" y="309" text-anchor="middle">nguồn tri thức</text>
+
+  <rect class="box" x="1065" y="245" width="240" height="72"/>
+  <text class="text" x="1185" y="285" text-anchor="middle">Tạo KB ở trạng thái</text>
+  <text class="text" x="1185" y="309" text-anchor="middle">chưa học</text>
+
+  <rect class="box" x="140" y="385" width="220" height="64"/>
+  <text class="text" x="250" y="424" text-anchor="middle">Bấm học KB</text>
+
+  <rect class="box" x="535" y="385" width="260" height="64"/>
+  <text class="text" x="665" y="424" text-anchor="middle">Gửi yêu cầu indexing và học</text>
+
+  <rect class="box" x="1045" y="385" width="280" height="72"/>
+  <text class="text" x="1185" y="425" text-anchor="middle">Sinh trạng thái đang học</text>
+  <text class="text" x="1185" y="449" text-anchor="middle">và cập nhật sau khi xong</text>
+
+  <polygon class="decision" points="1185,530 1265,590 1185,650 1105,590"/>
+  <text class="text" x="1185" y="582" text-anchor="middle">Học xong</text>
+  <text class="text" x="1185" y="606" text-anchor="middle">chưa?</text>
+
+  <rect class="box" x="525" y="705" width="280" height="72"/>
+  <text class="text" x="665" y="745" text-anchor="middle">Hiển thị trạng thái đã học</text>
+
+  <rect class="box" x="115" y="705" width="270" height="72"/>
+  <text class="text" x="250" y="745" text-anchor="middle">Mở KB Usage và fallback rule</text>
+
+  <rect class="box" x="1030" y="705" width="310" height="72"/>
+  <text class="text" x="1185" y="745" text-anchor="middle">Trả usage, hội thoại liên quan</text>
+
+  <rect class="box" x="105" y="845" width="290" height="72"/>
+  <text class="text" x="250" y="885" text-anchor="middle">Tạo hoặc chỉnh fallback rule active</text>
+
+  <rect class="box" x="525" y="845" width="280" height="72"/>
+  <text class="text" x="665" y="885" text-anchor="middle">Lưu cấu hình fallback</text>
+
+  <rect class="box" x="1010" y="845" width="350" height="72"/>
+  <text class="text" x="1185" y="885" text-anchor="middle">Đưa KB và fallback vào runtime</text>
+
+  <circle class="end1" cx="1185" cy="985" r="18"/>
+  <circle class="end2" cx="1185" cy="985" r="10"/>
+
+  <path class="line" d="M250 221 L250 245"/>
+  <path class="line" d="M375 281 L545 281"/>
+  <path class="line" d="M785 281 L1065 281"/>
+  <path class="line" d="M1185 317 L1185 355 L250 355 L250 385"/>
+  <path class="line" d="M360 417 L535 417"/>
+  <path class="line" d="M795 417 L1045 417"/>
+  <path class="line" d="M1185 457 L1185 530"/>
+  <path class="line" d="M1185 650 L1185 705"/>
+  <path class="line" d="M1105 590 L915 590 L915 417 L795 417"/>
+  <path class="line" d="M1030 741 L385 741"/>
+  <path class="line" d="M250 777 L250 845"/>
+  <path class="line" d="M395 881 L525 881"/>
+  <path class="line" d="M805 881 L1010 881"/>
+  <path class="line" d="M1185 917 L1185 967"/>
+  <text class="small" x="1080" y="580">Chưa</text>
+  <text class="small" x="1200" y="680">Rồi</text>
+</svg>

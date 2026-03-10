@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Use case admin agent</title>
+  <desc id="desc">Use case diagram with two actors, Admin and Agent, and rectangle actions inside the AI Voicebot Ops Console system boundary.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f7fb; }
+      .boundary { fill: #ffffff; stroke: #1c4f91; stroke-width: 3; rx: 24; ry: 24; }
+      .lane-title { font: 700 30px Arial, sans-serif; fill: #173a66; }
+      .sub { font: 400 17px Arial, sans-serif; fill: #60758d; }
+      .actor { stroke: #173a66; stroke-width: 4; stroke-linecap: round; fill: none; }
+      .actor-text { font: 700 24px Arial, sans-serif; fill: #173a66; }
+      .action { fill: #e9f2ff; stroke: #2d6cb3; stroke-width: 2.5; rx: 14; ry: 14; }
+      .action-text { font: 600 19px Arial, sans-serif; fill: #16324f; }
+      .connector { stroke: #71849a; stroke-width: 2.5; fill: none; }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1440" height="900"/>
+  <rect class="boundary" x="300" y="70" width="840" height="760"/>
+  <text class="lane-title" x="720" y="115" text-anchor="middle">AI Voicebot Ops Console</text>
+  <text class="sub" x="720" y="145" text-anchor="middle">Use case tổng quan với 2 actor: Admin và Agent</text>
+
+  <circle class="actor" cx="135" cy="210" r="30"/>
+  <line class="actor" x1="135" y1="240" x2="135" y2="345"/>
+  <line class="actor" x1="88" y1="275" x2="182" y2="275"/>
+  <line class="actor" x1="135" y1="345" x2="94" y2="410"/>
+  <line class="actor" x1="135" y1="345" x2="176" y2="410"/>
+  <text class="actor-text" x="135" y="465" text-anchor="middle">Admin</text>
+
+  <circle class="actor" cx="1295" cy="260" r="30"/>
+  <line class="actor" x1="1295" y1="290" x2="1295" y2="395"/>
+  <line class="actor" x1="1248" y1="325" x2="1342" y2="325"/>
+  <line class="actor" x1="1295" y1="395" x2="1254" y2="460"/>
+  <line class="actor" x1="1295" y1="395" x2="1336" y2="460"/>
+  <text class="actor-text" x="1295" y="515" text-anchor="middle">Agent</text>
+
+  <rect class="action" x="380" y="180" width="300" height="82"/>
+  <text class="action-text" x="530" y="228" text-anchor="middle">Quản lý campaign outbound</text>
+
+  <rect class="action" x="760" y="180" width="300" height="82"/>
+  <text class="action-text" x="910" y="228" text-anchor="middle">Thiết lập inbound route</text>
+
+  <rect class="action" x="380" y="320" width="300" height="82"/>
+  <text class="action-text" x="530" y="368" text-anchor="middle">Thiết kế và publish workflow</text>
+
+  <rect class="action" x="760" y="320" width="300" height="82"/>
+  <text class="action-text" x="910" y="368" text-anchor="middle">Quản lý KB và fallback</text>
+
+  <rect class="action" x="380" y="460" width="300" height="82"/>
+  <text class="action-text" x="530" y="508" text-anchor="middle">Theo dõi dashboard và report</text>
+
+  <rect class="action" x="760" y="460" width="300" height="82"/>
+  <text class="action-text" x="910" y="508" text-anchor="middle">Cấu hình hệ thống và phân quyền</text>
+
+  <rect class="action" x="470" y="610" width="260" height="82"/>
+  <text class="action-text" x="600" y="658" text-anchor="middle">Xem transcript và log</text>
+
+  <rect class="action" x="740" y="610" width="260" height="82"/>
+  <text class="action-text" x="870" y="658" text-anchor="middle">Nhận handover cuộc gọi</text>
+
+  <path class="connector" d="M 185 235 C 255 235, 315 220, 380 220"/>
+  <path class="connector" d="M 185 260 C 255 280, 315 360, 380 360"/>
+  <path class="connector" d="M 185 290 C 255 335, 315 500, 380 500"/>
+  <path class="connector" d="M 185 320 C 270 395, 340 650, 470 650"/>
+  <path class="connector" d="M 185 248 C 330 248, 615 220, 760 220"/>
+  <path class="connector" d="M 185 276 C 330 298, 615 360, 760 360"/>
+  <path class="connector" d="M 185 304 C 330 355, 615 500, 760 500"/>
+  <path class="connector" d="M 1245 325 C 1155 325, 1080 650, 1000 650"/>
+</svg>

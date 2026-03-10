@@ -107,7 +107,7 @@ Lý do gom như vậy:
 
 ## 6. Bản đồ use case
 
-![Bản đồ use case](./diagrams/executive-usecase-overview.svg)
+![Bản đồ use case](./diagrams/usecase-admin-agent-v2.svg)
 
 Sơ đồ này trả lời câu hỏi:
 
@@ -293,18 +293,18 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 ---
 
-## 10. Swimlane các use case chính
+## 10. Activity diagram theo từng quy trình
 
 ### 10.1. Tạo và cấu hình một campaign outbound
 
-![Swimlane tạo campaign outbound](./diagrams/executive-outbound-flow.svg)
+![Activity diagram tạo campaign outbound](./diagrams/activity-outbound-campaign-v2.svg)
 
 Cách đọc sơ đồ:
 
-- lane 1 là người thao tác trong console;
-- lane 2 là giao diện `Ops Console`;
-- lane 3 là lớp xử lý phía hệ thống;
-- note cuối cho thấy kết quả business mà thao tác này tạo ra.
+- các lane được chia theo vai trò tham gia vào quy trình;
+- mũi tên thể hiện thứ tự thực hiện;
+- hình thoi thể hiện điểm quyết định;
+- điểm bắt đầu và kết thúc giúp người đọc nhìn được vòng đời đầy đủ của thao tác.
 
 Ý nghĩa nghiệp vụ:
 
@@ -314,7 +314,7 @@ Cách đọc sơ đồ:
 
 ### 10.2. Khách hàng gọi vào và hệ thống xử lý inbound
 
-![Swimlane xử lý inbound](./diagrams/executive-inbound-flow.svg)
+![Activity diagram xử lý inbound](./diagrams/activity-inbound-runtime-v2.svg)
 
 Cách đọc sơ đồ:
 
@@ -330,7 +330,7 @@ Cách đọc sơ đồ:
 
 ### 10.3. Thiết kế, preview và publish workflow
 
-![Swimlane vòng đời workflow](./diagrams/executive-workflow-runtime.svg)
+![Activity diagram vòng đời workflow](./diagrams/activity-workflow-lifecycle-v2.svg)
 
 Ý nghĩa nghiệp vụ:
 
@@ -340,7 +340,7 @@ Cách đọc sơ đồ:
 
 ### 10.4. Cập nhật tri thức và fallback
 
-![Swimlane quản trị tri thức](./diagrams/executive-kb-governance.svg)
+![Activity diagram quản trị tri thức](./diagrams/activity-kb-governance-v2.svg)
 
 Ý nghĩa nghiệp vụ:
 
@@ -350,7 +350,7 @@ Cách đọc sơ đồ:
 
 ### 10.5. Theo dõi báo cáo và vòng lặp cải tiến
 
-![Swimlane giám sát và cải tiến](./diagrams/executive-reporting-improvement.svg)
+![Activity diagram giám sát và cải tiến](./diagrams/activity-reporting-loop-v2.svg)
 
 Ý nghĩa nghiệp vụ:
 
