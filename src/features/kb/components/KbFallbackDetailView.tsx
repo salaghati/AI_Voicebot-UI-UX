@@ -95,17 +95,6 @@ export function KbFallbackDetailView({ fallbackId }: { fallbackId: string }) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Badge
-              tone={
-                item.status === "Đã học"
-                  ? "success"
-                  : item.status === "Đang học"
-                    ? "info"
-                    : "warning"
-              }
-            >
-              {item.status.toUpperCase()}
-            </Badge>
             <div className="flex items-center gap-2">
               <ToggleSwitch
                 checked={item.active}
@@ -125,21 +114,15 @@ export function KbFallbackDetailView({ fallbackId }: { fallbackId: string }) {
             <div className="rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-lg font-medium">{item.name}</div>
           </div>
           <div className="rounded-[22px] border border-[#d7deea] bg-[#f8fafc] p-5">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <p className="text-xs font-semibold text-[var(--text-dim)]">STATUS</p>
-                <p className="mt-2 text-xl font-semibold">{item.status}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-[var(--text-dim)]">ACTIVE</p>
-                <div className="mt-2 flex items-center gap-2">
-                  <ToggleSwitch
-                    checked={item.active}
-                    onChange={() => toggleMutation.mutate(item.id)}
-                    disabled={toggleMutation.isPending}
-                  />
-                  <span className="text-xl font-semibold">{item.active ? "On" : "Off"}</span>
-                </div>
+            <div>
+              <p className="text-xs font-semibold text-[var(--text-dim)]">ACTIVE</p>
+              <div className="mt-2 flex items-center gap-2">
+                <ToggleSwitch
+                  checked={item.active}
+                  onChange={() => toggleMutation.mutate(item.id)}
+                  disabled={toggleMutation.isPending}
+                />
+                <span className="text-xl font-semibold">{item.active ? "On" : "Off"}</span>
               </div>
             </div>
           </div>

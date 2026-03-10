@@ -75,7 +75,6 @@ export function KbFallbackEditor({ fallbackId }: { fallbackId?: string }) {
 
   const nextAction = useWatch({ control: form.control, name: "nextAction" });
   const onFailAction = useWatch({ control: form.control, name: "onFailAction" });
-  const status = useWatch({ control: form.control, name: "status" });
   const active = useWatch({ control: form.control, name: "active" });
   const mutation = useMutation({
     mutationFn: (payload: KbFallbackFormValues) =>
@@ -122,16 +121,8 @@ export function KbFallbackEditor({ fallbackId }: { fallbackId?: string }) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span
-              className={`rounded-full px-3 py-1 text-sm font-semibold ${
-                (status || "Chưa học") === "Đã học"
-                  ? "bg-emerald-100 text-emerald-700"
-                  : (status || "Chưa học") === "Đang học"
-                    ? "bg-sky-100 text-sky-700"
-                    : "bg-amber-100 text-amber-700"
-              }`}
-            >
-              {(status || "Chưa học").toUpperCase()}
+            <span className={`rounded-full px-3 py-1 text-sm font-semibold ${active ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"}`}>
+              {active ? "ACTIVE" : "OFF"}
             </span>
           </div>
         </div>
@@ -143,32 +134,16 @@ export function KbFallbackEditor({ fallbackId }: { fallbackId?: string }) {
               <Input {...form.register("name")} className="h-12 rounded-xl text-lg" />
             </div>
             <div className="rounded-[22px] border border-[#d7deea] bg-[#f8fafc] p-5">
-              <div className="grid gap-4 md:grid-cols-[1.3fr_1px_1fr] md:items-center">
-                <div>
-                  <p className="text-xs font-semibold tracking-[0.08em] text-[var(--text-dim)]">STATUS</p>
-                  <div className="mt-4 flex flex-wrap gap-4 text-xl font-medium">
-                    <label className="flex items-center gap-3">
-                      <input type="radio" value="Chưa học" {...form.register("status")} className="h-5 w-5 accent-[var(--accent)]" />
-                      Chưa học
-                    </label>
-                    <label className="flex items-center gap-3">
-                      <input type="radio" value="Đã học" {...form.register("status")} className="h-5 w-5 accent-[var(--accent)]" />
-                      Đã học
-                    </label>
-                  </div>
-                </div>
-                <div className="hidden h-full w-px bg-[#dde3ec] md:block" />
-                <div>
-                  <p className="text-xs font-semibold tracking-[0.08em] text-[var(--text-dim)]">ACTIVE</p>
-                  <label className="mt-4 flex items-center justify-between gap-4 text-xl font-medium">
-                    <span>{active ? "On" : "Off"}</span>
-                    <span className="relative inline-flex">
-                      <input type="checkbox" {...form.register("active")} className="peer sr-only" />
-                      <span className="h-9 w-16 rounded-full bg-[#d6dbe4] transition peer-checked:bg-[var(--accent)]" />
-                      <span className="pointer-events-none absolute left-1 top-1 h-7 w-7 rounded-full bg-white shadow transition peer-checked:translate-x-7" />
-                    </span>
-                  </label>
-                </div>
+              <div>
+                <p className="text-xs font-semibold tracking-[0.08em] text-[var(--text-dim)]">ACTIVE</p>
+                <label className="mt-4 flex items-center justify-between gap-4 text-xl font-medium">
+                  <span>{active ? "On" : "Off"}</span>
+                  <span className="relative inline-flex">
+                    <input type="checkbox" {...form.register("active")} className="peer sr-only" />
+                    <span className="h-9 w-16 rounded-full bg-[#d6dbe4] transition peer-checked:bg-[var(--accent)]" />
+                    <span className="pointer-events-none absolute left-1 top-1 h-7 w-7 rounded-full bg-white shadow transition peer-checked:translate-x-7" />
+                  </span>
+                </label>
               </div>
             </div>
           </div>

@@ -68,9 +68,9 @@ export default function CallDetailPage() {
             </div>
           </div>
 
-          <audio controls className="w-full">
-            <source src="" />
-          </audio>
+          <div className="rounded-lg border border-[var(--line)] bg-[var(--surface-2)] p-3 text-center text-sm text-[var(--text-dim)]">
+            Ghi âm cuộc gọi (chưa có file)
+          </div>
         </Card>
       </section>
     </div>

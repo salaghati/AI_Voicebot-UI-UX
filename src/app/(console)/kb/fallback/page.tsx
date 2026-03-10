@@ -56,7 +56,6 @@ export default function KbFallbackPage() {
                 <TH>Tên fallback</TH>
                 <TH>Category</TH>
                 <TH>Next action</TH>
-                <TH>Trạng thái</TH>
                 <TH>Active</TH>
                 <TH>Cập nhật</TH>
                 <TH className="text-right">Thao tác</TH>
@@ -73,21 +72,6 @@ export default function KbFallbackPage() {
                   </TD>
                   <TD>{labelKbFallbackCategory(item.category)}</TD>
                   <TD>{labelKbFallbackNextAction(item.nextAction)}</TD>
-                  <TD>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge
-                        tone={
-                          item.status === "Đã học"
-                            ? "success"
-                            : item.status === "Đang học"
-                              ? "info"
-                              : "warning"
-                        }
-                      >
-                        {item.status}
-                      </Badge>
-                    </div>
-                  </TD>
                   <TD>
                     <div className="flex items-center gap-2">
                       <ToggleSwitch
