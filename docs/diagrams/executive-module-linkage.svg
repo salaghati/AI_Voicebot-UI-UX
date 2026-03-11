@@ -83,23 +83,15 @@
 
   <line x1="852" y1="334" x2="934" y2="452" stroke="#C8912E" stroke-width="4" stroke-dasharray="10 8"/>
   <polygon points="934,452 920,445 922,461" fill="#C8912E"/>
-  <rect x="842" y="372" width="102" height="34" rx="10" fill="#FFF9EF" stroke="#F2C483" stroke-width="2"/>
-  <text x="861" y="394" fill="#A66F18" font-family="Arial, sans-serif" font-size="16" font-weight="700">một phần</text>
 
   <line x1="852" y1="478" x2="934" y2="488" stroke="#C8912E" stroke-width="4" stroke-dasharray="10 8"/>
   <polygon points="934,488 920,481 922,497" fill="#C8912E"/>
-  <rect x="844" y="438" width="102" height="34" rx="10" fill="#FFF9EF" stroke="#F2C483" stroke-width="2"/>
-  <text x="863" y="460" fill="#A66F18" font-family="Arial, sans-serif" font-size="16" font-weight="700">một phần</text>
 
   <line x1="852" y1="622" x2="934" y2="522" stroke="#4E9C67" stroke-width="4"/>
   <polygon points="934,522 921,529 931,540" fill="#4E9C67"/>
-  <rect x="836" y="548" width="118" height="34" rx="10" fill="#F3FBF6" stroke="#95CDA4" stroke-width="2"/>
-  <text x="856" y="570" fill="#2F6441" font-family="Arial, sans-serif" font-size="16" font-weight="700">liên kết thật</text>
 
   <line x1="1078" y1="556" x2="1078" y2="616" stroke="#4E9C67" stroke-width="4"/>
   <polygon points="1078,616 1070,603 1086,603" fill="#4E9C67"/>
-  <rect x="1096" y="566" width="138" height="34" rx="10" fill="#F3FBF6" stroke="#95CDA4" stroke-width="2"/>
-  <text x="1112" y="588" fill="#2F6441" font-family="Arial, sans-serif" font-size="16" font-weight="700">Workflow → Preview</text>
 
   <rect x="1300" y="156" width="356" height="684" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
   <text x="1332" y="206" fill="#1C2635" font-family="Arial, sans-serif" font-size="28" font-weight="700">Outputs</text>
@@ -120,8 +112,6 @@
   <polygon points="1332,366 1319,372 1330,383" fill="#4E9C67"/>
   <line x1="1224" y1="484" x2="1332" y2="510" stroke="#4E9C67" stroke-width="4"/>
   <polygon points="1332,510 1318,503 1320,519" fill="#4E9C67"/>
-  <rect x="1224" y="440" width="112" height="34" rx="10" fill="#F3FBF6" stroke="#95CDA4" stroke-width="2"/>
-  <text x="1243" y="462" fill="#2F6441" font-family="Arial, sans-serif" font-size="16" font-weight="700">kết quả thật</text>
 
   <rect x="1332" y="622" width="292" height="170" rx="16" fill="#FFFFFF" stroke="#D7DEEA" stroke-width="2"/>
   <text x="1358" y="660" fill="#1C2635" font-family="Arial, sans-serif" font-size="22" font-weight="700">Legend</text>
