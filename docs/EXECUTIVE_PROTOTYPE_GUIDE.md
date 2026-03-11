@@ -2,7 +2,7 @@
 
 > Tài liệu đọc nhanh cho cấp quản lý và người xem prototype  
 > Phiên bản: 1.0  
-> Cập nhật: 10/03/2026
+> Cập nhật: 11/03/2026
 
 ---
 
@@ -90,19 +90,17 @@ Prototype này mô phỏng đầy đủ bức tranh vận hành:
 
 ---
 
-## 4. Cách nhìn sản phẩm trong 1 sơ đồ
+## 4. Cách các module liên kết với nhau
 
-![Sơ đồ tổng thể nền tảng](./diagrams/executive-system-overview.svg)
+Phần này là `sơ đồ quan trọng nhất` để người đọc hiểu prototype đang vận hành ra sao.
 
-Ý nghĩa của sơ đồ:
+Sơ đồ tổng thể cũ đã được lược bỏ vì:
 
-- `Bot Engine` là nơi tạo và vận hành luồng gọi.
-- `Workflow` quyết định bot sẽ nói gì, hỏi gì, gọi API nào, chuyển nhánh ra sao.
-- `Knowledge Base` cung cấp tri thức để bot trả lời.
-- `Settings` giữ các cấu hình nền như STT/TTS, API, đầu số, agent, fallback.
-- `Report` và `Dashboard` giúp người quản lý theo dõi hiệu quả và rủi ro vận hành.
+- trùng ý với sơ đồ module ở bên dưới;
+- không giúp người đọc phân biệt đâu là liên kết thật, đâu là liên kết một phần;
+- dễ làm người xem hiểu nhầm rằng mọi khối trong hình đã được nối chặt với nhau ở mức code.
 
-## 4.1. Bản đồ liên kết module theo code hiện tại
+Vì vậy, tài liệu này dùng trực tiếp `bản đồ liên kết module theo code hiện tại` làm sơ đồ chính.
 
 ![Bản đồ liên kết module](./diagrams/executive-module-linkage.svg)
 
@@ -122,7 +120,7 @@ Kết luận ngắn từ sơ đồ:
 - `Workflow/KB -> Bot Engine` hiện mới ở mức tham chiếu qua mock refs;
 - phần lớn `Settings` vẫn là màn cấu hình độc lập, chưa feed ngược vào `Workflow`, `Inbound`, `Preview` theo kiểu source-of-truth.
 
-### 4.2. Bảng tóm tắt liên kết quan trọng
+### 4.1. Bảng tóm tắt liên kết quan trọng
 
 | Liên kết | Trạng thái theo code hiện tại | Ghi chú ngắn |
 | --- | --- | --- |
@@ -137,7 +135,7 @@ Kết luận ngắn từ sơ đồ:
 | `Knowledge Base -> Bot Engine create` | Link một phần | Chọn qua `knowledgeRefs` mock |
 | `Campaign / Inbound data -> Dashboard / Reports` | Có link thật | Đã có consumer hiển thị kết quả vận hành |
 
-### 4.3. Cách các module thực sự nối với nhau trong hành trình người dùng
+### 4.2. Cách các module thực sự nối với nhau trong hành trình người dùng
 
 Người đọc sẽ dễ hiểu hơn nếu nhìn hệ thống theo `3 chuỗi thao tác chính` thay vì nhìn từng module rời nhau.
 
@@ -167,7 +165,7 @@ Người đọc sẽ dễ hiểu hơn nếu nhìn hệ thống theo `3 chuỗi t
    - `Bot Engine`, `Workflow`, `KB`, `Settings` là lớp cấu hình và vận hành;
    - `Dashboard` và `Reports` là lớp đọc kết quả.
 
-### 4.4. Điều người đọc cần nhớ để không hiểu nhầm prototype
+### 4.3. Điều người đọc cần nhớ để không hiểu nhầm prototype
 
 - prototype đang mô tả rất tốt `ý nghĩa nghiệp vụ` và `trải nghiệm quản trị`;
 - nhưng không phải mọi liên kết giữa module đều đã là `source-of-truth integration`;
@@ -494,7 +492,7 @@ Cách đọc sơ đồ:
 - hệ thống đang mô phỏng một chuỗi xử lý có điều kiện, có tri thức, có dữ liệu, và có cơ chế chuyển người thật khi cần;
 - đây là điểm khác biệt giữa voicebot vận hành được và IVR đơn giản.
 
-`Độ bám code:` đây là sơ đồ giải thích logic nghiệp vụ/runtme, không phải một chuỗi page UI đầy đủ đang có trong app.
+`Độ bám code:` đây là sơ đồ giải thích logic nghiệp vụ/runtime, không phải một chuỗi page UI đầy đủ đang có trong app.
 
 ### 10.3. Thiết kế, preview và publish workflow
 
