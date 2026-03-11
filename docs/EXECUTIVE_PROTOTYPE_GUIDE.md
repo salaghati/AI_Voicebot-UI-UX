@@ -113,7 +113,7 @@ Cách đọc sơ đồ này:
 - cột phải là nơi đọc kết quả vận hành;
 - đường `xanh` là liên kết thật đang có trong code;
 - đường `cam` là liên kết có một phần, nhưng chưa dùng source-of-truth chung;
-- đường `đỏ` là có liên quan về mặt nghiệp vụ nhưng chưa wire thật.
+- các box viền `cam nhạt` trong cột `Settings` là những phần có liên quan về mặt nghiệp vụ, nhưng chưa wire thật sang flow thao tác chính.
 
 Kết luận ngắn từ sơ đồ:
 
@@ -136,6 +136,51 @@ Kết luận ngắn từ sơ đồ:
 | `Workflow -> Bot Engine create` | Link một phần | Chọn qua `workflowRefs` mock |
 | `Knowledge Base -> Bot Engine create` | Link một phần | Chọn qua `knowledgeRefs` mock |
 | `Campaign / Inbound data -> Dashboard / Reports` | Có link thật | Đã có consumer hiển thị kết quả vận hành |
+
+### 4.3. Cách các module thực sự nối với nhau trong hành trình người dùng
+
+Người đọc sẽ dễ hiểu hơn nếu nhìn hệ thống theo `3 chuỗi thao tác chính` thay vì nhìn từng module rời nhau.
+
+`Chuỗi 1: cấu hình một bot để chạy chiến dịch hoặc hotline`
+
+1. Người vận hành vào `Bot Engine Create` để tạo `Outbound Campaign` hoặc `Inbound Route`.
+2. Ở bước cấu hình, hệ thống yêu cầu gắn `Workflow`, `Knowledge Base`, và có thể gắn `KB Fallback`.
+3. Trong code hiện tại:
+   - `KB Fallback` là phần nối thật, vì màn create đọc danh sách rule active từ API;
+   - `Workflow` và `Knowledge Base` mới nối một phần, vì danh sách chọn đang đến từ mock refs.
+4. Kết quả là người xem vẫn hiểu đúng nghiệp vụ, nhưng về mặt kiến trúc code thì chưa phải một nguồn dữ liệu dùng chung hoàn toàn.
+
+`Chuỗi 2: thiết kế logic xử lý của bot`
+
+1. Người vận hành vào `Workflow` để tạo hoặc chỉnh sửa logic hội thoại.
+2. Trong builder, bot có thể có node `Intent`, `Condition`, `API`, `KB`.
+3. `Preview` đọc workflow thật để mô phỏng transcript và runtime log.
+4. Tuy nhiên:
+   - node `API` chưa lấy danh sách API đã setup ở `Settings API`;
+   - node `KB` chưa lấy trực tiếp danh sách tài liệu từ module `Knowledge Base`.
+
+`Chuỗi 3: theo dõi kết quả sau khi cấu hình`
+
+1. Sau khi campaign hoặc route đã được cấu hình, người quản lý đọc `Dashboard` và `Reports`.
+2. Đây là lớp theo dõi hiệu quả vận hành: số lượng cuộc gọi, trạng thái, xu hướng, lỗi, chi tiết transcript.
+3. Vì vậy, trong tài liệu này nên hiểu:
+   - `Bot Engine`, `Workflow`, `KB`, `Settings` là lớp cấu hình và vận hành;
+   - `Dashboard` và `Reports` là lớp đọc kết quả.
+
+### 4.4. Điều người đọc cần nhớ để không hiểu nhầm prototype
+
+- prototype đang mô tả rất tốt `ý nghĩa nghiệp vụ` và `trải nghiệm quản trị`;
+- nhưng không phải mọi liên kết giữa module đều đã là `source-of-truth integration`;
+- `Settings` hiện chủ yếu là các màn cấu hình độc lập;
+- các liên kết mạnh nhất theo code hiện tại là:
+  - `KB Fallback -> Bot Engine Create`;
+  - `Workflow -> Preview`;
+  - `Campaign / Inbound data -> Dashboard / Reports`.
+
+Nói ngắn gọn:
+
+> Nếu đọc tài liệu này để hiểu sản phẩm, hãy xem prototype như một hệ thống đã mô tả đúng luồng vận hành.  
+> Nếu đọc để đánh giá mức độ tích hợp code hiện tại, hãy lưu ý rằng nhiều liên kết vẫn đang ở mức mock hoặc bán tích hợp.
 
 ---
 
