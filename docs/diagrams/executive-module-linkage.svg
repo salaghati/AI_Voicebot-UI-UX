@@ -1,103 +1,142 @@
-<svg width="1600" height="940" viewBox="0 0 1600 940" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1600" height="940" fill="#F5F7FB"/>
-  <rect x="28" y="24" width="1544" height="892" rx="24" fill="#FFFFFF" stroke="#D7DEEA" stroke-width="2"/>
+<svg width="1720" height="980" viewBox="0 0 1720 980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1720" height="980" fill="#F5F7FB"/>
+  <rect x="28" y="24" width="1664" height="932" rx="24" fill="#FFFFFF" stroke="#D7DEEA" stroke-width="2"/>
 
   <text x="64" y="78" fill="#18212F" font-family="Arial, sans-serif" font-size="34" font-weight="700">Bản đồ liên kết module theo code hiện tại</text>
-  <text x="64" y="112" fill="#5B6472" font-family="Arial, sans-serif" font-size="18">Phiên bản rút gọn: chỉ giữ các liên kết người đọc cần hiểu để không bị rối.</text>
+  <text x="64" y="112" fill="#5B6472" font-family="Arial, sans-serif" font-size="18">Phiên bản rút gọn: chỉ giữ các liên kết người đọc cần hiểu, đồng thời bám đúng mức tích hợp đang có trong prototype.</text>
 
-  <rect x="64" y="156" width="360" height="668" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
+  <rect x="64" y="156" width="396" height="684" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
   <text x="96" y="206" fill="#1C2635" font-family="Arial, sans-serif" font-size="28" font-weight="700">Settings</text>
   <text x="96" y="238" fill="#5E6877" font-family="Arial, sans-serif" font-size="18">Nhóm cấu hình nền của hệ thống</text>
 
-  <rect x="96" y="280" width="296" height="88" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
-  <text x="120" y="316" fill="#553514" font-family="Arial, sans-serif" font-size="23" font-weight="700">API Integration</text>
-  <text x="120" y="344" fill="#7A5A31" font-family="Arial, sans-serif" font-size="17">Chưa feed vào node API trong Workflow</text>
+  <rect x="96" y="280" width="332" height="92" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
+  <text x="120" y="320" fill="#553514" font-family="Arial, sans-serif" font-size="22" font-weight="700">API Integration</text>
+  <text x="120" y="346" fill="#7A5A31" font-family="Arial, sans-serif" font-size="16">
+    <tspan x="120" dy="0">Chưa feed vào node API trong Workflow,</tspan>
+    <tspan x="120" dy="22">nên user vẫn phải nhập ref thủ công.</tspan>
+  </text>
 
-  <rect x="96" y="388" width="296" height="88" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
-  <text x="120" y="424" fill="#553514" font-family="Arial, sans-serif" font-size="23" font-weight="700">Agent / Queue</text>
-  <text x="120" y="452" fill="#7A5A31" font-family="Arial, sans-serif" font-size="17">Inbound chưa dùng chung selector và queue</text>
+  <rect x="96" y="392" width="332" height="92" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
+  <text x="120" y="432" fill="#553514" font-family="Arial, sans-serif" font-size="22" font-weight="700">Agent / Queue</text>
+  <text x="120" y="458" fill="#7A5A31" font-family="Arial, sans-serif" font-size="16">
+    <tspan x="120" dy="0">Inbound chưa dùng chung selector, queue,</tspan>
+    <tspan x="120" dy="22">hay transfer target từ settings.</tspan>
+  </text>
 
-  <rect x="96" y="496" width="296" height="88" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
-  <text x="120" y="532" fill="#553514" font-family="Arial, sans-serif" font-size="23" font-weight="700">STT / TTS / VAD</text>
-  <text x="120" y="560" fill="#7A5A31" font-family="Arial, sans-serif" font-size="17">Có settings nhưng chưa apply vào Preview/runtime</text>
+  <rect x="96" y="504" width="332" height="92" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
+  <text x="120" y="544" fill="#553514" font-family="Arial, sans-serif" font-size="22" font-weight="700">STT / TTS / VAD</text>
+  <text x="120" y="570" fill="#7A5A31" font-family="Arial, sans-serif" font-size="16">
+    <tspan x="120" dy="0">Có settings riêng, nhưng Preview và</tspan>
+    <tspan x="120" dy="22">runtime chưa đọc trực tiếp các giá trị này.</tspan>
+  </text>
 
-  <rect x="96" y="604" width="296" height="88" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
-  <text x="120" y="640" fill="#553514" font-family="Arial, sans-serif" font-size="23" font-weight="700">Extensions / Numbers</text>
-  <text x="120" y="668" fill="#7A5A31" font-family="Arial, sans-serif" font-size="17">Inbound route chưa lấy trực tiếp từ settings</text>
+  <rect x="96" y="616" width="332" height="92" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
+  <text x="120" y="656" fill="#553514" font-family="Arial, sans-serif" font-size="22" font-weight="700">Extensions / Numbers</text>
+  <text x="120" y="682" fill="#7A5A31" font-family="Arial, sans-serif" font-size="16">
+    <tspan x="120" dy="0">Inbound route chưa lấy trực tiếp</tspan>
+    <tspan x="120" dy="22">danh sách này từ settings.</tspan>
+  </text>
 
-  <rect x="96" y="720" width="296" height="68" rx="16" fill="#F2F4F8" stroke="#D5DCE8" stroke-width="2"/>
-  <text x="120" y="762" fill="#465063" font-family="Arial, sans-serif" font-size="22" font-weight="700">Users / Roles: admin only, chưa gắn auth thật</text>
+  <rect x="96" y="728" width="332" height="76" rx="16" fill="#F2F4F8" stroke="#D5DCE8" stroke-width="2"/>
+  <text x="120" y="762" fill="#465063" font-family="Arial, sans-serif" font-size="18" font-weight="700">
+    <tspan x="120" dy="0">Users / Roles là màn quản trị,</tspan>
+    <tspan x="120" dy="22">chưa gắn auth và permission thật.</tspan>
+  </text>
 
-  <rect x="472" y="156" width="676" height="668" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
-  <text x="504" y="206" fill="#1C2635" font-family="Arial, sans-serif" font-size="28" font-weight="700">Core Modules</text>
-  <text x="504" y="238" fill="#5E6877" font-family="Arial, sans-serif" font-size="18">Các khối người dùng thực sự thao tác trong flow chính</text>
+  <rect x="492" y="156" width="764" height="684" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
+  <text x="524" y="206" fill="#1C2635" font-family="Arial, sans-serif" font-size="28" font-weight="700">Core Modules</text>
+  <text x="524" y="238" fill="#5E6877" font-family="Arial, sans-serif" font-size="18">Các khối người dùng thực sự thao tác trong flow chính</text>
 
-  <rect x="520" y="288" width="248" height="92" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
-  <text x="544" y="326" fill="#553514" font-family="Arial, sans-serif" font-size="24" font-weight="700">Workflow</text>
-  <text x="544" y="356" fill="#7A5A31" font-family="Arial, sans-serif" font-size="17">Bot Engine đang chọn qua mock refs</text>
+  <rect x="540" y="286" width="312" height="96" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
+  <text x="564" y="326" fill="#553514" font-family="Arial, sans-serif" font-size="24" font-weight="700">Workflow</text>
+  <text x="564" y="354" fill="#7A5A31" font-family="Arial, sans-serif" font-size="17">
+    <tspan x="564" dy="0">Bot Engine đang chọn workflow</tspan>
+    <tspan x="564" dy="22">qua mock refs, chưa đọc list thật.</tspan>
+  </text>
 
-  <rect x="520" y="420" width="248" height="92" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
-  <text x="544" y="458" fill="#553514" font-family="Arial, sans-serif" font-size="24" font-weight="700">Knowledge Base</text>
-  <text x="544" y="488" fill="#7A5A31" font-family="Arial, sans-serif" font-size="17">Bot Engine đang chọn qua mock refs</text>
+  <rect x="540" y="430" width="312" height="96" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
+  <text x="564" y="470" fill="#553514" font-family="Arial, sans-serif" font-size="24" font-weight="700">Knowledge Base</text>
+  <text x="564" y="498" fill="#7A5A31" font-family="Arial, sans-serif" font-size="17">
+    <tspan x="564" dy="0">Bot Engine đang chọn KB</tspan>
+    <tspan x="564" dy="22">qua mock refs, chưa đọc module KB.</tspan>
+  </text>
 
-  <rect x="520" y="552" width="248" height="92" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
-  <text x="544" y="590" fill="#153A24" font-family="Arial, sans-serif" font-size="24" font-weight="700">KB Fallback</text>
-  <text x="544" y="620" fill="#2D6241" font-family="Arial, sans-serif" font-size="17">Rule active được dùng thật ở create flow</text>
+  <rect x="540" y="574" width="312" height="96" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
+  <text x="564" y="614" fill="#153A24" font-family="Arial, sans-serif" font-size="24" font-weight="700">KB Fallback</text>
+  <text x="564" y="642" fill="#2D6241" font-family="Arial, sans-serif" font-size="17">
+    <tspan x="564" dy="0">Rule active được dùng thật</tspan>
+    <tspan x="564" dy="22">ở inbound và outbound create.</tspan>
+  </text>
 
-  <rect x="852" y="420" width="248" height="128" rx="16" fill="#EEF3FF" stroke="#AABFF8" stroke-width="2"/>
-  <text x="876" y="458" fill="#1A3870" font-family="Arial, sans-serif" font-size="24" font-weight="700">Bot Engine Create</text>
-  <text x="876" y="490" fill="#3D5D98" font-family="Arial, sans-serif" font-size="18">Outbound Create</text>
-  <text x="876" y="518" fill="#3D5D98" font-family="Arial, sans-serif" font-size="18">Inbound Create</text>
+  <rect x="934" y="412" width="290" height="144" rx="16" fill="#EEF3FF" stroke="#AABFF8" stroke-width="2"/>
+  <text x="960" y="454" fill="#1A3870" font-family="Arial, sans-serif" font-size="24" font-weight="700">Bot Engine Create</text>
+  <text x="960" y="490" fill="#3D5D98" font-family="Arial, sans-serif" font-size="18">Outbound Create</text>
+  <text x="960" y="518" fill="#3D5D98" font-family="Arial, sans-serif" font-size="18">Inbound Create</text>
+  <text x="960" y="546" fill="#3D5D98" font-family="Arial, sans-serif" font-size="18">gắn Workflow, KB, KB Fallback</text>
 
-  <rect x="852" y="594" width="248" height="92" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
-  <text x="876" y="632" fill="#153A24" font-family="Arial, sans-serif" font-size="24" font-weight="700">Preview</text>
-  <text x="876" y="662" fill="#2D6241" font-family="Arial, sans-serif" font-size="17">Đọc workflow preview thật</text>
+  <rect x="934" y="616" width="290" height="96" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
+  <text x="960" y="656" fill="#153A24" font-family="Arial, sans-serif" font-size="24" font-weight="700">Preview</text>
+  <text x="960" y="684" fill="#2D6241" font-family="Arial, sans-serif" font-size="17">
+    <tspan x="960" dy="0">Đọc workflow preview thật,</tspan>
+    <tspan x="960" dy="22">không lấy từ mock refs.</tspan>
+  </text>
 
-  <line x1="768" y1="334" x2="852" y2="462" stroke="#C8912E" stroke-width="4" stroke-dasharray="10 8"/>
-  <polygon points="852,462 839,454 840,470" fill="#C8912E"/>
-  <text x="760" y="382" fill="#A66F18" font-family="Arial, sans-serif" font-size="16" font-weight="700">một phần</text>
+  <line x1="852" y1="334" x2="934" y2="452" stroke="#C8912E" stroke-width="4" stroke-dasharray="10 8"/>
+  <polygon points="934,452 920,445 922,461" fill="#C8912E"/>
+  <rect x="842" y="372" width="102" height="34" rx="10" fill="#FFF9EF" stroke="#F2C483" stroke-width="2"/>
+  <text x="861" y="394" fill="#A66F18" font-family="Arial, sans-serif" font-size="16" font-weight="700">một phần</text>
 
-  <line x1="768" y1="466" x2="852" y2="484" stroke="#C8912E" stroke-width="4" stroke-dasharray="10 8"/>
-  <polygon points="852,484 838,477 840,493" fill="#C8912E"/>
-  <text x="778" y="452" fill="#A66F18" font-family="Arial, sans-serif" font-size="16" font-weight="700">một phần</text>
+  <line x1="852" y1="478" x2="934" y2="488" stroke="#C8912E" stroke-width="4" stroke-dasharray="10 8"/>
+  <polygon points="934,488 920,481 922,497" fill="#C8912E"/>
+  <rect x="844" y="438" width="102" height="34" rx="10" fill="#FFF9EF" stroke="#F2C483" stroke-width="2"/>
+  <text x="863" y="460" fill="#A66F18" font-family="Arial, sans-serif" font-size="16" font-weight="700">một phần</text>
 
-  <line x1="768" y1="598" x2="852" y2="516" stroke="#4E9C67" stroke-width="4"/>
-  <polygon points="852,516 839,523 850,534" fill="#4E9C67"/>
-  <text x="758" y="568" fill="#2F6441" font-family="Arial, sans-serif" font-size="16" font-weight="700">liên kết thật</text>
+  <line x1="852" y1="622" x2="934" y2="522" stroke="#4E9C67" stroke-width="4"/>
+  <polygon points="934,522 921,529 931,540" fill="#4E9C67"/>
+  <rect x="836" y="548" width="118" height="34" rx="10" fill="#F3FBF6" stroke="#95CDA4" stroke-width="2"/>
+  <text x="856" y="570" fill="#2F6441" font-family="Arial, sans-serif" font-size="16" font-weight="700">liên kết thật</text>
 
-  <line x1="976" y1="548" x2="976" y2="594" stroke="#4E9C67" stroke-width="4"/>
-  <polygon points="976,594 968,581 984,581" fill="#4E9C67"/>
-  <text x="994" y="580" fill="#2F6441" font-family="Arial, sans-serif" font-size="16" font-weight="700">Workflow → Preview</text>
+  <line x1="1078" y1="556" x2="1078" y2="616" stroke="#4E9C67" stroke-width="4"/>
+  <polygon points="1078,616 1070,603 1086,603" fill="#4E9C67"/>
+  <rect x="1096" y="566" width="138" height="34" rx="10" fill="#F3FBF6" stroke="#95CDA4" stroke-width="2"/>
+  <text x="1112" y="588" fill="#2F6441" font-family="Arial, sans-serif" font-size="16" font-weight="700">Workflow → Preview</text>
 
-  <rect x="1200" y="156" width="336" height="668" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
-  <text x="1232" y="206" fill="#1C2635" font-family="Arial, sans-serif" font-size="28" font-weight="700">Outputs</text>
-  <text x="1232" y="238" fill="#5E6877" font-family="Arial, sans-serif" font-size="18">Nơi người quản lý đọc kết quả vận hành</text>
+  <rect x="1300" y="156" width="356" height="684" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
+  <text x="1332" y="206" fill="#1C2635" font-family="Arial, sans-serif" font-size="28" font-weight="700">Outputs</text>
+  <text x="1332" y="238" fill="#5E6877" font-family="Arial, sans-serif" font-size="18">Nơi người quản lý đọc kết quả vận hành</text>
 
-  <rect x="1232" y="322" width="272" height="92" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
-  <text x="1256" y="360" fill="#153A24" font-family="Arial, sans-serif" font-size="24" font-weight="700">Dashboard</text>
-  <text x="1256" y="390" fill="#2D6241" font-family="Arial, sans-serif" font-size="17">Tổng quan vận hành</text>
+  <rect x="1332" y="318" width="292" height="96" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
+  <text x="1358" y="358" fill="#153A24" font-family="Arial, sans-serif" font-size="24" font-weight="700">Dashboard</text>
+  <text x="1358" y="386" fill="#2D6241" font-family="Arial, sans-serif" font-size="17">Tổng quan vận hành</text>
 
-  <rect x="1232" y="462" width="272" height="92" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
-  <text x="1256" y="500" fill="#153A24" font-family="Arial, sans-serif" font-size="24" font-weight="700">Reports</text>
-  <text x="1256" y="530" fill="#2D6241" font-family="Arial, sans-serif" font-size="17">Overview, outbound, inbound, detail</text>
+  <rect x="1332" y="462" width="292" height="96" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
+  <text x="1358" y="502" fill="#153A24" font-family="Arial, sans-serif" font-size="24" font-weight="700">Reports</text>
+  <text x="1358" y="530" fill="#2D6241" font-family="Arial, sans-serif" font-size="17">
+    <tspan x="1358" dy="0">Overview, outbound, inbound</tspan>
+    <tspan x="1358" dy="22">và call detail.</tspan>
+  </text>
 
-  <line x1="1100" y1="484" x2="1232" y2="368" stroke="#4E9C67" stroke-width="4"/>
-  <polygon points="1232,368 1218,373 1229,385" fill="#4E9C67"/>
-  <line x1="1100" y1="484" x2="1232" y2="508" stroke="#4E9C67" stroke-width="4"/>
-  <polygon points="1232,508 1218,501 1220,517" fill="#4E9C67"/>
-  <text x="1118" y="454" fill="#2F6441" font-family="Arial, sans-serif" font-size="16" font-weight="700">kết quả vận hành</text>
+  <line x1="1224" y1="484" x2="1332" y2="366" stroke="#4E9C67" stroke-width="4"/>
+  <polygon points="1332,366 1319,372 1330,383" fill="#4E9C67"/>
+  <line x1="1224" y1="484" x2="1332" y2="510" stroke="#4E9C67" stroke-width="4"/>
+  <polygon points="1332,510 1318,503 1320,519" fill="#4E9C67"/>
+  <rect x="1224" y="440" width="112" height="34" rx="10" fill="#F3FBF6" stroke="#95CDA4" stroke-width="2"/>
+  <text x="1243" y="462" fill="#2F6441" font-family="Arial, sans-serif" font-size="16" font-weight="700">kết quả thật</text>
 
-  <rect x="1232" y="626" width="272" height="140" rx="16" fill="#FFFFFF" stroke="#D7DEEA" stroke-width="2"/>
-  <text x="1256" y="664" fill="#1C2635" font-family="Arial, sans-serif" font-size="22" font-weight="700">Legend</text>
-  <line x1="1260" y1="698" x2="1336" y2="698" stroke="#4E9C67" stroke-width="4"/>
-  <polygon points="1336,698 1323,690 1323,706" fill="#4E9C67"/>
-  <text x="1358" y="704" fill="#2F6441" font-family="Arial, sans-serif" font-size="18">Liên kết thật</text>
-  <line x1="1260" y1="730" x2="1336" y2="730" stroke="#C8912E" stroke-width="4" stroke-dasharray="10 8"/>
-  <polygon points="1336,730 1323,722 1323,738" fill="#C8912E"/>
-  <text x="1358" y="736" fill="#8B631F" font-family="Arial, sans-serif" font-size="18">Liên kết một phần</text>
-  <rect x="1260" y="748" width="20" height="20" rx="6" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
-  <text x="1294" y="764" fill="#8B631F" font-family="Arial, sans-serif" font-size="18">Mục có liên quan nhưng chưa wire, chỉ ghi trạng thái</text>
+  <rect x="1332" y="622" width="292" height="170" rx="16" fill="#FFFFFF" stroke="#D7DEEA" stroke-width="2"/>
+  <text x="1358" y="660" fill="#1C2635" font-family="Arial, sans-serif" font-size="22" font-weight="700">Legend</text>
+  <line x1="1362" y1="694" x2="1440" y2="694" stroke="#4E9C67" stroke-width="4"/>
+  <polygon points="1440,694 1427,686 1427,702" fill="#4E9C67"/>
+  <text x="1462" y="700" fill="#2F6441" font-family="Arial, sans-serif" font-size="18">Liên kết thật</text>
+  <line x1="1362" y1="728" x2="1440" y2="728" stroke="#C8912E" stroke-width="4" stroke-dasharray="10 8"/>
+  <polygon points="1440,728 1427,720 1427,736" fill="#C8912E"/>
+  <text x="1462" y="734" fill="#8B631F" font-family="Arial, sans-serif" font-size="18">Liên kết một phần</text>
+  <rect x="1362" y="748" width="22" height="22" rx="6" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
+  <text x="1400" y="764" fill="#8B631F" font-family="Arial, sans-serif" font-size="17">
+    <tspan x="1400" dy="0">Mục có liên quan nhưng chưa wire,</tspan>
+    <tspan x="1400" dy="20">nên chỉ hiển thị trạng thái thay vì kéo line.</tspan>
+  </text>
 
-  <rect x="472" y="846" width="1064" height="42" rx="12" fill="#F7F9FC" stroke="#D7DEEA" stroke-width="2"/>
-  <text x="500" y="873" fill="#556070" font-family="Arial, sans-serif" font-size="18">Ý chính: hiện prototype nối tốt ở KB Fallback, Preview, Dashboard/Reports; còn đa số Settings vẫn là các màn cấu hình độc lập.</text>
+  <rect x="492" y="862" width="1164" height="42" rx="12" fill="#F7F9FC" stroke="#D7DEEA" stroke-width="2"/>
+  <text x="520" y="889" fill="#556070" font-family="Arial, sans-serif" font-size="18">Ý chính: hiện prototype nối tốt ở KB Fallback, Preview, Dashboard/Reports; còn đa số Settings vẫn là các màn cấu hình độc lập.</text>
 </svg>
