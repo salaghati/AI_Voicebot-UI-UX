@@ -102,6 +102,41 @@ Prototype này mô phỏng đầy đủ bức tranh vận hành:
 - `Settings` giữ các cấu hình nền như STT/TTS, API, đầu số, agent, fallback.
 - `Report` và `Dashboard` giúp người quản lý theo dõi hiệu quả và rủi ro vận hành.
 
+## 4.1. Bản đồ liên kết module theo code hiện tại
+
+![Bản đồ liên kết module](./diagrams/executive-module-linkage.svg)
+
+Cách đọc sơ đồ này:
+
+- cột trái là `Settings`, tức các màn cấu hình nền;
+- cột giữa là `core modules` đang được dùng trong flow chính;
+- cột phải là nơi đọc kết quả vận hành;
+- đường `xanh` là liên kết thật đang có trong code;
+- đường `cam` là liên kết có một phần, nhưng chưa dùng source-of-truth chung;
+- đường `đỏ` là có liên quan về mặt nghiệp vụ nhưng chưa wire thật.
+
+Kết luận ngắn từ sơ đồ:
+
+- `KB Fallback -> Outbound/Inbound create` là liên kết thật;
+- `Workflow -> Preview` là liên kết thật;
+- `Workflow/KB -> Bot Engine` hiện mới ở mức tham chiếu qua mock refs;
+- phần lớn `Settings` vẫn là màn cấu hình độc lập, chưa feed ngược vào `Workflow`, `Inbound`, `Preview` theo kiểu source-of-truth.
+
+### 4.2. Bảng tóm tắt liên kết quan trọng
+
+| Liên kết | Trạng thái theo code hiện tại | Ghi chú ngắn |
+| --- | --- | --- |
+| `Settings API -> Workflow API node` | Chưa link chuẩn | Workflow đang nhập tay `apiRef`, `apiUrl`, `authProfile` |
+| `Settings Agent -> Inbound queue / transfer target` | Chưa link chuẩn | Queue/group chưa dùng chung giữa settings và flow tạo route |
+| `Settings STT/TTS -> Preview / runtime` | Chưa link chuẩn | Có settings page nhưng preview chưa đọc trực tiếp |
+| `Settings Extensions / Phone Numbers -> Inbound` | Chưa link chuẩn | Inbound create vẫn nhập hoặc chọn giá trị riêng |
+| `KB Fallback -> Outbound create` | Có link thật | Chọn rule active qua API |
+| `KB Fallback -> Inbound create` | Có link thật | Chọn rule active qua API |
+| `Workflow -> Preview` | Có link thật | Preview đọc workflow thật |
+| `Workflow -> Bot Engine create` | Link một phần | Chọn qua `workflowRefs` mock |
+| `Knowledge Base -> Bot Engine create` | Link một phần | Chọn qua `knowledgeRefs` mock |
+| `Campaign / Inbound data -> Dashboard / Reports` | Có link thật | Đã có consumer hiển thị kết quả vận hành |
+
 ---
 
 ## 5. Nhóm actor dùng trong tài liệu này
