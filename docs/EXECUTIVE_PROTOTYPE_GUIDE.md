@@ -85,7 +85,7 @@ Prototype này mô phỏng đầy đủ bức tranh vận hành:
 | --- | --- | --- |
 | `/preview/platform-review/*` | Thử nghiệm pattern UX thay thế | Không cần, trừ khi đang so sánh thiết kế |
 | `/bot-engine/campaigns/*` | Nhánh phụ trong prototype | Không cần nếu mục tiêu là hiểu sản phẩm chính |
-| `/bot-engine/outbound/new/step-*` và `/bot-engine/inbound/new/step-*` | Các màn wizard theo bước riêng | Không ưu tiên, vì route `/create` hiện dễ demo hơn |
+| `/bot-engine/outbound/new/step-*` và `/bot-engine/inbound/new/step-*` | Các route cũ của wizard theo bước | Hiện chỉ redirect về `/create`, không cần dùng như flow riêng |
 | `/settings/agent/queue-new`, `/settings/users/new`, `/settings/roles/editor` | Màn hình cấu hình chi tiết | Chỉ mở khi cần đào sâu |
 
 ---
@@ -151,9 +151,15 @@ Người đọc sẽ dễ hiểu hơn nếu nhìn hệ thống theo `3 chuỗi t
 `Chuỗi 2: thiết kế logic xử lý của bot`
 
 1. Người vận hành vào `Workflow` để tạo hoặc chỉnh sửa logic hội thoại.
-2. Trong builder, bot có thể có node `Intent`, `Condition`, `API`, `KB`.
-3. `Preview` đọc workflow thật để mô phỏng transcript và runtime log.
-4. Tuy nhiên:
+2. Trong builder hiện tại, một workflow có thể gồm các node `Start`, `Prompt`, `Intent`, `Condition`, `API`, `KB`, `Handover`, `End`.
+3. Về mặt ngữ nghĩa:
+   - `Intent` là nơi thu nhu cầu của khách và có thể extract entity;
+   - `Condition` là nơi đọc intent/entity để rẽ nhánh;
+   - `API` là nơi dùng entity để gọi hệ thống ngoài;
+   - `KB` là nơi bot tra tri thức từ KB đã được bind ở bước tạo outbound/inbound;
+   - `Handover` là nơi chuyển sang người thật khi bot không nên xử lý tiếp.
+4. `Preview` đọc workflow thật để mô phỏng transcript và runtime log.
+5. Tuy nhiên:
    - node `API` chưa lấy danh sách API đã setup ở `Settings API`;
    - node `KB` chưa lấy trực tiếp danh sách tài liệu từ module `Knowledge Base`.
 
@@ -263,7 +269,9 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 | Campaign | Một chiến dịch gọi ra theo một mục tiêu cụ thể, ví dụ nhắc thanh toán hoặc khảo sát |
 | Inbound Route | Một tuyến hotline đi vào hệ thống, gắn với queue, extension và workflow xử lý |
 | Workflow | Kịch bản logic quyết định bot nghe gì, hiểu gì, gọi API nào, tra KB nào, và kết thúc ra sao |
-| Workflow Node | Một bước trong workflow; có thể là `Intent`, `Condition`, `API`, `KB` |
+| Workflow Node | Một bước trong workflow; trong bản deploy hiện tại có các loại `Start`, `Prompt`, `Intent`, `Condition`, `API`, `KB`, `Handover`, `End` |
+| Intent | Nhu cầu hoặc mục đích mà khách đang muốn thực hiện |
+| Entity | Dữ liệu cụ thể bot trích xuất từ lời khách để dùng cho điều kiện hoặc API |
 | Knowledge Base | Nguồn tri thức để bot tra cứu và trả lời |
 | KB Fallback | Quy tắc phản ứng khi bot không hiểu hoặc match KB thấp |
 | Handover | Chuyển bot sang nhân viên thật |
@@ -310,7 +318,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 - danh sách ở `/bot-engine/outbound`;
 - màn tạo mới dễ demo nhất ở `/bot-engine/outbound/create`;
-- ngoài ra repo vẫn có các route `/bot-engine/outbound/new/step-1..4`, nhưng không cần dùng làm luồng chính của tài liệu này.
+- các route `/bot-engine/outbound/new/step-1..4` hiện chỉ redirect về `/bot-engine/outbound/create`.
 
 `Ý nghĩa nghiệp vụ:` giúp doanh nghiệp mở rộng gọi ra tự động mà không phụ thuộc hoàn toàn vào nhân sự gọi thủ công.
 
@@ -333,7 +341,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 - danh sách ở `/bot-engine/inbound`;
 - màn tạo mới dễ demo nhất ở `/bot-engine/inbound/create`;
-- repo cũng có các route `/bot-engine/inbound/new/step-1..4`, nhưng tài liệu này không lấy chúng làm trung tâm.
+- các route `/bot-engine/inbound/new/step-1..4` hiện chỉ redirect về `/bot-engine/inbound/create`.
 
 `Ý nghĩa nghiệp vụ:` mỗi hotline hoặc đầu số có thể được định nghĩa cách xử lý riêng mà không phải sửa hệ thống lõi.
 
@@ -350,6 +358,8 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 - tạo workflow mới;
 - chỉnh sửa node;
 - xem sơ đồ diagram;
+- bấm từng node để xem đúng properties của node đang chọn;
+- xem intent scope và entity scope của toàn workflow;
 - xem version history;
 - chạy preview để xem transcript và log.
 
@@ -360,6 +370,12 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 - chi tiết ở `/workflow/[id]`;
 - preview ở `/workflow/[id]/preview/session`, `/conversation`, `/api-log`, `/kb`;
 - version history ở `/workflow/[id]/versions`.
+
+`Cách hiểu đúng theo bản deploy:`
+
+- `Workflow detail` hiện tách `thông tin chung` và `node properties`, tránh trộn metadata của workflow với cấu hình của node;
+- workflow mẫu `WF_FullNode_Demo` được dùng để giải thích đầy đủ semantics của các loại node và quan hệ giữa `intent` với `entity`;
+- `KB node` không phải nơi chọn lại KB, mà là bước bot đi tra tri thức từ KB đã bind ở outbound/inbound create.
 
 `Ý nghĩa nghiệp vụ:` đây là nơi chuyển yêu cầu nghiệp vụ thành logic bot có thể thực thi.
 
