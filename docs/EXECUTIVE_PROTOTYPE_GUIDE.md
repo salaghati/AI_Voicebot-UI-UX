@@ -532,57 +532,114 @@ Cách đọc sơ đồ:
 
 ---
 
-## 11. Cách thao tác khi trình diễn cho sếp
+## 11. Cách dùng tài liệu này khi chuẩn bị trình bày
 
-### 11.1. Kịch bản demo 10-15 phút
+Mục này dành cho người nội bộ đang chuẩn bị demo hoặc giải thích prototype cho sếp. Mục tiêu không phải là đọc nguyên văn khi trình, mà là giúp người trình biết:
 
-| Bước | Route gợi ý | Mục tiêu trình bày |
+- nên mở màn hình nào trước;
+- ở mỗi màn cần nói đúng ý gì;
+- chỗ nào là màn hình thật trong code;
+- chỗ nào là logic nghiệp vụ đang được mô phỏng.
+
+### 11.1. Thứ tự demo nội bộ nên đi
+
+| Bước | Route nên mở | Nên dùng màn này để nói gì |
 | --- | --- | --- |
-| 1 | `/auth/login` | Cho thấy đây là một console quản trị hoàn chỉnh |
-| 2 | `/dashboard` | Mở bằng bức tranh vận hành tổng thể |
-| 3 | `/bot-engine/outbound` | Chỉ ra doanh nghiệp có thể quản lý các chiến dịch gọi ra |
-| 4 | `/bot-engine/outbound/create` | Cho thấy việc tạo campaign là có cấu trúc, không phải nhập tay rời rạc |
-| 5 | `/workflow` | Giải thích workflow là “bộ não” của bot |
-| 6 | `/workflow/WF_ThuNo_A` | Mở một workflow chi tiết để xem node và logic |
-| 7 | `/workflow/WF_ThuNo_A/preview/session` | Cho xem bot chạy thử, có transcript và log |
-| 8 | `/kb/list` | Chỉ ra bot có kho tri thức riêng |
-| 9 | `/kb/fallback` | Giải thích khi bot không hiểu thì xử lý thế nào |
-| 10 | `/report/overview` | Chốt lại bằng dữ liệu đo hiệu quả |
-| 11 | `/settings/stt-tts` | Kết luận rằng hệ thống có đủ màn hình quản trị nền |
+| 1 | `/dashboard` | Mở đầu bằng góc nhìn điều hành: hệ thống này dùng để quản trị vận hành voicebot, không phải chỉ là một chatbot demo |
+| 2 | `/bot-engine/outbound` hoặc `/bot-engine/inbound` | Cho thấy platform quản lý đối tượng vận hành thật: campaign gọi ra hoặc route hotline gọi vào |
+| 3 | `/bot-engine/outbound/create` hoặc `/bot-engine/inbound/create` | Giải thích cách một bot được cấu hình để chạy: gắn workflow, KB và KB fallback vào một ngữ cảnh vận hành cụ thể |
+| 4 | `/workflow` | Chuyển sang phần “bộ não” của bot: nơi mô hình hóa cách bot chào, hiểu nhu cầu, tra dữ liệu, tra tri thức và handover |
+| 5 | `/workflow/WF_FullNode_Demo` | Dùng workflow mẫu đầy đủ node để giải thích semantics chuẩn của `Start`, `Prompt`, `Intent`, `Condition`, `API`, `KB`, `Handover`, `End` |
+| 6 | `/workflow/WF_FullNode_Demo/preview/session` | Cho xem mô phỏng transcript để người nghe thấy workflow không chỉ là sơ đồ mà còn dẫn tới hành vi runtime |
+| 7 | `/kb/list` và `/kb/fallback` | Giải thích bot có hai lớp tri thức: kho nội dung để trả lời và fallback để thoát hiểm khi bot không chắc chắn |
+| 8 | `/report/overview` | Chốt lại bằng việc doanh nghiệp đọc hiệu quả vận hành ở đâu sau khi bot chạy |
+| 9 | `/settings/stt-tts` hoặc `/settings/api` | Kết luận rằng hệ thống không chỉ có flow business mà còn có lớp cấu hình nền để đi tới triển khai thực tế |
 
-### 11.2. Mẫu lời dẫn ngắn khi demo
+### 11.2. Cách giải thích ngắn ở từng điểm dừng
 
-1. `Dashboard` cho thấy hệ thống đang chạy ra sao.
-2. `Bot Engine` cho thấy chúng ta cấu hình chiến dịch và hotline như thế nào.
-3. `Workflow` cho thấy bot “nghĩ” và “ra quyết định” theo logic nào.
-4. `Knowledge Base` cho thấy bot dựa vào tri thức nào để trả lời.
-5. `Report` cho thấy sau khi chạy thì doanh nghiệp đo hiệu quả bằng gì.
-6. `Settings` cho thấy hệ thống đủ khả năng đi tới triển khai thực tế.
+| Màn hình | Câu giải thích nội bộ nên nhớ |
+| --- | --- |
+| Dashboard | Đây là màn nhìn sức khỏe vận hành, không phải nơi cấu hình bot |
+| Bot Engine Create | Đây là nơi tạo một đối tượng vận hành cụ thể; ở đây user bind `workflow`, `KB`, `KB fallback` vào campaign hoặc route |
+| Workflow list | Đây là thư viện logic bot, mỗi workflow là một kịch bản xử lý có thể tái sử dụng |
+| Workflow detail | Đây là nơi đọc logic của từng node; khi bấm vào node thì chỉ nên hiểu là đang xem properties của node đó |
+| Workflow preview | Đây là runtime mô phỏng để giải thích bot sẽ nói gì, đi node nào, gọi API hay tra KB ra sao |
+| KB list / fallback | Đây là nơi quản trị tri thức và cách xử lý khi bot không đủ tự tin |
+| Report | Đây là lớp đo hiệu quả sau vận hành, không phải nơi định nghĩa logic bot |
+| Settings | Đây là lớp cấu hình nền, không đồng nghĩa mọi cấu hình trong settings đã được wire 100% vào mọi module |
+
+### 11.3. Ba điểm rất dễ nói lệch khi trình
+
+1. `Workflow` quyết định logic, còn `Outbound/Inbound` quyết định ngữ cảnh vận hành.
+2. `KB` được chọn ở bước tạo `Outbound/Inbound`; `KB node` trong workflow chỉ là bước bot đi tra tri thức, không phải nơi chọn lại KB.
+3. `Intent` là nhu cầu của khách, còn `Entity` là dữ liệu bot lấy được để dùng cho `Condition` hoặc `API`.
+
+### 11.4. Workflow nào nên dùng để giải thích cho dễ hiểu
+
+Nếu chỉ chọn một workflow để giải thích nội bộ trước khi trình cho sếp, nên ưu tiên:
+
+- `WF_FullNode_Demo`: dễ dùng nhất để giải thích ngữ nghĩa đầy đủ của các loại node;
+- `WF_Mau_HoanChinh`: phù hợp nếu muốn minh họa gần hơn với một flow nghiệp vụ đầy đủ;
+- `WF_ThuNo_A`: phù hợp nếu muốn nói về use case nhắc thanh toán/outbound rõ ràng.
 
 ---
 
-## 12. Cách hiểu các màn hình khi thao tác
+## 12. Cách hiểu đúng các màn hình trong bản deploy hiện tại
 
-| Màn hình | Người xem nên chú ý điều gì |
+Mục này dùng để tự kiểm tra khi thao tác trên prototype. Nếu thấy một màn “không giống production thật”, cần xác định nó thuộc một trong ba lớp sau:
+
+- `màn hình thật trong code`: có route và có thể thao tác trực tiếp;
+- `màn hình mô phỏng`: dùng mock data hoặc runtime giả lập để giải thích sản phẩm;
+- `diễn giải nghiệp vụ`: nằm trong tài liệu để giúp người đọc hiểu logic tổng thể, không phải click-flow 1:1.
+
+### 12.1. Đọc từng nhóm màn hình như thế nào
+
+| Nhóm màn hình | Nên hiểu đúng theo bản deploy hiện tại |
 | --- | --- |
-| Dashboard | Chỉ số và đồ thị, không phải nơi tạo dữ liệu |
-| Outbound / Inbound list | Danh sách đối tượng đang được quản lý |
-| Create flows | Luồng tạo mới theo từng bước có kiểm tra dữ liệu |
-| Workflow detail | Sơ đồ logic thực thi của bot |
-| Workflow preview | Runtime mô phỏng, transcript và log kỹ thuật |
-| KB list | Tài liệu tri thức và trạng thái học |
-| KB fallback | Phương án xử lý khi bot không tự giải quyết được |
-| Reports | Kết quả và chất lượng sau vận hành |
-| Settings | Cấu hình nền, không phải dữ liệu business trực tiếp |
+| Dashboard | Nơi đọc chỉ số vận hành tổng thể; không phải nơi tạo hay sửa dữ liệu |
+| Outbound / Inbound list | Nơi xem đối tượng vận hành đang được quản lý; mỗi item là một campaign hoặc route đã gắn workflow/KB/fallback |
+| Outbound / Inbound create | Nơi bind các thành phần lại với nhau để bot có thể chạy trong ngữ cảnh business cụ thể |
+| Workflow list | Nơi xem thư viện workflow và chọn workflow để đọc, sửa, preview hoặc xem version |
+| Workflow detail | Nơi đọc logic của workflow; phần sidebar phải được hiểu là properties của node đang chọn, không phải summary của toàn workflow |
+| Workflow preview | Nơi mô phỏng runtime: transcript, log node, API log, KB log |
+| KB list / KB detail | Nơi quản trị tài liệu tri thức, trạng thái học và thông tin sử dụng |
+| KB fallback | Nơi định nghĩa cách hệ thống phản ứng khi bot không hiểu hoặc KB match kém |
+| Reports | Nơi đọc hiệu quả sau vận hành; dữ liệu hiện vẫn là dữ liệu mô phỏng |
+| Settings | Nơi cấu hình nền của platform; một số phần đã có màn hình riêng nhưng chưa phải mọi mục đều được tích hợp hoàn toàn vào runtime |
 
-### 12.1. Màn nào là “chuẩn màn”, màn nào là “chuẩn ý nghĩa”
+### 12.2. Cách đọc đúng phần workflow để không bị mơ hồ
+
+| Thành phần trong workflow | Nên hiểu thế nào |
+| --- | --- |
+| `Start` | Điểm bắt đầu của flow |
+| `Prompt` | Bước bot nói ra một lời thoại hoặc hướng dẫn |
+| `Intent` | Bước bot thu nhu cầu của khách và có thể extract intent/entity |
+| `Condition` | Bước rẽ nhánh dựa trên intent hoặc entity đã có |
+| `API` | Bước gọi hệ thống ngoài bằng dữ liệu đã thu được |
+| `KB` | Bước tra tri thức từ KB đã bind ở outbound/inbound create |
+| `Handover` | Bước chuyển sang người thật hoặc queue hỗ trợ |
+| `End` | Điểm kết thúc flow |
+
+### 12.3. Cách hiểu đúng quan hệ giữa intent và entity
+
+| Khái niệm | Ý nghĩa trong workflow |
+| --- | --- |
+| Intent | Khách đang muốn làm gì, ví dụ kiểm tra thanh toán, hỏi chính sách, yêu cầu gặp agent |
+| Entity | Dữ liệu cụ thể bot lấy ra từ câu nói của khách, ví dụ `customer_id`, `bill_code`, `phone_number` |
+| Intent node | Nơi phù hợp nhất để thu intent và entity |
+| Condition node | Đọc intent/entity để quyết định đi nhánh nào |
+| API node | Dùng entity làm tham số đầu vào để gọi hệ thống ngoài |
+| KB node | Thường dùng câu hỏi/ngữ cảnh hiện tại để tra tri thức; không phải nơi khai báo lại business context |
+
+### 12.4. Màn nào bám UI thật, màn nào thiên về giải thích
 
 | Loại nội dung | Nên hiểu thế nào |
 | --- | --- |
-| Route cụ thể như `/workflow/[id]/preview/session` | Đây là màn hình có thật trong code |
-| Bảng mô tả module | Đây là cách giải thích ý nghĩa của nhóm màn hình |
-| Activity diagram gắn với create/list/detail | Đây là flow gần với UI thật |
-| Activity diagram gắn với runtime, handover, improvement loop | Đây là flow nghiệp vụ, không phải màn hình 1:1 |
+| Route cụ thể như `/workflow/[id]`, `/workflow/[id]/preview/session`, `/bot-engine/outbound/create` | Đây là màn hình có thật trong code hiện tại |
+| Route `/bot-engine/*/new/step-1..4` | Trong code hiện tại chúng chỉ redirect về màn `/create`, không nên xem là một flow riêng |
+| Bảng mô tả module | Đây là lớp giải thích cho người đọc, không phải UI specification |
+| Activity diagram gắn với create/list/detail | Đây là flow tương đối sát với các màn hình thật |
+| Activity diagram gắn với runtime, handover, improvement loop | Đây là flow nghiệp vụ để giải thích sản phẩm, không phải chuỗi click 1:1 |
 
 ---
 
