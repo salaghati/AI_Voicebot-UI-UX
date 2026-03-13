@@ -14,15 +14,19 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { AsyncState } from "@/components/shared/async-state";
 import { Badge } from "@/components/ui/badge";
+import type { AgentGroup, HandoverProfile } from "@/types/domain";
 
-const groups = [
-  { name: "Support_L1", agents: 15, priority: "Cao" },
-  { name: "Support_L2", agents: 8, priority: "Trung bình" },
-  { name: "VIP_Support", agents: 5, priority: "Đặc biệt" },
-];
+function mapPriorityTone(priority: AgentGroup["priority"]) {
+  if (priority === "Cao") return "success";
+  if (priority === "Trung bình") return "warning";
+  return "danger";
+}
 
 export default function SettingsAgentPage() {
   const [openQueueModal, setOpenQueueModal] = useState(false);
+  const [openProfileModal, setOpenProfileModal] = useState(false);
+  const [editedGroups, setEditedGroups] = useState<AgentGroup[] | null>(null);
+  const [editedProfiles, setEditedProfiles] = useState<HandoverProfile[] | null>(null);
   const form = useForm({
     defaultValues: {
       transferIntents: "khieu_nai, yeu_cau_gap_nguoi, khong_hieu",
@@ -45,14 +49,24 @@ export default function SettingsAgentPage() {
       active: "true",
     },
   });
+  const profileForm = useForm({
+    defaultValues: {
+      profileName: "Outbound Default",
+      description: "",
+      targetRefId: "grp_support_l1",
+      contextTemplateId: "ctx_standard",
+      failAction: "retry_transfer",
+      active: "true",
+    },
+  });
 
   const query = useQuery({ queryKey: ["settings-agent"], queryFn: fetchAgentSettings });
   useEffect(() => {
     if (query.data?.data) {
       form.reset({
-        transferIntents: query.data.data.transferCondition,
-        transferRepeatCount: "3",
-        transferKeywords: query.data.data.transferContext.join(", "),
+        transferIntents: query.data.data.globalPolicy?.escapeIntents?.join(", ") || query.data.data.transferCondition,
+        transferRepeatCount: String(query.data.data.globalPolicy?.repeatThreshold ?? 3),
+        transferKeywords: query.data.data.globalPolicy?.escapeKeywords?.join(", ") || query.data.data.transferContext.join(", "),
         contextIntent: true,
         contextEntity: true,
         contextHistory: true,
@@ -60,6 +74,8 @@ export default function SettingsAgentPage() {
       });
     }
   }, [query.data?.data, form]);
+  const currentGroups = editedGroups ?? query.data?.data.groups ?? [];
+  const currentProfiles = editedProfiles ?? query.data?.data.handoverProfiles ?? [];
 
   const mutation = useMutation({
     mutationFn: updateAgentSettings,
@@ -79,20 +95,46 @@ export default function SettingsAgentPage() {
       {!query.isLoading && !query.isError ? (
         <form
           className="space-y-4"
-          onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
+          onSubmit={form.handleSubmit((values) =>
+            mutation.mutate({
+              transferCondition: values.transferIntents,
+              transferContext: values.transferKeywords
+                .split(",")
+                .map((item) => item.trim())
+                .filter(Boolean),
+              queue: currentGroups[0]?.name || "",
+              groups: currentGroups,
+              handoverProfiles: currentProfiles,
+              globalPolicy: {
+                escapeIntents: values.transferIntents
+                  .split(",")
+                  .map((item) => item.trim())
+                  .filter(Boolean),
+                escapeKeywords: values.transferKeywords
+                  .split(",")
+                  .map((item) => item.trim())
+                  .filter(Boolean),
+                repeatThreshold: Number(values.transferRepeatCount) || 3,
+              },
+            }),
+          )}
         >
           <div className="grid gap-4 xl:grid-cols-2">
             <Card className="space-y-3">
               <h3 className="text-2xl font-bold">Nhóm Agent nhận chuyển</h3>
+              <p className="text-sm text-[var(--text-dim)]">
+                Đây là source-of-truth cho các nhóm người thật nhận handover từ outbound và inbound.
+              </p>
               <div className="space-y-2">
-                {groups.map((item) => (
-                  <div key={item.name} className="grid grid-cols-[2fr_1fr_1fr] gap-2 rounded-lg border border-[var(--line)] bg-[var(--surface-2)] px-3 py-2 text-sm">
-                    <p className="font-medium">{item.name}</p>
+                {currentGroups.map((item) => (
+                  <div key={item.id} className="grid grid-cols-[2fr_1fr_1fr] gap-2 rounded-lg border border-[var(--line)] bg-[var(--surface-2)] px-3 py-2 text-sm">
+                    <div>
+                      <p className="font-medium">{item.name}</p>
+                      <p className="text-xs text-[var(--text-dim)]">{item.description || "Không có mô tả"}</p>
+                    </div>
                     <p>{item.agents}</p>
                     <div>
-                      {item.priority === "Cao" ? <Badge tone="success">Cao</Badge> : null}
-                      {item.priority === "Trung bình" ? <Badge tone="warning">Trung bình</Badge> : null}
-                      {item.priority === "Đặc biệt" ? <Badge tone="danger">Đặc biệt</Badge> : null}
+                      <Badge tone={mapPriorityTone(item.priority)}>{item.priority}</Badge>
                     </div>
                   </div>
                 ))}
@@ -119,6 +161,42 @@ export default function SettingsAgentPage() {
               </div>
             </Card>
           </div>
+
+          <Card className="space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h3 className="text-2xl font-bold">Handover Profiles</h3>
+                <p className="text-sm text-[var(--text-dim)]">
+                  Outbound Campaign, Inbound Route và Workflow Handover node sẽ tham chiếu tới các profile này.
+                </p>
+              </div>
+              <Button type="button" variant="secondary" onClick={() => setOpenProfileModal(true)}>
+                Thêm profile
+              </Button>
+            </div>
+
+            <div className="grid gap-3 xl:grid-cols-3">
+              {currentProfiles.map((profile) => {
+                const group = currentGroups.find((item) => item.id === profile.targetRefId);
+                return (
+                  <div key={profile.id} className="rounded-xl border border-[var(--line)] bg-[var(--surface-2)] p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-semibold">{profile.name}</p>
+                      <Badge tone={profile.active ? "success" : "muted"}>
+                        {profile.active ? "Active" : "Off"}
+                      </Badge>
+                    </div>
+                    <p className="mt-2 text-sm text-[var(--text-dim)]">{profile.description || "Không có mô tả"}</p>
+                    <div className="mt-3 space-y-1 text-sm">
+                      <p>Target: <span className="font-medium">{group?.name || profile.targetRefId}</span></p>
+                      <p>Context template: <span className="font-medium">{profile.contextTemplateId}</span></p>
+                      <p>Fail action: <span className="font-medium">{profile.failAction}</span></p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
 
           <Card className="space-y-3">
             <h3 className="text-2xl font-bold">Context Package (Gửi cho Agent)</h3>
@@ -170,7 +248,18 @@ export default function SettingsAgentPage() {
             <form
               className="grid gap-4 px-6 pb-6 md:grid-cols-2"
               onSubmit={queueForm.handleSubmit((values) => {
-                toast.success(`Đã lưu nhóm ${values.queueName} (mock)`);
+                const nextGroup: AgentGroup = {
+                  id: `grp_${values.queueName.trim().toLowerCase().replace(/\s+/g, "_")}`,
+                  name: values.queueName,
+                  description: values.description,
+                  priority: values.priority as AgentGroup["priority"],
+                  maxWaitSec: Number(values.maxWait) || 60,
+                  callbackAllowed: values.callback === "true",
+                  active: values.active === "true",
+                  agents: 0,
+                };
+                setEditedGroups((prev) => [...(prev ?? currentGroups), nextGroup]);
+                toast.success(`Đã thêm nhóm ${values.queueName} (local)`);
                 setOpenQueueModal(false);
               })}
             >
@@ -215,6 +304,85 @@ export default function SettingsAgentPage() {
                   Hủy
                 </Button>
                 <Button type="submit">Lưu nhóm</Button>
+              </div>
+            </form>
+          </Card>
+        </div>
+      ) : null}
+
+      {openProfileModal ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4">
+          <Card className="w-full max-w-3xl space-y-4 rounded-2xl bg-white p-0">
+            <div className="flex items-center justify-between border-b border-[var(--line)] px-6 py-4">
+              <h3 className="text-2xl font-bold">Thêm handover profile</h3>
+              <button
+                type="button"
+                className="rounded-md p-1 text-[var(--text-dim)] hover:bg-[var(--surface-2)]"
+                onClick={() => setOpenProfileModal(false)}
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form
+              className="grid gap-4 px-6 pb-6 md:grid-cols-2"
+              onSubmit={profileForm.handleSubmit((values) => {
+                const nextProfile: HandoverProfile = {
+                  id: `hp_${values.profileName.trim().toLowerCase().replace(/\s+/g, "_")}`,
+                  name: values.profileName,
+                  targetType: "agent_group",
+                  targetRefId: values.targetRefId,
+                  contextTemplateId: values.contextTemplateId,
+                  failAction: values.failAction as HandoverProfile["failAction"],
+                  active: values.active === "true",
+                  description: values.description,
+                };
+                setEditedProfiles((prev) => [...(prev ?? currentProfiles), nextProfile]);
+                toast.success(`Đã thêm handover profile ${values.profileName} (local)`);
+                setOpenProfileModal(false);
+              })}
+            >
+              <div>
+                <label className="mb-1 block text-sm font-medium">Tên profile</label>
+                <Input {...profileForm.register("profileName")} />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium">Nhóm nhận chuyển</label>
+                <Select {...profileForm.register("targetRefId")}>
+                  {currentGroups.map((group) => (
+                    <option key={group.id} value={group.id}>
+                      {group.name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <label className="mb-1 block text-sm font-medium">Mô tả</label>
+                <Textarea {...profileForm.register("description")} />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium">Context template</label>
+                <Select {...profileForm.register("contextTemplateId")}>
+                  <option value="ctx_standard">ctx_standard</option>
+                  <option value="ctx_full_transcript">ctx_full_transcript</option>
+                  <option value="ctx_vip">ctx_vip</option>
+                </Select>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium">Fail action</label>
+                <Select {...profileForm.register("failAction")}>
+                  <option value="retry_transfer">retry_transfer</option>
+                  <option value="fallback_node">fallback_node</option>
+                  <option value="end_call">end_call</option>
+                  <option value="callback">callback</option>
+                </Select>
+              </div>
+
+              <div className="md:col-span-2 flex justify-end gap-2 border-t border-[var(--line)] pt-4">
+                <Button type="button" variant="secondary" onClick={() => setOpenProfileModal(false)}>
+                  Hủy
+                </Button>
+                <Button type="submit">Thêm profile</Button>
               </div>
             </form>
           </Card>

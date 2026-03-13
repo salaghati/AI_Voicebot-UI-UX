@@ -7,5 +7,6 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   const payload = await request.json();
-  return NextResponse.json({ data: payload, message: "Lưu cấu hình API thành công" });
+  Object.assign(apiSetting, payload);
+  return NextResponse.json({ data: apiSetting, message: "Lưu cấu hình API thành công" });
 }

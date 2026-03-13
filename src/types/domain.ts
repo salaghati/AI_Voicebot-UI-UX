@@ -33,6 +33,8 @@ export interface Campaign {
   status: CampaignStatus;
   source: string;
   workflow: string;
+  handoverEnabled?: boolean;
+  defaultHandoverProfileId?: string;
   totalCalls: number;
   successRate: number;
   owner: string;
@@ -43,6 +45,8 @@ export interface CampaignDraft {
   name: string;
   source: string;
   workflow: string;
+  handoverEnabled?: boolean;
+  defaultHandoverProfileId?: string;
   schedule: string;
   callerId: string;
   retryRule: string;
@@ -59,6 +63,7 @@ export interface InboundConfig {
   workflow: string;
   fallback: string;
   handoverTo: string;
+  defaultHandoverProfileId?: string;
   status: InboundStatus;
   updatedAt: string;
 }
@@ -70,6 +75,7 @@ export interface InboundDraft {
   workflow: string;
   fallback: string;
   handoverTo: string;
+  defaultHandoverProfileId?: string;
   note: string;
 }
 
@@ -130,6 +136,8 @@ export interface WorkflowNode {
   noAnswerAction?: "fallback_node" | "ask_again" | "transfer_agent" | "end_call";
 
   // Handover node
+  handoverMode?: "use_default" | "override_profile";
+  handoverProfileId?: string;
   handoverTarget?: string;
   handoverMessage?: string;
   onHandoverFail?: "fallback_node" | "retry_transfer" | "end_call";
@@ -201,6 +209,63 @@ export interface AgentMetric {
   avgHandleTime: number;
   transferRate: number;
   csat: number;
+}
+
+export interface AgentGroup {
+  id: string;
+  name: string;
+  description?: string;
+  priority: "Cao" | "Trung bình" | "Đặc biệt";
+  maxWaitSec: number;
+  callbackAllowed: boolean;
+  active: boolean;
+  agents: number;
+}
+
+export interface HandoverProfile {
+  id: string;
+  name: string;
+  targetType: "agent_group" | "queue";
+  targetRefId: string;
+  contextTemplateId: string;
+  failAction: "retry_transfer" | "fallback_node" | "end_call" | "callback";
+  active: boolean;
+  description?: string;
+}
+
+export interface AgentSettings {
+  transferCondition: string;
+  transferContext: string[];
+  queue: string;
+  groups: AgentGroup[];
+  handoverProfiles: HandoverProfile[];
+  globalPolicy: {
+    escapeIntents: string[];
+    escapeKeywords: string[];
+    repeatThreshold: number;
+  };
+}
+
+export interface ApiEndpointSetting {
+  id: string;
+  name: string;
+  method: "GET" | "POST" | "PUT" | "DELETE";
+  url: string;
+  authType: "Bearer Token" | "API Key" | "Basic Auth";
+  authProfile: string;
+  timeoutMs: number;
+  status: "connected" | "disconnected";
+  headerKey?: string;
+  headerValue?: string;
+  requestTemplate?: string;
+  responseTemplate?: string;
+}
+
+export interface ApiSettings {
+  baseUrl: string;
+  timeoutMs: number;
+  retry: number;
+  endpoints: ApiEndpointSetting[];
 }
 
 export type KbTrainingStatus = "Đã học" | "Chưa học" | "Đang học";

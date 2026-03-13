@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Circle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { fetchActiveKbFallbackRules } from "@/lib/api-client";
+import { fetchActiveKbFallbackRules, fetchAgentSettings } from "@/lib/api-client";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -40,6 +40,8 @@ type OutboundDraft = {
   fallbackRuleId: string;
   schedule: string;
   retryRule: string;
+  handoverEnabled: boolean;
+  defaultHandoverProfileId: string;
 };
 
 const outboundWorkflowLibrary: LocalWorkflowOption[] = workflowRefs
@@ -66,6 +68,8 @@ const defaultDraft = (): OutboundDraft => ({
   fallbackRuleId: "",
   schedule: "09:00 - 19:00",
   retryRule: "Retry 2 lần, mỗi 15 phút",
+  handoverEnabled: true,
+  defaultHandoverProfileId: "hp_collection_default",
 });
 
 const readStoredDraft = (): OutboundDraft => {
@@ -112,6 +116,8 @@ export default function OutboundCreatePage() {
     return storedDraft;
   });
   const fallbackQuery = useQuery({ queryKey: ["kb-fallback-active"], queryFn: fetchActiveKbFallbackRules });
+  const agentQuery = useQuery({ queryKey: ["settings-agent"], queryFn: fetchAgentSettings });
+  const handoverProfiles = agentQuery.data?.data.handoverProfiles ?? [];
   const workflowOptions = useMemo(() => {
     if (!returnWorkflow.workflowId || !returnWorkflow.workflowName) {
       return outboundWorkflowLibrary;
@@ -164,6 +170,10 @@ export default function OutboundCreatePage() {
     }
     if (step === 3 && !draft.kbId) {
       toast.error("Bắt buộc chọn Knowledge Base.");
+      return false;
+    }
+    if (step === 5 && draft.handoverEnabled && !draft.defaultHandoverProfileId) {
+      toast.error("Bật handover thì cần chọn default handover profile.");
       return false;
     }
     return true;
@@ -229,12 +239,12 @@ export default function OutboundCreatePage() {
             <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-2)] p-3 text-sm">
               <p className="font-semibold">Chọn cách gắn logic bot cho campaign này</p>
               <p className="mt-1 text-[var(--text-dim)]">
-                Đây là bản thử nghiệm theo hướng business-first: người dùng bắt đầu từ campaign, sau đó mới quyết định dùng workflow sẵn có,
-                clone để chỉnh riêng, hoặc tạo workflow mới ngay trong luồng này.
+                Đây là bản thử nghiệm theo hướng business-first: người dùng bắt đầu từ campaign, sau đó mới quyết định dùng workflow sẵn có
+                hoặc tạo workflow mới ngay trong luồng này.
               </p>
             </div>
 
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2">
               {(Object.entries(workflowModeMeta) as Array<[WorkflowSetupMode, { title: string; description: string }]>).map(([mode, meta]) => (
                 <button
                   key={mode}
@@ -349,14 +359,59 @@ export default function OutboundCreatePage() {
         ) : null}
 
         {step === 5 ? (
-          <div className="grid gap-3 md:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-sm font-medium">Lịch gọi</label>
-              <Input value={draft.schedule} onChange={(e) => setDraft((p) => ({ ...p, schedule: e.target.value }))} />
+          <div className="grid gap-4 xl:grid-cols-2">
+            <div className="grid gap-3 md:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-sm font-medium">Lịch gọi</label>
+                <Input value={draft.schedule} onChange={(e) => setDraft((p) => ({ ...p, schedule: e.target.value }))} />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium">Retry rule</label>
+                <Input value={draft.retryRule} onChange={(e) => setDraft((p) => ({ ...p, retryRule: e.target.value }))} />
+              </div>
             </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium">Retry rule</label>
-              <Input value={draft.retryRule} onChange={(e) => setDraft((p) => ({ ...p, retryRule: e.target.value }))} />
+
+            <div className="space-y-3 rounded-xl border border-[var(--line)] bg-[var(--surface-2)] p-4">
+              <div>
+                <p className="font-semibold">Agent handover cho outbound</p>
+                <p className="mt-1 text-sm text-[var(--text-dim)]">
+                  Dùng cho các case khách yêu cầu gặp người thật hoặc workflow rẽ sang node Handover.
+                </p>
+              </div>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={draft.handoverEnabled}
+                  onChange={(e) =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      handoverEnabled: e.target.checked,
+                      defaultHandoverProfileId: e.target.checked
+                        ? prev.defaultHandoverProfileId || handoverProfiles[0]?.id || ""
+                        : "",
+                    }))
+                  }
+                />
+                Bật handover cho campaign này
+              </label>
+              <div>
+                <label className="mb-1 block text-sm font-medium">Default handover profile</label>
+                <Select
+                  value={draft.defaultHandoverProfileId}
+                  disabled={!draft.handoverEnabled || agentQuery.isLoading}
+                  onChange={(e) => setDraft((prev) => ({ ...prev, defaultHandoverProfileId: e.target.value }))}
+                >
+                  <option value="">{agentQuery.isLoading ? "Đang tải profile..." : "Chọn handover profile"}</option>
+                  {handoverProfiles.map((profile) => (
+                    <option key={profile.id} value={profile.id}>
+                      {profile.name} ({profile.id})
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <p className="text-xs text-[var(--text-dim)]">
+                Khi workflow có node Handover ở mode `use_default`, runtime sẽ dùng profile này để chuyển sang nhóm agent phù hợp.
+              </p>
             </div>
           </div>
         ) : null}
@@ -369,11 +424,15 @@ export default function OutboundCreatePage() {
               <p><strong>Workflow:</strong> {selectedWorkflow ? `${selectedWorkflow.name} (${selectedWorkflow.id})` : "Chưa chọn"}</p>
               <p><strong>KB:</strong> {draft.kbId || "Chưa chọn"}</p>
               <p><strong>KB Fallback:</strong> {draft.fallbackRuleId || "Không chọn"}</p>
+              <p><strong>Agent Handover:</strong> {draft.handoverEnabled ? draft.defaultHandoverProfileId || "Chưa chọn profile" : "Tắt"}</p>
             </div>
             <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-2)] p-3 text-sm">
               <p className="text-[var(--text-dim)]">
                 Campaign chỉ lưu workflowId, kbId và fallbackRuleId. Workflow quyết định điểm nào tra KB; campaign quyết định dùng KB nào.
                 Module Workflow vẫn giữ vai trò thư viện logic, nơi chỉnh sâu, preview và quản lý version.
+              </p>
+              <p className="mt-2 text-[var(--text-dim)]">
+                Nếu campaign bật handover, workflow có thể gọi node Handover ở mode mặc định để lấy đúng profile chuyển agent từ campaign này.
               </p>
             </div>
           </div>

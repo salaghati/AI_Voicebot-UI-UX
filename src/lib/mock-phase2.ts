@@ -1,5 +1,10 @@
 import type {
+  AgentGroup,
+  AgentSettings,
+  ApiEndpointSetting,
+  ApiSettings,
   FallbackRule,
+  HandoverProfile,
   KbDocument,
   KbFallbackRule,
   KbSourceType,
@@ -174,16 +179,129 @@ export const sttTtsSetting = {
   voice: "Linh Nữ miền Nam",
 };
 
-export const apiSetting = {
+const apiEndpoints: ApiEndpointSetting[] = [
+  {
+    id: "api_tra_cuoc",
+    name: "tra_cuoc_api",
+    method: "GET",
+    url: "/billing/current",
+    authType: "Bearer Token",
+    authProfile: "billing_service_token",
+    timeoutMs: 3000,
+    status: "connected",
+    requestTemplate: '{ "customer_id": "{{customer_id}}" }',
+    responseTemplate: '{ "amount_due": "{{amount_due}}", "due_date": "{{due_date}}" }',
+  },
+  {
+    id: "api_book_call",
+    name: "book_call_api",
+    method: "POST",
+    url: "/callbacks/book",
+    authType: "API Key",
+    authProfile: "callback_scheduler_key",
+    timeoutMs: 5000,
+    status: "connected",
+    requestTemplate: '{ "phone": "{{phone_number}}", "slot": "{{appointment_slot}}" }',
+    responseTemplate: '{ "booking_id": "{{booking_id}}" }',
+  },
+  {
+    id: "api_order_status",
+    name: "order_status_api",
+    method: "GET",
+    url: "/orders/status",
+    authType: "Bearer Token",
+    authProfile: "oms_service_token",
+    timeoutMs: 3000,
+    status: "disconnected",
+    requestTemplate: '{ "order_id": "{{order_id}}" }',
+    responseTemplate: '{ "order_status": "{{order_status}}" }',
+  },
+];
+
+export const apiSetting: ApiSettings = {
   baseUrl: "https://api.mock.voicebot.vn/v1",
   timeoutMs: 4500,
   retry: 2,
+  endpoints: apiEndpoints,
 };
 
-export const agentSetting = {
+const agentGroups: AgentGroup[] = [
+  {
+    id: "grp_support_l1",
+    name: "Support_L1",
+    description: "Nhóm xử lý CSKH và hỗ trợ thanh toán cơ bản",
+    priority: "Cao",
+    maxWaitSec: 60,
+    callbackAllowed: true,
+    active: true,
+    agents: 15,
+  },
+  {
+    id: "grp_support_l2",
+    name: "Support_L2",
+    description: "Nhóm xử lý case khó hoặc escalation cấp 2",
+    priority: "Trung bình",
+    maxWaitSec: 90,
+    callbackAllowed: true,
+    active: true,
+    agents: 8,
+  },
+  {
+    id: "grp_vip_support",
+    name: "VIP_Support",
+    description: "Nhóm chăm sóc khách hàng VIP",
+    priority: "Đặc biệt",
+    maxWaitSec: 45,
+    callbackAllowed: true,
+    active: true,
+    agents: 5,
+  },
+];
+
+const handoverProfiles: HandoverProfile[] = [
+  {
+    id: "hp_collection_default",
+    name: "Collection Default",
+    targetType: "agent_group",
+    targetRefId: "grp_support_l1",
+    contextTemplateId: "ctx_standard",
+    failAction: "retry_transfer",
+    active: true,
+    description: "Profile mặc định cho nhắc thanh toán và kiểm tra dư nợ.",
+  },
+  {
+    id: "hp_complaint_priority",
+    name: "Complaint Priority",
+    targetType: "agent_group",
+    targetRefId: "grp_support_l2",
+    contextTemplateId: "ctx_full_transcript",
+    failAction: "fallback_node",
+    active: true,
+    description: "Ưu tiên cho case khiếu nại hoặc escalation.",
+  },
+  {
+    id: "hp_vip_fast_lane",
+    name: "VIP Fast Lane",
+    targetType: "agent_group",
+    targetRefId: "grp_vip_support",
+    contextTemplateId: "ctx_vip",
+    failAction: "callback",
+    active: true,
+    description: "Luồng chuyển nhanh cho khách VIP hoặc khách yêu cầu gặp người thật ngay.",
+  },
+];
+
+export const agentSetting: AgentSettings = {
   transferCondition: "Khách yêu cầu gặp người thật",
   transferContext: ["Transcript 10 câu gần nhất", "Intent cuối", "Entity quan trọng"],
-  queue: "CS Team A",
+  queue: "Support_L1",
+  groups: agentGroups,
+  handoverProfiles,
+  globalPolicy: {
+    escapeIntents: ["handover_request", "complaint"],
+    escapeKeywords: ["gặp người", "nhân viên", "tổng đài viên"],
+    repeatThreshold: 3,
+  },
 };
 
 export const fallbackRules: FallbackRule[] = [

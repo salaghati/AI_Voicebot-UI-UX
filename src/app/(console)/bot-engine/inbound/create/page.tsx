@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Circle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { fetchActiveKbFallbackRules } from "@/lib/api-client";
+import { fetchActiveKbFallbackRules, fetchAgentSettings } from "@/lib/api-client";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -25,6 +25,7 @@ type InboundDraft = {
   description: string;
   queue: string;
   extension: string;
+  defaultHandoverProfileId: string;
   workflowId: string;
   kbId: string;
   fallbackRuleId: string;
@@ -51,6 +52,7 @@ const defaultDraft = (): InboundDraft => ({
   description: "",
   queue: "Queue Payment",
   extension: "801",
+  defaultHandoverProfileId: "hp_collection_default",
   workflowId: "",
   kbId: "",
   fallbackRuleId: "",
@@ -100,6 +102,8 @@ export default function InboundCreatePage() {
     return storedDraft;
   });
   const fallbackQuery = useQuery({ queryKey: ["kb-fallback-active"], queryFn: fetchActiveKbFallbackRules });
+  const agentQuery = useQuery({ queryKey: ["settings-agent"], queryFn: fetchAgentSettings });
+  const handoverProfiles = agentQuery.data?.data.handoverProfiles ?? [];
   const workflowOptions = useMemo(() => {
     if (!returnWorkflow.workflowId || !returnWorkflow.workflowName) {
       return inboundWorkflowLibrary;
@@ -144,6 +148,10 @@ export default function InboundCreatePage() {
   const validate = () => {
     if (step === 0 && !draft.name.trim()) {
       toast.error("Nhập tên route trước.");
+      return false;
+    }
+    if (step === 1 && !draft.defaultHandoverProfileId) {
+      toast.error("Chọn default handover profile cho inbound route.");
       return false;
     }
     if (step === 2 && !draft.workflowId) {
@@ -198,18 +206,45 @@ export default function InboundCreatePage() {
         ) : null}
 
         {step === 1 ? (
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-4 xl:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium">Queue</label>
-              <Select value={draft.queue} onChange={(e) => setDraft((p) => ({ ...p, queue: e.target.value }))}>
-                <option>Queue Payment</option>
-                <option>Queue Sales</option>
-                <option>Queue Support</option>
-              </Select>
+              <div className="grid gap-3 md:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm font-medium">Queue</label>
+                  <Select value={draft.queue} onChange={(e) => setDraft((p) => ({ ...p, queue: e.target.value }))}>
+                    <option>Queue Payment</option>
+                    <option>Queue Sales</option>
+                    <option>Queue Support</option>
+                  </Select>
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium">Extension</label>
+                  <Input value={draft.extension} onChange={(e) => setDraft((p) => ({ ...p, extension: e.target.value }))} />
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium">Extension</label>
-              <Input value={draft.extension} onChange={(e) => setDraft((p) => ({ ...p, extension: e.target.value }))} />
+            <div className="space-y-3 rounded-xl border border-[var(--line)] bg-[var(--surface-2)] p-4">
+              <div>
+                <p className="font-semibold">Default handover cho route này</p>
+                <p className="mt-1 text-sm text-[var(--text-dim)]">
+                  Nếu workflow có node Handover ở mode mặc định, route sẽ dùng profile này để chuyển sang agent.
+                </p>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium">Handover profile</label>
+                <Select
+                  value={draft.defaultHandoverProfileId}
+                  disabled={agentQuery.isLoading}
+                  onChange={(e) => setDraft((p) => ({ ...p, defaultHandoverProfileId: e.target.value }))}
+                >
+                  <option value="">{agentQuery.isLoading ? "Đang tải profile..." : "Chọn handover profile"}</option>
+                  {handoverProfiles.map((profile) => (
+                    <option key={profile.id} value={profile.id}>
+                      {profile.name} ({profile.id})
+                    </option>
+                  ))}
+                </Select>
+              </div>
             </div>
           </div>
         ) : null}
@@ -339,6 +374,7 @@ export default function InboundCreatePage() {
             <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-2)] p-3 text-sm">
               <p><strong>Route:</strong> {draft.name || "--"}</p>
               <p><strong>Queue/Extension:</strong> {draft.queue} / {draft.extension}</p>
+              <p><strong>Default Handover:</strong> {draft.defaultHandoverProfileId || "Chưa chọn"}</p>
               <p><strong>Workflow:</strong> {selectedWorkflow ? `${selectedWorkflow.name} (${selectedWorkflow.id})` : "Chưa chọn"}</p>
               <p><strong>KB:</strong> {draft.kbId || "Chưa chọn"}</p>
               <p><strong>KB Fallback:</strong> {draft.fallbackRuleId || "Không chọn"}</p>
@@ -347,6 +383,9 @@ export default function InboundCreatePage() {
               <p className="text-[var(--text-dim)]">
                 Inbound route chỉ lưu workflowId, kbId và fallbackRuleId. Workflow quyết định điểm nào tra KB; route quyết định dùng KB nào.
                 Module Workflow vẫn giữ vai trò thư viện logic, nơi chỉnh sâu, preview và quản lý version.
+              </p>
+              <p className="mt-2 text-[var(--text-dim)]">
+                Route này cũng cấp default handover profile để các node Handover trong workflow có thể dùng chung mà không cần nhập queue tay.
               </p>
             </div>
           </div>

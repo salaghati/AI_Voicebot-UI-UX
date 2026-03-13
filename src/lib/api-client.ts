@@ -1,5 +1,7 @@
 import type {
   AgentMetric,
+  AgentSettings,
+  ApiSettings,
   ApiResult,
   Campaign,
   CampaignDraft,
@@ -244,7 +246,7 @@ export async function updateSttTtsSettings(payload: Record<string, unknown>) {
 }
 
 export async function fetchApiSettings() {
-  return request<ApiResult<{ baseUrl: string; timeoutMs: number; retry: number }>>("/api/settings/api");
+  return request<ApiResult<ApiSettings>>("/api/settings/api");
 }
 
 export async function updateApiSettings(payload: Record<string, unknown>) {
@@ -255,9 +257,7 @@ export async function updateApiSettings(payload: Record<string, unknown>) {
 }
 
 export async function fetchAgentSettings() {
-  return request<
-    ApiResult<{ transferCondition: string; transferContext: string[]; queue: string }>
-  >("/api/settings/agent");
+  return request<ApiResult<AgentSettings>>("/api/settings/agent");
 }
 
 export async function updateAgentSettings(payload: Record<string, unknown>) {

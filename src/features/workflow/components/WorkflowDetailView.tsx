@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, History, Pencil, X } from "lucide-react";
-import { fetchWorkflow } from "@/lib/api-client";
+import { fetchAgentSettings, fetchWorkflow } from "@/lib/api-client";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,6 +62,10 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
     queryKey: ["workflow", workflowId],
     queryFn: () => fetchWorkflow(workflowId),
   });
+  const agentSettingsQuery = useQuery({
+    queryKey: ["settings-agent"],
+    queryFn: fetchAgentSettings,
+  });
   const wf = query.data?.data;
   const selectedNode = useMemo(
     () => {
@@ -82,6 +86,13 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
         ),
       ),
     [wf?.nodes],
+  );
+  const handoverProfilesById = useMemo(
+    () =>
+      new Map(
+        (agentSettingsQuery.data?.data.handoverProfiles ?? []).map((profile) => [profile.id, profile.name]),
+      ),
+    [agentSettingsQuery.data?.data.handoverProfiles],
   );
 
   if (query.isLoading) {
@@ -331,7 +342,27 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
                 {selectedNode.type === "Handover" ? (
                   <div className="space-y-2 rounded-xl border border-[var(--line)] bg-white p-3">
                     <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">Handover Properties</p>
-                    <p className="text-sm">Target queue / agent: <span className="font-medium">{selectedNode.handoverTarget || "--"}</span></p>
+                    <div className="rounded-lg border border-[#d7e2f0] bg-[#fff8fb] p-3 text-sm text-[var(--text-dim)]">
+                      Handover node chỉ quyết định khi nào chuyển người thật. Profile thật được lấy từ route/campaign hoặc override bằng một profile cụ thể.
+                    </div>
+                    <p className="text-sm">
+                      Handover mode:{" "}
+                      <span className="font-medium">
+                        {selectedNode.handoverMode === "override_profile"
+                          ? "Override handover profile"
+                          : "Dùng profile mặc định từ campaign/route"}
+                      </span>
+                    </p>
+                    <p className="text-sm">
+                      Handover profile:{" "}
+                      <span className="font-medium">
+                        {selectedNode.handoverProfileId
+                          ? `${handoverProfilesById.get(selectedNode.handoverProfileId) || selectedNode.handoverProfileId} (${selectedNode.handoverProfileId})`
+                          : selectedNode.handoverMode === "use_default"
+                            ? "Lấy từ campaign/route"
+                            : "--"}
+                      </span>
+                    </p>
                     <p className="text-sm">Thông điệp chuyển máy: <span className="font-medium">{selectedNode.handoverMessage || selectedNode.ttsText || "--"}</span></p>
                     <p className="text-sm">Nếu chuyển máy thất bại: <span className="font-medium">{selectedNode.onHandoverFail || "--"}</span></p>
                   </div>

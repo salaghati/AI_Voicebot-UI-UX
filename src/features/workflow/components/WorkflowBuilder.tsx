@@ -24,7 +24,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import { createWorkflow, fetchWorkflow, updateWorkflow } from "@/lib/api-client";
+import { createWorkflow, fetchAgentSettings, fetchApiSettings, fetchWorkflow, updateWorkflow } from "@/lib/api-client";
 import {
   getWorkflowNodeContentLabel,
   getWorkflowNodeDescription,
@@ -84,6 +84,8 @@ interface WfNodeData extends Record<string, unknown> {
   promptTemplate?: string;
   citationEnabled?: boolean;
   noAnswerAction?: string;
+  handoverMode?: "use_default" | "override_profile";
+  handoverProfileId?: string;
   handoverTarget?: string;
   handoverMessage?: string;
   onHandoverFail?: string;
@@ -156,7 +158,7 @@ function createNodeDefaults(type: NodeType, index: number): WorkflowNode {
         label: `CHUYỂN AGENT ${order}`,
         value: "Em chuyển cuộc gọi sang tổng đài viên để hỗ trợ tiếp.",
         ttsText: "Em chuyển cuộc gọi sang tổng đài viên để hỗ trợ tiếp.",
-        handoverTarget: "queue_default",
+        handoverMode: "use_default",
         handoverMessage: "Chuyển máy sang tổng đài viên gần nhất.",
         onHandoverFail: "fallback_node",
       };
@@ -234,6 +236,8 @@ function workflowNodeToFlowNode(wn: WorkflowNode, index: number): Node<WfNodeDat
       promptTemplate: wn.promptTemplate ?? "",
       citationEnabled: wn.citationEnabled ?? true,
       noAnswerAction: wn.noAnswerAction ?? "fallback_node",
+      handoverMode: wn.handoverMode ?? "use_default",
+      handoverProfileId: wn.handoverProfileId ?? "",
       handoverTarget: wn.handoverTarget ?? "",
       handoverMessage: wn.handoverMessage ?? "",
       onHandoverFail: wn.onHandoverFail ?? "fallback_node",
@@ -340,7 +344,7 @@ const defaultWfNodes: WorkflowNode[] = [
     id: "node_handover", type: "Handover", label: "CHUYỂN TỔNG ĐÀI VIÊN", value: "Em chuyển cuộc gọi sang tổng đài viên để hỗ trợ tiếp cho anh/chị.",
     x: 550, y: 910,
     ttsText: "Em chuyển cuộc gọi sang tổng đài viên để hỗ trợ tiếp cho anh chị.",
-    handoverTarget: "queue_payment",
+    handoverMode: "use_default",
     handoverMessage: "Chuyển máy sang hàng chờ hỗ trợ thanh toán.",
     onHandoverFail: "fallback_node",
   },
@@ -367,6 +371,14 @@ export function WorkflowBuilder({ workflowId, prefill }: { workflowId?: string; 
     queryFn: () => fetchWorkflow(workflowId!),
     enabled: isEditing,
   });
+  const agentSettingsQuery = useQuery({
+    queryKey: ["settings-agent"],
+    queryFn: fetchAgentSettings,
+  });
+  const apiSettingsQuery = useQuery({
+    queryKey: ["settings-api"],
+    queryFn: fetchApiSettings,
+  });
 
   if (isEditing && workflowQuery.isLoading) return <AsyncState state="loading" />;
   if (isEditing && (workflowQuery.isError || !workflowQuery.data?.data))
@@ -378,6 +390,8 @@ export function WorkflowBuilder({ workflowId, prefill }: { workflowId?: string; 
       workflowId={workflowId}
       initialWorkflow={workflowQuery.data?.data}
       prefill={prefill}
+      handoverProfiles={agentSettingsQuery.data?.data.handoverProfiles ?? []}
+      apiEndpoints={apiSettingsQuery.data?.data.endpoints ?? []}
     />
   );
 }
@@ -386,10 +400,22 @@ function WorkflowBuilderEditor({
   workflowId,
   initialWorkflow,
   prefill,
+  handoverProfiles,
+  apiEndpoints,
 }: {
   workflowId?: string;
   initialWorkflow?: Workflow;
   prefill?: WorkflowBuilderPrefill;
+  handoverProfiles: Array<{ id: string; name: string }>;
+  apiEndpoints: Array<{
+    id: string;
+    name: string;
+    method: "GET" | "POST" | "PUT" | "DELETE";
+    url: string;
+    authProfile: string;
+    timeoutMs: number;
+    status: "connected" | "disconnected";
+  }>;
 }) {
   const router = useRouter();
   const isEditing = Boolean(workflowId);
@@ -530,6 +556,8 @@ function WorkflowBuilderEditor({
         promptTemplate: d.promptTemplate,
         citationEnabled: d.citationEnabled,
         noAnswerAction: d.noAnswerAction as WorkflowNode["noAnswerAction"],
+        handoverMode: d.handoverMode as WorkflowNode["handoverMode"],
+        handoverProfileId: d.handoverProfileId,
         handoverTarget: d.handoverTarget,
         handoverMessage: d.handoverMessage,
         onHandoverFail: d.onHandoverFail as WorkflowNode["onHandoverFail"],
@@ -810,9 +838,31 @@ function WorkflowBuilderEditor({
                   {selectedData.nodeType === "API" && (
                     <div className="space-y-3 rounded-xl border border-[var(--line)] bg-white/80 p-3">
                       <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">API Properties</p>
+                      <div className="rounded-lg border border-[#d7e2f0] bg-[#f8fbff] p-3 text-sm text-[var(--text-dim)]">
+                        Node API nên chọn từ catalog ở Settings API. Node này chỉ giữ mapping và logic xử lý riêng cho bước hiện tại.
+                      </div>
                       <div>
-                        <label className="mb-1 block text-xs font-semibold text-[var(--text-dim)]">API reference</label>
-                        <Input value={selectedData.apiRef || ""} onChange={(e) => updateSelectedData({ apiRef: e.target.value })} />
+                        <label className="mb-1 block text-xs font-semibold text-[var(--text-dim)]">API endpoint</label>
+                        <Select
+                          value={selectedData.apiRef || ""}
+                          onChange={(e) => {
+                            const selectedEndpoint = apiEndpoints.find((endpoint) => endpoint.name === e.target.value);
+                            updateSelectedData({
+                              apiRef: e.target.value,
+                              apiMethod: selectedEndpoint?.method || selectedData.apiMethod,
+                              apiUrl: selectedEndpoint?.url || selectedData.apiUrl,
+                              authProfile: selectedEndpoint?.authProfile || selectedData.authProfile,
+                              apiTimeoutMs: selectedEndpoint?.timeoutMs || selectedData.apiTimeoutMs,
+                            });
+                          }}
+                        >
+                          <option value="">Chọn API từ Settings</option>
+                          {apiEndpoints.map((endpoint) => (
+                            <option key={endpoint.id} value={endpoint.name}>
+                              {endpoint.name} {endpoint.status === "disconnected" ? "(Mất kết nối)" : ""}
+                            </option>
+                          ))}
+                        </Select>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
@@ -937,10 +987,43 @@ function WorkflowBuilderEditor({
                   {selectedData.nodeType === "Handover" && (
                     <div className="space-y-3 rounded-xl border border-[var(--line)] bg-white/80 p-3">
                       <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">Handover Properties</p>
-                      <div>
-                        <label className="mb-1 block text-xs font-semibold text-[var(--text-dim)]">Target queue / agent</label>
-                        <Input value={selectedData.handoverTarget || ""} onChange={(e) => updateSelectedData({ handoverTarget: e.target.value })} />
+                      <div className="rounded-lg border border-[#d7e2f0] bg-[#fff8fb] p-3 text-sm text-[var(--text-dim)]">
+                        Workflow chỉ quyết định khi nào chuyển agent. Khi chọn `use_default`, runtime sẽ lấy profile mặc định từ outbound campaign hoặc inbound route.
                       </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-semibold text-[var(--text-dim)]">Handover mode</label>
+                        <Select
+                          value={selectedData.handoverMode || "use_default"}
+                          onChange={(e) =>
+                            updateSelectedData({
+                              handoverMode: e.target.value as WfNodeData["handoverMode"],
+                              handoverProfileId:
+                                e.target.value === "override_profile"
+                                  ? selectedData.handoverProfileId || handoverProfiles[0]?.id || ""
+                                  : "",
+                            })
+                          }
+                        >
+                          <option value="use_default">Dùng profile mặc định từ campaign/route</option>
+                          <option value="override_profile">Override sang handover profile cụ thể</option>
+                        </Select>
+                      </div>
+                      {selectedData.handoverMode === "override_profile" ? (
+                        <div>
+                          <label className="mb-1 block text-xs font-semibold text-[var(--text-dim)]">Override handover profile</label>
+                          <Select
+                            value={selectedData.handoverProfileId || ""}
+                            onChange={(e) => updateSelectedData({ handoverProfileId: e.target.value })}
+                          >
+                            <option value="">Chọn handover profile</option>
+                            {handoverProfiles.map((profile) => (
+                              <option key={profile.id} value={profile.id}>
+                                {profile.name} ({profile.id})
+                              </option>
+                            ))}
+                          </Select>
+                        </div>
+                      ) : null}
                       <div>
                         <label className="mb-1 block text-xs font-semibold text-[var(--text-dim)]">Thông điệp chuyển máy</label>
                         <Textarea rows={3} value={selectedData.handoverMessage || ""} onChange={(e) => updateSelectedData({ handoverMessage: e.target.value })} />

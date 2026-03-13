@@ -2,25 +2,22 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
-import { updateApiSettings } from "@/lib/api-client";
+import { fetchApiSettings, updateApiSettings } from "@/lib/api-client";
 import { SettingsShell } from "@/features/settings";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Table, TBody, TD, TH, THead } from "@/components/ui/table";
-
-const endpointRows = [
-  { name: "tra_cuoc_api", method: "POST", timeout: "3000ms", status: "Kết nối thành công" },
-  { name: "book_call_api", method: "GET", timeout: "5000ms", status: "Kết nối thành công" },
-  { name: "order_status_api", method: "POST", timeout: "3000ms", status: "Mất kết nối" },
-];
+import { AsyncState } from "@/components/shared/async-state";
+import type { ApiEndpointSetting } from "@/types/domain";
 
 export default function SettingsApiPage() {
   const [openModal, setOpenModal] = useState(false);
+  const [editedEndpoints, setEditedEndpoints] = useState<ApiEndpointSetting[] | null>(null);
   const form = useForm({
     defaultValues: {
       apiName: "",
@@ -33,6 +30,9 @@ export default function SettingsApiPage() {
       headerValue: "",
     },
   });
+  const query = useQuery({ queryKey: ["settings-api"], queryFn: fetchApiSettings });
+  const endpointRows = editedEndpoints ?? query.data?.data.endpoints ?? [];
+  const baseSettings = query.data?.data;
 
   const mutation = useMutation({
     mutationFn: updateApiSettings,
@@ -55,6 +55,11 @@ export default function SettingsApiPage() {
         </Button>
       }
     >
+      {query.isLoading ? <AsyncState state="loading" /> : null}
+      {query.isError ? <AsyncState state="error" onRetry={() => query.refetch()} /> : null}
+
+      {!query.isLoading && !query.isError ? (
+        <>
       <Card className="space-y-3">
         <h3 className="text-xl font-bold">API Endpoints</h3>
         <Table>
@@ -71,9 +76,9 @@ export default function SettingsApiPage() {
               <tr key={item.name}>
                 <TD className="font-medium">{item.name}</TD>
                 <TD>{item.method}</TD>
-                <TD>{item.timeout}</TD>
-                <TD className={item.status.includes("thành công") ? "font-semibold text-emerald-600" : "font-semibold text-red-500"}>
-                  {item.status}
+                <TD>{item.timeoutMs}ms</TD>
+                <TD className={item.status === "connected" ? "font-semibold text-emerald-600" : "font-semibold text-red-500"}>
+                  {item.status === "connected" ? "Kết nối thành công" : "Mất kết nối"}
                 </TD>
               </tr>
             ))}
@@ -87,7 +92,7 @@ export default function SettingsApiPage() {
           <div className="rounded-lg border border-[var(--line)] bg-[var(--surface-2)] p-3 text-sm">
             <p className="font-semibold">Request Template</p>
             <pre className="mt-2 overflow-auto text-xs text-[var(--text-dim)]">
-{`{
+{endpointRows[0]?.requestTemplate || `{
   "customer_id": "{{customer_id}}",
   "query_type": "billing_current",
   "channel": "voicebot"
@@ -97,12 +102,14 @@ export default function SettingsApiPage() {
           <div className="rounded-lg border border-[var(--line)] bg-[var(--surface-2)] p-3 text-sm">
             <p className="font-semibold">{"Response -> Câu trả lời"}</p>
             <pre className="mt-2 overflow-auto text-xs text-[var(--text-dim)]">
-{`Số dư hiện tại của quý khách là {{amount}} đồng.
+{endpointRows[0]?.responseTemplate || `Số dư hiện tại của quý khách là {{amount}} đồng.
 Hạn thanh toán gần nhất: {{due_date}}.`}
             </pre>
           </div>
         </div>
       </Card>
+        </>
+      ) : null}
 
       {openModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4">
@@ -120,7 +127,28 @@ Hạn thanh toán gần nhất: {{due_date}}.`}
 
             <form
               className="space-y-4 px-6 pb-6"
-              onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
+              onSubmit={form.handleSubmit((values) => {
+                const nextEndpoint: ApiEndpointSetting = {
+                  id: `api_${endpointRows.length + 1}`,
+                  name: values.apiName,
+                  method: values.method as ApiEndpointSetting["method"],
+                  url: values.url,
+                  authType: values.authType as ApiEndpointSetting["authType"],
+                  authProfile: values.token || "custom_auth_profile",
+                  timeoutMs: Number(values.timeout) || baseSettings?.timeoutMs || 3000,
+                  status: "connected",
+                  headerKey: values.headerKey,
+                  headerValue: values.headerValue,
+                  requestTemplate: '{ "customer_id": "{{customer_id}}" }',
+                  responseTemplate: '{ "result": "{{result}}" }',
+                };
+                const nextEndpoints = [...endpointRows, nextEndpoint];
+                setEditedEndpoints(nextEndpoints);
+                mutation.mutate({
+                  ...(baseSettings ?? { baseUrl: "", timeoutMs: 3000, retry: 2 }),
+                  endpoints: nextEndpoints,
+                });
+              })}
             >
               <div className="grid gap-3 md:grid-cols-2">
                 <div className="md:col-span-2">
