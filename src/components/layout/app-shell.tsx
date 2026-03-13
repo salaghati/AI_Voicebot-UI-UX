@@ -1,14 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Search, UserCircle2 } from "lucide-react";
+import { Bell, ChevronDown, Search, UserCircle2 } from "lucide-react";
 import { primaryNav } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [manualExpandedGroups, setManualExpandedGroups] = useState<Record<string, boolean>>({});
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_100%_0%,rgba(24,144,255,0.1),transparent_38%),#f0f2f5]">
@@ -26,8 +28,68 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               );
               const active = activeSelf || Boolean(activeChild);
               const Icon = item.icon;
+
+              if (item.children?.length) {
+                const expanded = manualExpandedGroups[item.href] ?? active;
+
+                return (
+                  <div key={item.href} className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.03]">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setManualExpandedGroups((current) => ({
+                          ...current,
+                          [item.href]: !expanded,
+                        }))
+                      }
+                      className={cn(
+                        "flex w-full min-w-0 items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm transition",
+                        active ? "bg-white/20 text-white" : "text-slate-100 hover:bg-white/14",
+                      )}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      <span className="min-w-0 flex-1 truncate font-semibold">{item.title}</span>
+                      <ChevronDown
+                        className={cn("h-4 w-4 shrink-0 transition-transform", expanded ? "rotate-180" : "")}
+                      />
+                    </button>
+
+                    <div
+                      className={cn(
+                        "grid overflow-hidden transition-all duration-200",
+                        expanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+                      )}
+                    >
+                      <div className="min-h-0">
+                        <div className="space-y-1 px-3 pb-3 pt-1">
+                          {item.children.map((child) => {
+                            const childActive =
+                              pathname === child.href || pathname.startsWith(`${child.href}/`);
+
+                            return (
+                              <Link
+                                key={child.href}
+                                href={child.href}
+                                className={cn(
+                                  "block w-full min-w-0 truncate rounded-xl px-3 py-2 text-sm transition",
+                                  childActive
+                                    ? "bg-white/16 font-semibold text-white"
+                                    : "text-slate-100/90 hover:bg-white/12",
+                                )}
+                              >
+                                {child.title}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
               return (
-                <div key={item.href} className="min-w-0 space-y-1">
+                <div key={item.href} className="min-w-0">
                   <Link
                     href={item.href}
                     className={cn(
@@ -38,37 +100,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <Icon className="h-4 w-4" />
                     <span className="truncate">{item.title}</span>
                   </Link>
-                  {item.children?.length ? (
-                    <div className="min-w-0 space-y-1 border-l border-white/20 pl-2.5">
-                      {item.children.map((child) => {
-                        const childActive =
-                          pathname === child.href || pathname.startsWith(`${child.href}/`);
-                        return (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            className={cn(
-                              "block w-full min-w-0 truncate rounded-lg px-2.5 py-1.5 text-sm transition",
-                              childActive
-                                ? "bg-white/16 text-white font-semibold"
-                                : "text-slate-100/95 hover:bg-white/14",
-                            )}
-                          >
-                            {child.title}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  ) : null}
                 </div>
               );
             })}
           </nav>
-
-          <div className="rounded-xl bg-white/14 p-3 text-xs text-slate-100">
-            <p className="font-semibold">Build prototype v1</p>
-            <p className="mt-1 opacity-80">Phase 1: Ops flow end-to-end</p>
-          </div>
         </aside>
 
         <div className="flex min-h-[calc(100vh-2rem)] flex-1 flex-col gap-4 rounded-3xl border border-[#d5deea] bg-[var(--surface-1)] p-4 shadow-[0_14px_34px_rgba(14,33,57,0.08)] lg:p-6">
