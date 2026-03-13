@@ -32,7 +32,7 @@
   <rect class="lane2 border" x="490" y="120" width="480" height="930"/>
   <rect class="lane3 border" x="970" y="120" width="560" height="930"/>
   <text class="lane-title" x="280" y="155" text-anchor="middle">Admin</text>
-  <text class="lane-title" x="730" y="155" text-anchor="middle">Ops Console</text>
+  <text class="lane-title" x="730" y="155" text-anchor="middle">AI Voicebot Portal</text>
   <text class="lane-title" x="1250" y="155" text-anchor="middle">System / Workflow / KB / Fallback</text>
 
   <circle class="start" cx="280" cy="205" r="16"/>

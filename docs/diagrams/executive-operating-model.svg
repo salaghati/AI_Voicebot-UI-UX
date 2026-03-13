@@ -1,0 +1,82 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" rx="32" fill="#F5F8FC"/>
+  <rect x="24" y="24" width="1352" height="852" rx="28" fill="#FFFFFF" stroke="#D6E0EC" stroke-width="2"/>
+
+  <text x="56" y="84" fill="#1F2D3D" font-family="Arial, sans-serif" font-size="28" font-weight="700">Mô hình vận hành: một portal, nhiều tenant, nhiều use case thoại</text>
+  <text x="56" y="120" fill="#5B6B80" font-family="Arial, sans-serif" font-size="18">Sơ đồ này giúp người đọc hiểu platform được tổ chức như một lõi dùng chung, còn mỗi doanh nghiệp chỉ gắn context và use case riêng.</text>
+
+  <rect x="56" y="180" width="288" height="520" rx="24" fill="#F7FAFE" stroke="#C9D6E6" stroke-width="2"/>
+  <text x="88" y="228" fill="#1E3A5F" font-family="Arial, sans-serif" font-size="22" font-weight="700">Doanh nghiệp / tenant</text>
+  <text x="88" y="258" fill="#65758B" font-family="Arial, sans-serif" font-size="16">Mỗi doanh nghiệp mang theo brand, ngành và bài toán riêng.</text>
+
+  <rect x="88" y="304" width="224" height="96" rx="18" fill="#FFFFFF" stroke="#BED0E4" stroke-width="2"/>
+  <text x="116" y="342" fill="#29486E" font-family="Arial, sans-serif" font-size="19" font-weight="700">Tenant A</text>
+  <text x="116" y="370" fill="#51657D" font-family="Arial, sans-serif" font-size="16">Ngân hàng</text>
+  <text x="116" y="394" fill="#51657D" font-family="Arial, sans-serif" font-size="16">Nhắc thanh toán, tra dư nợ</text>
+
+  <rect x="88" y="430" width="224" height="96" rx="18" fill="#FFFFFF" stroke="#BED0E4" stroke-width="2"/>
+  <text x="116" y="468" fill="#29486E" font-family="Arial, sans-serif" font-size="19" font-weight="700">Tenant B</text>
+  <text x="116" y="496" fill="#51657D" font-family="Arial, sans-serif" font-size="16">Bảo hiểm</text>
+  <text x="116" y="520" fill="#51657D" font-family="Arial, sans-serif" font-size="16">Hotline tư vấn, FAQ quyền lợi</text>
+
+  <rect x="88" y="556" width="224" height="96" rx="18" fill="#FFFFFF" stroke="#BED0E4" stroke-width="2"/>
+  <text x="116" y="594" fill="#29486E" font-family="Arial, sans-serif" font-size="19" font-weight="700">Tenant C</text>
+  <text x="116" y="622" fill="#51657D" font-family="Arial, sans-serif" font-size="16">Bán lẻ / thương mại</text>
+  <text x="116" y="646" fill="#51657D" font-family="Arial, sans-serif" font-size="16">CSKH, upsell, khảo sát</text>
+
+  <rect x="398" y="154" width="624" height="572" rx="28" fill="url(#sharedCore)" stroke="#2D6DC4" stroke-width="2"/>
+  <text x="436" y="212" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="22" font-weight="700">Shared portal core</text>
+  <text x="436" y="244" fill="#D9E9FF" font-family="Arial, sans-serif" font-size="17">Đây là phần được tái sử dụng giữa nhiều tenant. Prototype hiện tại đang mô phỏng lớp này.</text>
+
+  <rect x="436" y="290" width="250" height="106" rx="18" fill="#FFFFFF" fill-opacity="0.16" stroke="#A6D0FF" stroke-width="1.5"/>
+  <text x="468" y="334" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">Business configuration</text>
+  <text x="468" y="364" fill="#E8F2FF" font-family="Arial, sans-serif" font-size="16">Outbound / Inbound create</text>
+  <text x="468" y="388" fill="#E8F2FF" font-family="Arial, sans-serif" font-size="16">gắn context business vào bot</text>
+
+  <rect x="734" y="290" width="250" height="106" rx="18" fill="#FFFFFF" fill-opacity="0.16" stroke="#A6D0FF" stroke-width="1.5"/>
+  <text x="766" y="334" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">Logic library</text>
+  <text x="766" y="364" fill="#E8F2FF" font-family="Arial, sans-serif" font-size="16">Workflow, KB, fallback</text>
+  <text x="766" y="388" fill="#E8F2FF" font-family="Arial, sans-serif" font-size="16">tái dùng giữa nhiều bot</text>
+
+  <rect x="436" y="438" width="250" height="106" rx="18" fill="#FFFFFF" fill-opacity="0.16" stroke="#A6D0FF" stroke-width="1.5"/>
+  <text x="468" y="482" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">Runtime governance</text>
+  <text x="468" y="512" fill="#E8F2FF" font-family="Arial, sans-serif" font-size="16">Settings, API, STT/TTS,</text>
+  <text x="468" y="536" fill="#E8F2FF" font-family="Arial, sans-serif" font-size="16">handover, roles, numbers</text>
+
+  <rect x="734" y="438" width="250" height="106" rx="18" fill="#FFFFFF" fill-opacity="0.16" stroke="#A6D0FF" stroke-width="1.5"/>
+  <text x="766" y="482" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">Measurement layer</text>
+  <text x="766" y="512" fill="#E8F2FF" font-family="Arial, sans-serif" font-size="16">Dashboard, Reports, Preview</text>
+  <text x="766" y="536" fill="#E8F2FF" font-family="Arial, sans-serif" font-size="16">đo chất lượng và tối ưu</text>
+
+  <rect x="436" y="586" width="548" height="92" rx="18" fill="#FFFFFF" fill-opacity="0.16" stroke="#A6D0FF" stroke-width="1.5"/>
+  <text x="466" y="626" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="19" font-weight="700">Thông điệp kiến trúc cho cấp quản lý</text>
+  <text x="466" y="656" fill="#E8F2FF" font-family="Arial, sans-serif" font-size="16">Doanh nghiệp thay đổi context, dữ liệu, tri thức và mục tiêu; còn portal giữ lõi quản trị và logic dùng chung.</text>
+
+  <rect x="1074" y="180" width="270" height="520" rx="24" fill="#F7FAFE" stroke="#C9D6E6" stroke-width="2"/>
+  <text x="1106" y="228" fill="#1E3A5F" font-family="Arial, sans-serif" font-size="22" font-weight="700">Kết quả business</text>
+  <text x="1106" y="258" fill="#65758B" font-family="Arial, sans-serif" font-size="16">Cùng lõi platform, nhưng mỗi tenant đo giá trị theo mục tiêu riêng.</text>
+
+  <rect x="1106" y="304" width="206" height="64" rx="16" fill="#EDF7F1" stroke="#91C9A9" stroke-width="2"/>
+  <text x="1134" y="344" fill="#24563A" font-family="Arial, sans-serif" font-size="18" font-weight="700">Tăng độ phủ tự động hóa</text>
+
+  <rect x="1106" y="390" width="206" height="64" rx="16" fill="#EDF7F1" stroke="#91C9A9" stroke-width="2"/>
+  <text x="1134" y="430" fill="#24563A" font-family="Arial, sans-serif" font-size="18" font-weight="700">Giảm tải cho tổng đài viên</text>
+
+  <rect x="1106" y="476" width="206" height="64" rx="16" fill="#EDF7F1" stroke="#91C9A9" stroke-width="2"/>
+  <text x="1134" y="516" fill="#24563A" font-family="Arial, sans-serif" font-size="18" font-weight="700">Rút ngắn thời gian triển khai</text>
+
+  <rect x="1106" y="562" width="206" height="64" rx="16" fill="#EDF7F1" stroke="#91C9A9" stroke-width="2"/>
+  <text x="1134" y="602" fill="#24563A" font-family="Arial, sans-serif" font-size="18" font-weight="700">Đo và tối ưu theo ngành</text>
+
+  <path d="M344 428H386" stroke="#8BA6C9" stroke-width="4" stroke-linecap="round"/>
+  <path d="M1022 428H1064" stroke="#8BA6C9" stroke-width="4" stroke-linecap="round"/>
+  <path d="M366 418L388 428L366 438" fill="#8BA6C9"/>
+  <path d="M1042 418L1064 428L1042 438" fill="#8BA6C9"/>
+
+  <defs>
+    <linearGradient id="sharedCore" x1="398" y1="154" x2="1022" y2="726" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#154C94"/>
+      <stop offset="1" stop-color="#1B7BE0"/>
+    </linearGradient>
+  </defs>
+</svg>

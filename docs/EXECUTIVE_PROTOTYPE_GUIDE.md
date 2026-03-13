@@ -1,198 +1,158 @@
-# AI Voicebot Ops Console
+# AI Voicebot Portal
 
 > Tài liệu đọc nhanh cho cấp quản lý và người xem prototype  
-> Phiên bản: 1.1  
+> Phiên bản: 1.2  
 > Cập nhật: 13/03/2026
 
 ---
 
 ## 1. Mục đích tài liệu
 
-Tài liệu này giúp người đọc:
+Tài liệu này không nhằm giải thích code.
 
-- hiểu prototype đang mô phỏng sản phẩm gì;
-- hiểu từng module có ý nghĩa nghiệp vụ gì;
-- biết bấm vào đâu để xem luồng chính;
-- biết đâu là tính năng thật trong prototype và đâu là dữ liệu mock;
-- có thể xem demo cùng prototype mà không cần đội kỹ thuật giải thích từng màn hình.
+Tài liệu này giúp người đọc rất nhanh trả lời `4 câu hỏi`:
 
-Tài liệu này được viết theo góc nhìn quản lý vận hành và quản lý sản phẩm, không đi sâu vào code.
+- sản phẩm này đang được xây để giải quyết bài toán gì;
+- tại sao đây là một `platform` chứ không phải một bot đơn lẻ;
+- nên mở màn hình nào trước để hiểu đúng luồng;
+- những module nào đang là lõi của trải nghiệm quản trị.
 
----
-
-## 2. Tóm tắt điều hành
-
-`AI Voicebot Ops Console` là giao diện quản trị cho một nền tảng tổng đài AI có hai năng lực chính:
-
-1. `Outbound`: bot chủ động gọi ra cho khách hàng để nhắc thanh toán, khảo sát, bán chéo, chăm sóc sau bán.
-2. `Inbound`: bot tiếp nhận cuộc gọi vào hotline, hiểu nhu cầu, trả lời theo kịch bản và chuyển agent khi cần.
-
-Prototype này mô phỏng đầy đủ bức tranh vận hành:
-
-- tạo và quản lý campaign gọi ra;
-- tạo và quản lý route cuộc gọi vào;
-- thiết kế workflow hội thoại;
-- quản lý Knowledge Base và fallback;
-- xem dashboard, báo cáo và log cuộc gọi;
-- cấu hình các tham số hệ thống như STT/TTS, API, agent handover, phân quyền.
-
-Điểm cần hiểu đúng:
-
-- đây là `prototype tương tác`, không phải backend production;
-- dữ liệu hiện tại được lấy từ `mock API` trong ứng dụng;
-- người xem vẫn có thể thao tác gần như thật: tạo mới, chuyển bước, filter, xem chi tiết, preview, bật tắt trạng thái, xem log;
-- mục tiêu của prototype là chứng minh `luồng sản phẩm`, `trải nghiệm quản trị`, và `cách vận hành end-to-end`.
-
-Để bám sát code hiện tại, cần hiểu thêm:
-
-- các màn hình thao tác chính đang nằm ở `Dashboard`, `Bot Engine`, `Workflow`, `KB`, `Report`, `Settings`, `Preview`;
-- các màn hình tạo mới chính trong code là `/bot-engine/outbound/create`, `/bot-engine/inbound/create`, `/workflow/new`, `/kb/add`;
-- ở `Outbound Create` và `Inbound Create`, người dùng hiện có thể `dùng workflow có sẵn` hoặc `tạo workflow mới ngay trong flow đó` rồi quay lại bước cấu hình bot;
-- `/settings` trong app hiện redirect về `/settings/stt-tts`;
-- một số route phụ như `preview/platform-review/*` tồn tại để thử pattern UX, nhưng không phải luồng chính của executive demo.
+Nếu người đọc chỉ có `10 phút`, hãy ưu tiên xem các sơ đồ ở `mục 2`, `mục 3` và `mục 4` trước.
 
 ---
 
-## 3. Prototype đang bao phủ những gì
+## 2. Business goal của hệ thống
 
-### 3.1. Có trong prototype
+`AI Voicebot Portal` không nên được hiểu là một giao diện cho một bot duy nhất.
+
+Nó nên được hiểu là:
+
+- một `lớp quản trị dùng chung` cho nhiều doanh nghiệp;
+- một `lõi cấu hình voicebot` có thể tái dùng cho nhiều ngành nghề;
+- một nơi để đội vận hành triển khai cả `outbound` lẫn `inbound` mà không phải xây lại từ đầu cho từng use case.
+
+![Tầm nhìn platform](./diagrams/executive-platform-vision.svg)
+
+Người đọc cần rút ra `3 ý chính` từ sơ đồ trên:
+
+1. cùng một portal có thể phục vụ nhiều ngành như tài chính, bảo hiểm, bán lẻ, viễn thông hoặc dịch vụ công;
+2. mỗi doanh nghiệp có thể dùng cùng lõi platform nhưng triển khai các bài toán khác nhau như nhắc thanh toán, hotline CSKH, tư vấn sản phẩm, khảo sát hoặc handover;
+3. giá trị của sản phẩm nằm ở chỗ `quản trị tập trung`, `tái sử dụng logic`, và `mở rộng use case nhanh`, chứ không chỉ ở một campaign hoặc một hotline riêng lẻ.
+
+Tóm tắt rất ngắn:
+
+- `Outbound` là nơi bot chủ động gọi ra;
+- `Inbound` là nơi bot tiếp nhận cuộc gọi vào;
+- `Workflow` là thư viện logic;
+- `Knowledge Base` là lớp tri thức;
+- `Report / Dashboard / Preview` là lớp chứng minh hiệu quả và chất lượng vận hành.
+
+---
+
+## 3. Người đọc nên bắt đầu từ đâu
+
+Điểm yếu của tài liệu cũ là người đọc mở vào nhưng chưa biết `nên xem gì trước`.
+
+Vì vậy, nên đọc và demo prototype theo đúng thứ tự dưới đây:
+
+![Nên bắt đầu từ đâu](./diagrams/executive-start-here.svg)
+
+### 3.1. Trình tự xem nhanh nhất
+
+| Bước | Mở ở đâu | Người đọc sẽ hiểu điều gì |
+| --- | --- | --- |
+| 1 | `Business goal + platform vision` trong tài liệu | Đây là một portal cho nhiều doanh nghiệp và nhiều bài toán thoại |
+| 2 | `/bot-engine/outbound/create` hoặc `/bot-engine/inbound/create` | Người dùng bắt đầu từ context business rồi mới gắn workflow, KB và fallback |
+| 3 | `/workflow/WF_FullNode_Demo` | Bot hiểu intent/entity thế nào, gọi API ở đâu, tra KB ở đâu |
+| 4 | `/dashboard`, `/report/overview`, `/preview/playground` | Sau khi cấu hình xong, người quản lý và QA đọc kết quả ở đâu |
+
+### 3.2. Prototype đang có gì
 
 | Nhóm chức năng | Ý nghĩa |
 | --- | --- |
 | Login | Điểm vào hệ thống quản trị |
-| Dashboard | Theo dõi tình hình vận hành bot theo thời gian thực |
+| Dashboard | Bảng điều hành tổng quan |
 | Bot Engine Outbound | Quản lý chiến dịch gọi ra |
 | Bot Engine Inbound | Quản lý hotline và route cuộc gọi vào |
 | Workflow | Thiết kế logic xử lý hội thoại |
 | Knowledge Base | Quản lý tri thức để bot tra cứu |
-| KB Fallback | Xử lý khi bot không hiểu hoặc không tìm thấy tri thức phù hợp |
-| Report | Tổng hợp hiệu quả, chi tiết cuộc gọi, lỗi, hiệu suất agent |
-| Preview / Playground | Mô phỏng runtime, transcript và log kỹ thuật |
-| Settings | Quản trị cấu hình hệ thống |
+| KB Fallback | Quy tắc thoát hiểm khi bot không hiểu hoặc KB match thấp |
+| Report | Tổng hợp hiệu quả, chi tiết cuộc gọi, lỗi, agent |
+| Preview / Playground | Mô phỏng transcript và log runtime |
+| Settings | Cấu hình nền tảng |
 
-### 3.2. Không nằm trong phạm vi prototype
+### 3.3. Những gì chưa nằm trong phạm vi prototype
 
 | Hạng mục | Trạng thái |
 | --- | --- |
 | Kết nối PBX / tổng đài thật | Chưa kết nối |
 | STT / TTS / LLM thật | Chỉ mô phỏng |
 | CRM / CDP / ticketing thật | Chỉ mô phỏng |
-| Tài khoản thật và phân quyền thật | Chỉ mô phỏng |
+| Auth thật và phân quyền thật | Chỉ mô phỏng |
 | Research app ở slide 61-101 | Không nằm trong repo này |
 
-### 3.3. Có trong code nhưng không phải luồng trình bày chính
+### 3.4. Có trong code nhưng không phải luồng trình bày chính
 
 | Nhóm route | Vai trò trong repo | Có nên đưa vào demo executive không |
 | --- | --- | --- |
-| `/preview/platform-review/*` | Thử nghiệm pattern UX thay thế | Không cần, trừ khi đang so sánh thiết kế |
+| `/preview/platform-review/*` | Nhánh thử pattern UX | Không cần, trừ khi đang so sánh thiết kế |
 | `/bot-engine/campaigns/*` | Nhánh phụ trong prototype | Không cần nếu mục tiêu là hiểu sản phẩm chính |
-| `/bot-engine/outbound/new/step-*` và `/bot-engine/inbound/new/step-*` | Các route cũ của wizard theo bước | Hiện chỉ redirect về `/create`, không cần dùng như flow riêng |
-| `/settings/agent/queue-new`, `/settings/users/new`, `/settings/roles/editor` | Màn hình cấu hình chi tiết | Chỉ mở khi cần đào sâu |
+| `/bot-engine/outbound/new/step-*` và `/bot-engine/inbound/new/step-*` | Route wizard cũ | Hiện chỉ redirect về `/create`, không dùng như flow riêng |
+| `/settings/agent/queue-new`, `/settings/users/new`, `/settings/roles/editor` | Màn cấu hình chi tiết | Chỉ mở khi cần đào sâu |
 
 ---
 
 ## 4. Cách các module liên kết với nhau
 
-Phần này là `sơ đồ quan trọng nhất` để người đọc hiểu prototype đang vận hành ra sao.
+Mục này nên được đọc như sau:
 
-Sơ đồ tổng thể cũ đã được lược bỏ vì:
+1. nhìn `mô hình vận hành platform` để hiểu bức tranh business;
+2. nhìn `bản đồ liên kết module` để hiểu code hiện tại đang nối tới đâu;
+3. chỉ đọc bảng ngắn bên dưới để tránh hiểu nhầm mức độ tích hợp.
 
-- trùng ý với sơ đồ module ở bên dưới;
-- không giúp người đọc phân biệt đâu là liên kết thật, đâu là liên kết một phần;
-- dễ làm người xem hiểu nhầm rằng mọi khối trong hình đã được nối chặt với nhau ở mức code.
+![Mô hình vận hành platform](./diagrams/executive-operating-model.svg)
 
-Vì vậy, tài liệu này dùng trực tiếp `bản đồ liên kết module theo code hiện tại` làm sơ đồ chính.
+Người đọc cần rút ra từ sơ đồ trên:
+
+- mỗi doanh nghiệp mang theo `context business`, `tri thức`, `dữ liệu` và `use case` riêng;
+- portal giữ phần lõi dùng chung: bot engine, workflow, KB, settings, dashboard, report;
+- vì vậy giá trị của sản phẩm là `triển khai nhanh nhiều use case trên cùng một platform`, không phải làm một bot từ đầu cho từng doanh nghiệp.
 
 ![Bản đồ liên kết module](./diagrams/executive-module-linkage.svg)
 
-Cách đọc sơ đồ này:
+Cách đọc sơ đồ này rất ngắn:
 
-- cột trái là `Settings`, tức các màn cấu hình nền;
-- cột giữa là `core modules` đang được dùng trong flow chính;
-- cột phải là nơi đọc kết quả vận hành;
-- đường `xanh` là liên kết thật đang có trong code;
-- đường `cam` là liên kết có một phần, nhưng chưa dùng source-of-truth chung;
-- các box viền `cam nhạt` trong cột `Settings` là những phần có liên quan về mặt nghiệp vụ, nhưng chưa wire thật sang flow thao tác chính.
-
-Kết luận ngắn từ sơ đồ:
-
-- `KB Fallback -> Outbound/Inbound create` là liên kết thật;
-- `Workflow -> Preview` là liên kết thật;
-- `Workflow/KB -> Bot Engine` hiện mới ở mức tham chiếu qua mock refs;
-- phần lớn `Settings` vẫn là màn cấu hình độc lập, chưa feed ngược vào `Workflow`, `Inbound`, `Preview` theo kiểu source-of-truth.
+- `xanh` = đang nối thật trong code;
+- `cam` = đang nối một phần;
+- `Settings` hiện chủ yếu là lớp cấu hình nền, chưa trở thành source-of-truth chung cho mọi flow.
 
 ### 4.1. Bảng tóm tắt liên kết quan trọng
 
-| Liên kết | Trạng thái theo code hiện tại | Ghi chú ngắn |
-| --- | --- | --- |
-| `Settings API -> Workflow API node` | Chưa link chuẩn | Workflow đang nhập tay `apiRef`, `apiUrl`, `authProfile` |
-| `Settings Agent -> Inbound queue / transfer target` | Chưa link chuẩn | Queue/group chưa dùng chung giữa settings và flow tạo route |
-| `Settings STT/TTS -> Preview / runtime` | Chưa link chuẩn | Có settings page nhưng preview chưa đọc trực tiếp |
-| `Settings Extensions / Phone Numbers -> Inbound` | Chưa link chuẩn | Inbound create vẫn nhập hoặc chọn giá trị riêng |
-| `KB Fallback -> Outbound create` | Có link thật | Chọn rule active qua API |
-| `KB Fallback -> Inbound create` | Có link thật | Chọn rule active qua API |
-| `Workflow -> Preview` | Có link thật | Preview đọc workflow thật |
-| `Bot Engine create -> Workflow new` | Có link thật | Có thể nhảy sang builder với prefill và quay lại create flow |
-| `Workflow -> Bot Engine create` | Link một phần | Chọn qua `workflowRefs` mock |
-| `Knowledge Base -> Bot Engine create` | Link một phần | Chọn qua `knowledgeRefs` mock |
-| `Campaign / Inbound data -> Dashboard / Reports` | Có link thật | Đã có consumer hiển thị kết quả vận hành |
+| Điều người đọc cần biết | Trạng thái |
+| --- | --- |
+| `KB Fallback -> Outbound / Inbound Create` | Đang nối thật |
+| `Workflow -> Preview` | Đang nối thật |
+| `Bot Engine Create -> Workflow New -> quay lại Create Flow` | Đang nối thật |
+| `Workflow / KB -> Bot Engine Create` | Mới nối một phần qua mock refs |
+| `Settings -> Workflow / Inbound / Preview` | Về nghiệp vụ có liên quan, nhưng chưa wire source-of-truth chung |
 
 ### 4.2. Cách các module thực sự nối với nhau trong hành trình người dùng
 
-Người đọc sẽ dễ hiểu hơn nếu nhìn hệ thống theo `3 chuỗi thao tác chính` thay vì nhìn từng module rời nhau.
+Người đọc chỉ cần nhớ `3 chuỗi chính`:
 
-`Chuỗi 1: cấu hình một bot để chạy chiến dịch hoặc hotline`
-
-1. Người vận hành vào `Bot Engine Create` để tạo `Outbound Campaign` hoặc `Inbound Route`.
-2. Ở bước cấu hình, hệ thống cho phép:
-   - dùng `Workflow` có sẵn;
-   - hoặc tạo `Workflow` mới ngay trong flow rồi quay lại tiếp tục tạo bot.
-3. Sau khi workflow đã được gắn, hệ thống yêu cầu chọn `Knowledge Base`, và có thể gắn thêm `KB Fallback`.
-4. Trong code hiện tại:
-   - `KB Fallback` là phần nối thật, vì màn create đọc danh sách rule active từ API;
-   - `Workflow` và `Knowledge Base` mới nối một phần, vì danh sách chọn đang đến từ mock refs;
-   - nhánh `tạo workflow mới ngay trong flow` là link thật giữa `Bot Engine Create` và `Workflow Builder`, nhưng hiện mới ở mức draft UI/runtime mock.
-5. Kết quả là người xem sẽ thấy tư duy `business-first` rõ hơn trước: bắt đầu từ campaign hoặc route trước, rồi mới xác định logic bot.
-
-`Gợi ý đọc tiếp:` sơ đồ trực quan cho luồng này được trình bày ở mục `10.6`.
-
-`Chuỗi 2: thiết kế logic xử lý của bot`
-
-1. Người vận hành vào `Workflow` để tạo hoặc chỉnh sửa logic hội thoại.
-2. Trong builder hiện tại, một workflow có thể gồm các node `Start`, `Prompt`, `Intent`, `Condition`, `API`, `KB`, `Handover`, `End`.
-3. Về mặt ngữ nghĩa:
-   - `Intent` là nơi thu nhu cầu của khách và có thể extract entity;
-   - `Condition` là nơi đọc intent/entity để rẽ nhánh;
-   - `API` là nơi dùng entity để gọi hệ thống ngoài;
-   - `KB` là nơi bot tra tri thức từ KB đã được bind ở bước tạo outbound/inbound;
-   - `Handover` là nơi chuyển sang người thật khi bot không nên xử lý tiếp.
-4. `Preview` đọc workflow thật để mô phỏng transcript và runtime log.
-5. Tuy nhiên:
-   - node `API` chưa lấy danh sách API đã setup ở `Settings API`;
-   - node `KB` chưa lấy trực tiếp danh sách tài liệu từ module `Knowledge Base`.
-
-`Chuỗi 3: theo dõi kết quả sau khi cấu hình`
-
-1. Sau khi campaign hoặc route đã được cấu hình, người quản lý đọc `Dashboard` và `Reports`.
-2. Đây là lớp theo dõi hiệu quả vận hành: số lượng cuộc gọi, trạng thái, xu hướng, lỗi, chi tiết transcript.
-3. Vì vậy, trong tài liệu này nên hiểu:
-   - `Bot Engine`, `Workflow`, `KB`, `Settings` là lớp cấu hình và vận hành;
-   - `Dashboard` và `Reports` là lớp đọc kết quả.
+| Chuỗi | Người dùng làm gì | Module chính |
+| --- | --- | --- |
+| 1. Tạo bot theo mục tiêu business | Tạo outbound campaign hoặc inbound route, chọn hoặc tạo workflow, gắn KB và fallback | `Bot Engine`, `Workflow`, `KB` |
+| 2. Thiết kế logic bot | Tạo flow, định nghĩa intent/entity, gọi API, tra KB, handover, preview | `Workflow`, `Preview` |
+| 3. Đo và tối ưu | Theo dõi hiệu quả, lỗi, transcript, rồi quay lại chỉnh cấu hình hoặc logic | `Dashboard`, `Reports`, `Workflow`, `KB` |
 
 ### 4.3. Điều người đọc cần nhớ để không hiểu nhầm prototype
 
-- prototype đang mô tả rất tốt `ý nghĩa nghiệp vụ` và `trải nghiệm quản trị`;
-- nhưng không phải mọi liên kết giữa module đều đã là `source-of-truth integration`;
-- `Settings` hiện chủ yếu là các màn cấu hình độc lập;
-- các liên kết mạnh nhất theo code hiện tại là:
-  - `KB Fallback -> Bot Engine Create`;
-  - `Workflow -> Preview`;
-  - `Campaign / Inbound data -> Dashboard / Reports`.
-
-Nói ngắn gọn:
-
-> Nếu đọc tài liệu này để hiểu sản phẩm, hãy xem prototype như một hệ thống đã mô tả đúng luồng vận hành.  
-> Nếu đọc để đánh giá mức độ tích hợp code hiện tại, hãy lưu ý rằng nhiều liên kết vẫn đang ở mức mock hoặc bán tích hợp.
+- prototype đang mô tả đúng `ý tưởng vận hành` của platform;
+- nhưng chưa phải mọi liên kết đều là `integration production-grade`;
+- `Settings` hiện vẫn là phần ít nối thật nhất;
+- nếu trình bày cho sếp, nên nhấn mạnh rằng:  
+  `prototype này đang chứng minh cách platform được tổ chức và cách người vận hành sẽ làm việc với nó`.
 
 ---
 
@@ -290,193 +250,57 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 ## 9. Ý nghĩa từng module
 
+![Bản đồ module](./diagrams/executive-module-summary.svg)
+
+Người đọc nên nhìn hình trên trước, rồi chỉ dùng phần dưới như một bảng chú giải ngắn.
+
 ### 9.1. Dashboard
 
-`Mục đích:` cho người vận hành biết hệ thống đang khỏe hay không.
-
-`Người dùng chính:` Ops Manager, Tổng đài trưởng.
-
-`Xem gì ở đây:`
-
-- số cuộc gọi tổng, thành công, thất bại;
-- xu hướng inbound và outbound;
-- top intent được nhận diện;
-- lý do handover sang agent;
-- sức khỏe API và độ chính xác STT.
-
-`Thông điệp cho sếp:` đây là màn hình điều hành, dùng để nhìn ngay tình trạng vận hành bot ở mức tổng quan.
+`Dùng để:` nhìn sức khỏe vận hành ở mức tổng quan.  
+`Người dùng chính:` quản lý vận hành, tổng đài trưởng.  
+`Thông điệp cần nhớ:` đây là nơi đọc tình hình, không phải nơi tạo cấu hình.
 
 ### 9.2. Bot Engine Outbound
 
-`Mục đích:` tạo và quản lý chiến dịch gọi ra.
-
-`Người dùng chính:` Campaign Manager, Sales Ops, Collections Ops.
-
-`Thao tác chính:`
-
-- xem danh sách campaign;
-- mở chi tiết campaign;
-- tạo campaign mới theo từng bước;
-- chọn nguồn dữ liệu;
-- chọn workflow có sẵn hoặc nhảy sang tạo workflow mới;
-- gắn Knowledge Base;
-- gắn KB Fallback đang active;
-- cấu hình lịch gọi và retry.
-
-`Bám theo code hiện tại:`
-
-- danh sách ở `/bot-engine/outbound`;
-- màn tạo mới dễ demo nhất ở `/bot-engine/outbound/create`;
-- các route `/bot-engine/outbound/new/step-1..4` hiện chỉ redirect về `/bot-engine/outbound/create`.
-
-`Ý nghĩa nghiệp vụ:` giúp doanh nghiệp mở rộng gọi ra tự động mà không phụ thuộc hoàn toàn vào nhân sự gọi thủ công.
-
-`Điểm cần hiểu đúng:` trong bản deploy hiện tại, outbound create đã bắt đầu đi theo tư duy `business-first`: tạo campaign trước, rồi mới quyết định logic bot đi kèm.
+`Dùng để:` tạo chiến dịch gọi ra theo mục tiêu business.  
+`Người dùng chính:` campaign manager, sales ops, collections ops.  
+`Điểm cần nhớ:` trong bản deploy hiện tại, đây là điểm bắt đầu rất tốt để demo vì flow đã đi theo hướng `campaign trước, workflow sau`.
 
 ### 9.3. Bot Engine Inbound
 
-`Mục đích:` cấu hình cách hệ thống tiếp nhận cuộc gọi vào.
-
-`Người dùng chính:` Ops Manager, Call Center Supervisor.
-
-`Thao tác chính:`
-
-- xem danh sách route inbound;
-- tạo route mới;
-- cấu hình queue và extension;
-- chọn workflow inbound có sẵn hoặc nhảy sang tạo workflow mới;
-- gắn KB và fallback;
-- kiểm tra chi tiết route.
-
-`Bám theo code hiện tại:`
-
-- danh sách ở `/bot-engine/inbound`;
-- màn tạo mới dễ demo nhất ở `/bot-engine/inbound/create`;
-- các route `/bot-engine/inbound/new/step-1..4` hiện chỉ redirect về `/bot-engine/inbound/create`.
-
-`Ý nghĩa nghiệp vụ:` mỗi hotline hoặc đầu số có thể được định nghĩa cách xử lý riêng mà không phải sửa hệ thống lõi.
-
-`Điểm cần hiểu đúng:` inbound route là nơi định nghĩa ngữ cảnh hotline hoặc queue; workflow chỉ là logic được gắn vào ngữ cảnh đó.
+`Dùng để:` cấu hình hotline hoặc queue cuộc gọi vào.  
+`Người dùng chính:` call center supervisor, ops manager.  
+`Điểm cần nhớ:` route định nghĩa ngữ cảnh tiếp nhận cuộc gọi; workflow chỉ là logic được gắn vào ngữ cảnh đó.
 
 ### 9.4. Workflow
 
-`Mục đích:` là nơi mô hình hóa “bộ não xử lý” của bot.
-
-`Người dùng chính:` Bot Designer, Product Owner, Solution Architect.
-
-`Thao tác chính:`
-
-- xem danh sách workflow;
-- bật hoặc tắt trạng thái workflow;
-- tạo workflow mới;
-- chỉnh sửa node;
-- xem sơ đồ diagram;
-- bấm từng node để xem đúng properties của node đang chọn;
-- xem intent scope và entity scope của toàn workflow;
-- xem version history;
-- chạy preview để xem transcript và log.
-
-`Bám theo code hiện tại:`
-
-- list ở `/workflow`;
-- builder ở `/workflow/new` và `/workflow/[id]/edit`;
-- chi tiết ở `/workflow/[id]`;
-- preview ở `/workflow/[id]/preview/session`, `/conversation`, `/api-log`, `/kb`;
-- version history ở `/workflow/[id]/versions`.
-
-`Cách hiểu đúng theo bản deploy:`
-
-- `Workflow detail` hiện tách `thông tin chung` và `node properties`, tránh trộn metadata của workflow với cấu hình của node;
-- workflow mẫu `WF_FullNode_Demo` được dùng để giải thích đầy đủ semantics của các loại node và quan hệ giữa `intent` với `entity`;
-- `KB node` không phải nơi chọn lại KB, mà là bước bot đi tra tri thức từ KB đã bind ở outbound/inbound create.
-
-`Ý nghĩa nghiệp vụ:` đây là nơi chuyển yêu cầu nghiệp vụ thành logic bot có thể thực thi.
+`Dùng để:` giữ thư viện logic bot có thể tái sử dụng giữa nhiều campaign hoặc route.  
+`Người dùng chính:` bot designer, product owner, solution architect.  
+`Điểm cần nhớ:` workflow là “bộ não”; `WF_FullNode_Demo` là workflow nên mở để giải thích intent, entity, API, KB và handover.
 
 ### 9.5. Knowledge Base
 
-`Mục đích:` quản lý nội dung tri thức cho bot.
-
-`Người dùng chính:` Knowledge Supervisor, Product Content Owner.
-
-`Thao tác chính:`
-
-- tạo KB từ URL, bài viết hoặc file;
-- xem chi tiết từng tài liệu;
-- chuyển trạng thái học của KB;
-- xóa tài liệu;
-- xem KB nào đang được workflow hoặc hội thoại sử dụng;
-- cấu hình fallback khi KB không đủ tốt.
-
-`Bám theo code hiện tại:`
-
-- danh sách ở `/kb/list`;
-- thêm mới ở `/kb/add`;
-- chi tiết tài liệu ở `/kb/list/[id]`;
-- fallback ở `/kb/fallback`;
-- usage ở `/kb/usage`.
-
-`Ý nghĩa nghiệp vụ:` giảm việc hard-code câu trả lời trong workflow, cho phép bot trả lời linh hoạt theo kho tri thức được cập nhật.
+`Dùng để:` quản lý tri thức mà bot sẽ tra cứu khi đi tới KB node.  
+`Người dùng chính:` content owner, knowledge supervisor.  
+`Điểm cần nhớ:` KB là lớp tri thức dùng chung; fallback là lớp thoát hiểm khi bot không đủ chắc chắn.
 
 ### 9.6. Report
 
-`Mục đích:` đo hiệu quả và kiểm tra chất lượng vận hành.
-
-`Người dùng chính:` Ops Manager, QA, Business Owner.
-
-`Các nhánh chính:`
-
-- `Overview`: bức tranh tổng thể;
-- `Inbound`: hiệu quả cuộc gọi vào;
-- `Outbound`: hiệu quả chiến dịch gọi ra;
-- `Call Detail`: transcript, intent, entity;
-- `Error Monitor`: lỗi theo thời gian;
-- `Agent Analysis`: hiệu suất nhân viên sau handover.
-
-`Ý nghĩa nghiệp vụ:` trả lời câu hỏi “bot đang mang lại hiệu quả gì” và “điểm nghẽn đang nằm ở đâu”.
+`Dùng để:` đo hiệu quả, lỗi và chất lượng cuộc gọi.  
+`Người dùng chính:` ops manager, QA, business owner.  
+`Điểm cần nhớ:` report là câu trả lời cho câu hỏi “bot có đang tạo giá trị thật không”.
 
 ### 9.7. Settings
 
-`Mục đích:` cấu hình nền tảng và các tham số vận hành.
-
-`Người dùng chính:` Admin, Tech Ops, Solution Owner.
-
-`Các nhóm cấu hình:`
-
-- STT / TTS / VAD;
-- người dùng;
-- API integration;
-- agent handover;
-- fallback hệ thống;
-- đầu số;
-- extension;
-- phân quyền.
-
-`Ý nghĩa nghiệp vụ:` gom toàn bộ cấu hình nền về một nơi để đội vận hành không phải chỉnh sửa kỹ thuật thủ công.
-
-`Bám theo code hiện tại:`
-
-- trang gốc `/settings` chỉ redirect;
-- các trang cấu hình thật nằm ở các route con như `/settings/stt-tts`, `/settings/users`, `/settings/api`, `/settings/agent`, `/settings/fallback`, `/settings/phone-numbers`, `/settings/extensions`, `/settings/roles`.
+`Dùng để:` gom các cấu hình nền như STT/TTS, API, handover, đầu số, users và roles.  
+`Người dùng chính:` admin, tech ops, solution owner.  
+`Điểm cần nhớ:` settings rất quan trọng về mặt platform, nhưng hiện vẫn là nhóm nối ít nhất vào flow chính của prototype.
 
 ### 9.8. Preview / Playground
 
-`Mục đích:` mô phỏng cuộc hội thoại và quan sát log runtime.
-
-`Người dùng chính:` Bot Designer, QA, Presales, Product.
-
-`Thao tác chính:`
-
-- play transcript hội thoại;
-- xem log node;
-- xem latency STT / LLM / TTS;
-- dùng làm màn hình “trình diễn” với stakeholder.
-
-`Ý nghĩa nghiệp vụ:` giúp giải thích bot hoạt động như thế nào mà không cần tích hợp thật vào tổng đài.
-
-`Bám theo code hiện tại:`
-
-- route chính là `/preview/playground`;
-- ngoài ra repo có thêm `preview/platform-review/*` nhưng đó là nhánh review UX, không phải luồng chuẩn mà tài liệu này đang mô tả.
+`Dùng để:` mô phỏng transcript, log node và behavior runtime.  
+`Người dùng chính:` bot designer, QA, presales, product.  
+`Điểm cần nhớ:` đây là màn rất tốt để trình diễn logic bot mà không cần tích hợp thật vào tổng đài.
 
 ---
 

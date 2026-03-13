@@ -1,0 +1,89 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" rx="32" fill="#F5F8FC"/>
+  <rect x="24" y="24" width="1352" height="852" rx="28" fill="#FFFFFF" stroke="#D6E0EC" stroke-width="2"/>
+
+  <text x="56" y="84" fill="#1F2D3D" font-family="Arial, sans-serif" font-size="28" font-weight="700">Tầm nhìn sản phẩm: một portal, nhiều doanh nghiệp, nhiều ngành</text>
+  <text x="56" y="120" fill="#5B6B80" font-family="Arial, sans-serif" font-size="18">Sơ đồ này giúp người đọc hiểu ngay mục tiêu business của hệ thống, trước khi đi vào từng màn hình prototype.</text>
+
+  <rect x="56" y="170" width="300" height="500" rx="24" fill="#F7FAFE" stroke="#C9D6E6" stroke-width="2"/>
+  <text x="88" y="220" fill="#1E3A5F" font-family="Arial, sans-serif" font-size="22" font-weight="700">Các doanh nghiệp sử dụng</text>
+  <text x="88" y="252" fill="#65758B" font-family="Arial, sans-serif" font-size="16">Portal không sinh ra cho một chiến dịch đơn lẻ.</text>
+
+  <rect x="88" y="286" width="236" height="56" rx="16" fill="#FFFFFF" stroke="#BFD0E3" stroke-width="2"/>
+  <text x="116" y="321" fill="#29486E" font-family="Arial, sans-serif" font-size="18" font-weight="700">Ngân hàng / tài chính</text>
+
+  <rect x="88" y="358" width="236" height="56" rx="16" fill="#FFFFFF" stroke="#BFD0E3" stroke-width="2"/>
+  <text x="116" y="393" fill="#29486E" font-family="Arial, sans-serif" font-size="18" font-weight="700">Bảo hiểm</text>
+
+  <rect x="88" y="430" width="236" height="56" rx="16" fill="#FFFFFF" stroke="#BFD0E3" stroke-width="2"/>
+  <text x="116" y="465" fill="#29486E" font-family="Arial, sans-serif" font-size="18" font-weight="700">Bán lẻ / thương mại</text>
+
+  <rect x="88" y="502" width="236" height="56" rx="16" fill="#FFFFFF" stroke="#BFD0E3" stroke-width="2"/>
+  <text x="116" y="537" fill="#29486E" font-family="Arial, sans-serif" font-size="18" font-weight="700">Y tế / dịch vụ công</text>
+
+  <rect x="88" y="574" width="236" height="56" rx="16" fill="#FFFFFF" stroke="#BFD0E3" stroke-width="2"/>
+  <text x="116" y="609" fill="#29486E" font-family="Arial, sans-serif" font-size="18" font-weight="700">Viễn thông / CSKH</text>
+
+  <rect x="402" y="170" width="592" height="500" rx="28" fill="url(#portalGradient)" stroke="#2D6DC4" stroke-width="2"/>
+  <text x="450" y="224" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">AI Voicebot Portal</text>
+  <text x="450" y="252" fill="#D9E9FF" font-family="Arial, sans-serif" font-size="16">Một lớp quản trị dùng chung cho nhiều doanh nghiệp và nhiều bài toán thoại.</text>
+
+  <rect x="450" y="292" width="228" height="96" rx="18" fill="#FFFFFF" fill-opacity="0.18" stroke="#9DCAFF" stroke-width="1.5"/>
+  <text x="480" y="330" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">Bot Engine</text>
+  <text x="480" y="358" fill="#E6F1FF" font-family="Arial, sans-serif" font-size="16">Tạo campaign outbound</text>
+  <text x="480" y="382" fill="#E6F1FF" font-family="Arial, sans-serif" font-size="16">và inbound route</text>
+
+  <rect x="708" y="292" width="238" height="96" rx="18" fill="#FFFFFF" fill-opacity="0.18" stroke="#9DCAFF" stroke-width="1.5"/>
+  <text x="738" y="330" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">Workflow Library</text>
+  <text x="738" y="358" fill="#E6F1FF" font-family="Arial, sans-serif" font-size="16">Thiết kế logic dùng lại</text>
+  <text x="738" y="382" fill="#E6F1FF" font-family="Arial, sans-serif" font-size="16">giữa nhiều bot</text>
+
+  <rect x="450" y="416" width="228" height="96" rx="18" fill="#FFFFFF" fill-opacity="0.18" stroke="#9DCAFF" stroke-width="1.5"/>
+  <text x="480" y="454" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">Knowledge Base</text>
+  <text x="480" y="482" fill="#E6F1FF" font-family="Arial, sans-serif" font-size="16">Nguồn tri thức chung</text>
+  <text x="480" y="506" fill="#E6F1FF" font-family="Arial, sans-serif" font-size="16">cho nhiều use case</text>
+
+  <rect x="708" y="416" width="238" height="96" rx="18" fill="#FFFFFF" fill-opacity="0.18" stroke="#9DCAFF" stroke-width="1.5"/>
+  <text x="738" y="454" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">Settings &amp; Integration</text>
+  <text x="738" y="482" fill="#E6F1FF" font-family="Arial, sans-serif" font-size="16">API, STT/TTS, handover,</text>
+  <text x="738" y="506" fill="#E6F1FF" font-family="Arial, sans-serif" font-size="16">phân quyền và đầu số</text>
+
+  <rect x="450" y="540" width="496" height="88" rx="18" fill="#FFFFFF" fill-opacity="0.16" stroke="#9DCAFF" stroke-width="1.5"/>
+  <text x="482" y="578" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="700">Report, Dashboard, Preview</text>
+  <text x="482" y="606" fill="#E6F1FF" font-family="Arial, sans-serif" font-size="16">Quan sát vận hành, chứng minh chất lượng và tối ưu theo vòng lặp cải tiến.</text>
+
+  <rect x="1040" y="170" width="280" height="500" rx="24" fill="#F7FAFE" stroke="#C9D6E6" stroke-width="2"/>
+  <text x="1072" y="220" fill="#1E3A5F" font-family="Arial, sans-serif" font-size="22" font-weight="700">Các bài toán có thể triển khai</text>
+  <text x="1072" y="252" fill="#65758B" font-family="Arial, sans-serif" font-size="16">Khác ngành, nhưng dùng chung lõi platform.</text>
+
+  <rect x="1072" y="286" width="216" height="56" rx="16" fill="#ECF7F1" stroke="#8EC8A5" stroke-width="2"/>
+  <text x="1100" y="321" fill="#194C2F" font-family="Arial, sans-serif" font-size="18" font-weight="700">Nhắc thanh toán</text>
+
+  <rect x="1072" y="358" width="216" height="56" rx="16" fill="#ECF7F1" stroke="#8EC8A5" stroke-width="2"/>
+  <text x="1100" y="393" fill="#194C2F" font-family="Arial, sans-serif" font-size="18" font-weight="700">CSKH hotline</text>
+
+  <rect x="1072" y="430" width="216" height="56" rx="16" fill="#ECF7F1" stroke="#8EC8A5" stroke-width="2"/>
+  <text x="1100" y="465" fill="#194C2F" font-family="Arial, sans-serif" font-size="18" font-weight="700">Tư vấn sản phẩm</text>
+
+  <rect x="1072" y="502" width="216" height="56" rx="16" fill="#ECF7F1" stroke="#8EC8A5" stroke-width="2"/>
+  <text x="1100" y="537" fill="#194C2F" font-family="Arial, sans-serif" font-size="18" font-weight="700">Khảo sát / nhắc hẹn</text>
+
+  <rect x="1072" y="574" width="216" height="56" rx="16" fill="#ECF7F1" stroke="#8EC8A5" stroke-width="2"/>
+  <text x="1100" y="609" fill="#194C2F" font-family="Arial, sans-serif" font-size="18" font-weight="700">Handover sang agent</text>
+
+  <path d="M356 420H390" stroke="#7B98BD" stroke-width="4" stroke-linecap="round"/>
+  <path d="M994 420H1028" stroke="#7B98BD" stroke-width="4" stroke-linecap="round"/>
+  <path d="M379 410L401 420L379 430" fill="#7B98BD"/>
+  <path d="M1018 410L1040 420L1018 430" fill="#7B98BD"/>
+
+  <rect x="56" y="710" width="1264" height="118" rx="22" fill="#F7FAFE" stroke="#C9D6E6" stroke-width="2"/>
+  <text x="88" y="754" fill="#1E3A5F" font-family="Arial, sans-serif" font-size="20" font-weight="700">Thông điệp cần người đọc hiểu ngay</text>
+  <text x="88" y="788" fill="#42546B" font-family="Arial, sans-serif" font-size="18">Prototype này đang mô phỏng một platform voicebot có thể tái dùng cho nhiều doanh nghiệp, nhiều ngành và nhiều luồng thoại khác nhau, không phải một bot đơn lẻ cho một chiến dịch.</text>
+
+  <defs>
+    <linearGradient id="portalGradient" x1="402" y1="170" x2="994" y2="670" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#144B93"/>
+      <stop offset="1" stop-color="#1B7AE0"/>
+    </linearGradient>
+  </defs>
+</svg>

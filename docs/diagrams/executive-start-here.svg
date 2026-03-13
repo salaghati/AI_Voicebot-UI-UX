@@ -1,0 +1,70 @@
+<svg width="1400" height="880" viewBox="0 0 1400 880" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="880" rx="32" fill="#F5F8FC"/>
+  <rect x="24" y="24" width="1352" height="832" rx="28" fill="#FFFFFF" stroke="#D6E0EC" stroke-width="2"/>
+
+  <text x="56" y="84" fill="#1F2D3D" font-family="Arial, sans-serif" font-size="28" font-weight="700">Người đọc nên bắt đầu từ đâu để hiểu prototype</text>
+  <text x="56" y="120" fill="#5B6B80" font-family="Arial, sans-serif" font-size="18">Thay vì đọc tuần tự toàn bộ tài liệu, hãy đi theo 4 bước này để nắm business goal, cách cấu hình và cách vận hành.</text>
+
+  <rect x="56" y="170" width="292" height="510" rx="24" fill="#F7FAFE" stroke="#C9D6E6" stroke-width="2"/>
+  <circle cx="112" cy="230" r="28" fill="#1677D8"/>
+  <text x="103" y="239" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="24" font-weight="700">1</text>
+  <text x="156" y="226" fill="#1E3A5F" font-family="Arial, sans-serif" font-size="22" font-weight="700">Hiểu mục tiêu kinh doanh</text>
+  <text x="88" y="280" fill="#42546B" font-family="Arial, sans-serif" font-size="18">Đọc sơ đồ tầm nhìn trước để hiểu đây là một portal dùng cho nhiều doanh nghiệp, nhiều use case.</text>
+  <rect x="88" y="350" width="228" height="92" rx="18" fill="#FFFFFF" stroke="#BFD0E3" stroke-width="2"/>
+  <text x="114" y="388" fill="#29486E" font-family="Arial, sans-serif" font-size="18" font-weight="700">Xem phần</text>
+  <text x="114" y="418" fill="#29486E" font-family="Arial, sans-serif" font-size="18">Business goal + platform vision</text>
+  <rect x="88" y="470" width="228" height="124" rx="18" fill="#ECF4FF" stroke="#9CC2F2" stroke-width="2"/>
+  <text x="114" y="510" fill="#1B4D88" font-family="Arial, sans-serif" font-size="17" font-weight="700">Người đọc cần rút ra</text>
+  <text x="114" y="542" fill="#416181" font-family="Arial, sans-serif" font-size="16">Không phải một bot đơn lẻ.</text>
+  <text x="114" y="568" fill="#416181" font-family="Arial, sans-serif" font-size="16">Đây là lõi quản trị cho nhiều ngành.</text>
+
+  <rect x="378" y="170" width="292" height="510" rx="24" fill="#F7FAFE" stroke="#C9D6E6" stroke-width="2"/>
+  <circle cx="434" cy="230" r="28" fill="#1677D8"/>
+  <text x="425" y="239" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="24" font-weight="700">2</text>
+  <text x="478" y="226" fill="#1E3A5F" font-family="Arial, sans-serif" font-size="22" font-weight="700">Xem bot được tạo thế nào</text>
+  <text x="410" y="280" fill="#42546B" font-family="Arial, sans-serif" font-size="18">Mở Outbound hoặc Inbound Create để thấy người dùng bắt đầu từ campaign hoặc route, rồi mới chọn workflow, KB và fallback.</text>
+  <rect x="410" y="350" width="228" height="92" rx="18" fill="#FFFFFF" stroke="#BFD0E3" stroke-width="2"/>
+  <text x="436" y="388" fill="#29486E" font-family="Arial, sans-serif" font-size="18" font-weight="700">Xem route</text>
+  <text x="436" y="418" fill="#29486E" font-family="Arial, sans-serif" font-size="18">/bot-engine/outbound/create</text>
+  <rect x="410" y="470" width="228" height="124" rx="18" fill="#ECF4FF" stroke="#9CC2F2" stroke-width="2"/>
+  <text x="436" y="510" fill="#1B4D88" font-family="Arial, sans-serif" font-size="17" font-weight="700">Người đọc cần rút ra</text>
+  <text x="436" y="542" fill="#416181" font-family="Arial, sans-serif" font-size="16">Doanh nghiệp nghĩ từ context business</text>
+  <text x="436" y="568" fill="#416181" font-family="Arial, sans-serif" font-size="16">rồi mới gắn logic bot vào.</text>
+
+  <rect x="700" y="170" width="292" height="510" rx="24" fill="#F7FAFE" stroke="#C9D6E6" stroke-width="2"/>
+  <circle cx="756" cy="230" r="28" fill="#1677D8"/>
+  <text x="747" y="239" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="24" font-weight="700">3</text>
+  <text x="800" y="226" fill="#1E3A5F" font-family="Arial, sans-serif" font-size="22" font-weight="700">Xem logic bot bên trong</text>
+  <text x="732" y="280" fill="#42546B" font-family="Arial, sans-serif" font-size="18">Mở workflow demo để hiểu bot nghe gì, lấy intent/entity ra sao, gọi API và tra KB ở đâu.</text>
+  <rect x="732" y="350" width="228" height="92" rx="18" fill="#FFFFFF" stroke="#BFD0E3" stroke-width="2"/>
+  <text x="758" y="388" fill="#29486E" font-family="Arial, sans-serif" font-size="18" font-weight="700">Xem route</text>
+  <text x="758" y="418" fill="#29486E" font-family="Arial, sans-serif" font-size="18">/workflow/WF_FullNode_Demo</text>
+  <rect x="732" y="470" width="228" height="124" rx="18" fill="#ECF4FF" stroke="#9CC2F2" stroke-width="2"/>
+  <text x="758" y="510" fill="#1B4D88" font-family="Arial, sans-serif" font-size="17" font-weight="700">Người đọc cần rút ra</text>
+  <text x="758" y="542" fill="#416181" font-family="Arial, sans-serif" font-size="16">Workflow là thư viện logic dùng chung.</text>
+  <text x="758" y="568" fill="#416181" font-family="Arial, sans-serif" font-size="16">KB là context được bind ở create flow.</text>
+
+  <rect x="1022" y="170" width="292" height="510" rx="24" fill="#F7FAFE" stroke="#C9D6E6" stroke-width="2"/>
+  <circle cx="1078" cy="230" r="28" fill="#1677D8"/>
+  <text x="1069" y="239" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="24" font-weight="700">4</text>
+  <text x="1122" y="226" fill="#1E3A5F" font-family="Arial, sans-serif" font-size="22" font-weight="700">Xem kết quả vận hành</text>
+  <text x="1054" y="280" fill="#42546B" font-family="Arial, sans-serif" font-size="18">Cuối cùng mở Dashboard, Report và Preview để thấy sau khi cấu hình xong thì người quản lý đọc gì, QA kiểm gì.</text>
+  <rect x="1054" y="350" width="228" height="92" rx="18" fill="#FFFFFF" stroke="#BFD0E3" stroke-width="2"/>
+  <text x="1080" y="388" fill="#29486E" font-family="Arial, sans-serif" font-size="18" font-weight="700">Xem route</text>
+  <text x="1080" y="418" fill="#29486E" font-family="Arial, sans-serif" font-size="18">/dashboard, /report, /preview</text>
+  <rect x="1054" y="470" width="228" height="124" rx="18" fill="#ECF4FF" stroke="#9CC2F2" stroke-width="2"/>
+  <text x="1080" y="510" fill="#1B4D88" font-family="Arial, sans-serif" font-size="17" font-weight="700">Người đọc cần rút ra</text>
+  <text x="1080" y="542" fill="#416181" font-family="Arial, sans-serif" font-size="16">Platform không dừng ở cấu hình.</text>
+  <text x="1080" y="568" fill="#416181" font-family="Arial, sans-serif" font-size="16">Nó phải đo, giám sát và tối ưu.</text>
+
+  <path d="M348 424H378" stroke="#8BA6C9" stroke-width="4" stroke-linecap="round"/>
+  <path d="M670 424H700" stroke="#8BA6C9" stroke-width="4" stroke-linecap="round"/>
+  <path d="M992 424H1022" stroke="#8BA6C9" stroke-width="4" stroke-linecap="round"/>
+  <path d="M366 414L388 424L366 434" fill="#8BA6C9"/>
+  <path d="M688 414L710 424L688 434" fill="#8BA6C9"/>
+  <path d="M1010 414L1032 424L1010 434" fill="#8BA6C9"/>
+
+  <rect x="56" y="720" width="1258" height="96" rx="20" fill="#EEF7F2" stroke="#9FD0AE" stroke-width="2"/>
+  <text x="88" y="760" fill="#24593A" font-family="Arial, sans-serif" font-size="20" font-weight="700">Nếu chỉ có 10 phút để xem prototype</text>
+  <text x="88" y="792" fill="#406A53" font-family="Arial, sans-serif" font-size="18">Hãy đi đúng 4 bước này. Người đọc sẽ hiểu được mục tiêu business, cách tạo bot, logic bot hoạt động thế nào và kết quả được đo ở đâu.</text>
+</svg>

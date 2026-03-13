@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
   <title id="title">Use case admin agent</title>
-  <desc id="desc">Use case diagram with two actors, Admin and Agent, and rectangle actions inside the AI Voicebot Ops Console system boundary.</desc>
+  <desc id="desc">Use case diagram with two actors, Admin and Agent, and rectangle actions inside the AI Voicebot Portal system boundary.</desc>
   <defs>
     <style>
       .bg { fill: #f4f7fb; }
@@ -16,7 +16,7 @@
   </defs>
   <rect class="bg" x="0" y="0" width="1440" height="900"/>
   <rect class="boundary" x="300" y="70" width="840" height="760"/>
-  <text class="lane-title" x="720" y="115" text-anchor="middle">AI Voicebot Ops Console</text>
+  <text class="lane-title" x="720" y="115" text-anchor="middle">AI Voicebot Portal</text>
   <text class="sub" x="720" y="145" text-anchor="middle">Use case tổng quan với 2 actor: Admin và Agent</text>
 
   <circle class="actor" cx="135" cy="210" r="30"/>
