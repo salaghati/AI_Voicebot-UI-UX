@@ -48,7 +48,7 @@ export function LoginForm() {
     <Card className="w-full max-w-md p-8">
       <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]">Module 01</p>
       <h1 className="mt-2 text-3xl font-bold">Đăng nhập hệ thống</h1>
-      <p className="mt-2 text-sm text-[var(--text-dim)]">Nhập email và mật khẩu để truy cập Ops Console.</p>
+      <p className="mt-2 text-sm text-[var(--text-dim)]">Nhập email và mật khẩu để truy cập hệ thống.</p>
 
       {failed ? (
         <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">

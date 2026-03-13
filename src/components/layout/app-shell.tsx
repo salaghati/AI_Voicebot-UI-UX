@@ -15,8 +15,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="mx-auto flex w-full max-w-[1600px] gap-4 p-4 lg:p-6">
         <aside className="sticky top-4 hidden h-[calc(100vh-2rem)] w-72 flex-col overflow-hidden rounded-3xl border border-[#123f78] bg-[linear-gradient(165deg,#103a78_0%,#11539f_48%,#1673cc_100%)] p-5 text-slate-100 shadow-[0_22px_40px_rgba(10,33,74,0.3)] lg:flex lg:top-6 lg:h-[calc(100vh-3rem)]">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-sky-200/80">AI Voicebot</p>
-            <h1 className="mt-2 text-xl font-bold">Ops Console</h1>
+            <h1 className="text-xl font-bold">AI Voicebot Portal</h1>
           </div>
 
           <nav className="mt-8 min-w-0 flex-1 space-y-2 overflow-y-auto overflow-x-hidden pr-1">

@@ -14,7 +14,7 @@ const display = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "AI Voicebot Ops Console",
+  title: "AI Voicebot Portal",
   description: "Interactive high-fidelity prototype from Figma/PPT flow",
 };
 
