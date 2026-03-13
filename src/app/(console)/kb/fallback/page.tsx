@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AsyncState } from "@/components/shared/async-state";
 import { Table, TBody, TD, TH, THead } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { formatDateTime } from "@/lib/utils";
 

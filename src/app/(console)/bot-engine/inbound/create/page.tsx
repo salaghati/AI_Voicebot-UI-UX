@@ -20,6 +20,15 @@ type WorkflowSetupMode = "existing" | "new";
 type LocalWorkflowOption = WorkflowRef & {
   source: "library" | "inline";
 };
+type InboundDraft = {
+  name: string;
+  description: string;
+  queue: string;
+  extension: string;
+  workflowId: string;
+  kbId: string;
+  fallbackRuleId: string;
+};
 
 const INBOUND_DRAFT_STORAGE_KEY = "bot-engine-inbound-create-draft";
 const inboundWorkflowLibrary: LocalWorkflowOption[] = workflowRefs
@@ -37,25 +46,37 @@ const workflowModeMeta: Record<WorkflowSetupMode, { title: string; description: 
   },
 };
 
+const defaultDraft = (): InboundDraft => ({
+  name: "",
+  description: "",
+  queue: "Queue Payment",
+  extension: "801",
+  workflowId: "",
+  kbId: "",
+  fallbackRuleId: "",
+});
+
+const readStoredDraft = (): InboundDraft => {
+  if (typeof window === "undefined") {
+    return defaultDraft();
+  }
+
+  const rawDraft = window.sessionStorage.getItem(INBOUND_DRAFT_STORAGE_KEY);
+  if (!rawDraft) {
+    return defaultDraft();
+  }
+
+  try {
+    return { ...defaultDraft(), ...(JSON.parse(rawDraft) as Partial<InboundDraft>) };
+  } catch {
+    window.sessionStorage.removeItem(INBOUND_DRAFT_STORAGE_KEY);
+    return defaultDraft();
+  }
+};
+
 export default function InboundCreatePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [step, setStep] = useState(0);
-  const [workflowMode, setWorkflowMode] = useState<WorkflowSetupMode>("existing");
-  const [workflowOptions, setWorkflowOptions] = useState<LocalWorkflowOption[]>(inboundWorkflowLibrary);
-  const [newWorkflowName, setNewWorkflowName] = useState("");
-  const [newWorkflowSummary, setNewWorkflowSummary] = useState("");
-  const [draft, setDraft] = useState({
-    name: "",
-    description: "",
-    queue: "Queue Payment",
-    extension: "801",
-    workflowId: "",
-    kbId: "",
-    fallbackRuleId: "",
-  });
-  const fallbackQuery = useQuery({ queryKey: ["kb-fallback-active"], queryFn: fetchActiveKbFallbackRules });
-  const selectedWorkflow = workflowOptions.find((item) => item.id === draft.workflowId) ?? null;
   const returnWorkflow = useMemo(
     () => ({
       workflowId: searchParams.get("workflowId"),
@@ -64,45 +85,46 @@ export default function InboundCreatePage() {
     }),
     [searchParams],
   );
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const rawDraft = window.sessionStorage.getItem(INBOUND_DRAFT_STORAGE_KEY);
-    if (!rawDraft) return;
-    try {
-      const parsed = JSON.parse(rawDraft) as typeof draft;
-      setDraft((prev) => ({ ...prev, ...parsed }));
-    } catch {
-      window.sessionStorage.removeItem(INBOUND_DRAFT_STORAGE_KEY);
+  const initialHasReturnedWorkflow = Boolean(returnWorkflow.workflowId && returnWorkflow.workflowName);
+  const [step, setStep] = useState(() => (initialHasReturnedWorkflow ? 2 : 0));
+  const [workflowMode, setWorkflowMode] = useState<WorkflowSetupMode>(() =>
+    initialHasReturnedWorkflow ? "existing" : "existing",
+  );
+  const [newWorkflowName, setNewWorkflowName] = useState("");
+  const [newWorkflowSummary, setNewWorkflowSummary] = useState("");
+  const [draft, setDraft] = useState<InboundDraft>(() => {
+    const storedDraft = readStoredDraft();
+    if (initialHasReturnedWorkflow && returnWorkflow.workflowId) {
+      return { ...storedDraft, workflowId: returnWorkflow.workflowId };
     }
-  }, []);
+    return storedDraft;
+  });
+  const fallbackQuery = useQuery({ queryKey: ["kb-fallback-active"], queryFn: fetchActiveKbFallbackRules });
+  const workflowOptions = useMemo(() => {
+    if (!returnWorkflow.workflowId || !returnWorkflow.workflowName) {
+      return inboundWorkflowLibrary;
+    }
+
+    const returnedWorkflow: LocalWorkflowOption = {
+      id: returnWorkflow.workflowId,
+      name: returnWorkflow.workflowName,
+      kind: "Inbound",
+      version: returnWorkflow.workflowVersion || "v1.0",
+      summary: "Workflow mới được tạo từ luồng tạo inbound route.",
+      source: "inline",
+    };
+
+    return [
+      returnedWorkflow,
+      ...inboundWorkflowLibrary.filter((item) => item.id !== returnedWorkflow.id),
+    ];
+  }, [returnWorkflow.workflowId, returnWorkflow.workflowName, returnWorkflow.workflowVersion]);
+  const selectedWorkflow = workflowOptions.find((item) => item.id === draft.workflowId) ?? null;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.sessionStorage.setItem(INBOUND_DRAFT_STORAGE_KEY, JSON.stringify(draft));
   }, [draft]);
-
-  useEffect(() => {
-    const { workflowId, workflowName, workflowVersion } = returnWorkflow;
-    if (!workflowId || !workflowName) return;
-
-    const workflow: LocalWorkflowOption = {
-      id: workflowId,
-      name: workflowName,
-      kind: "Inbound",
-      version: workflowVersion || "v1.0",
-      summary: "Workflow mới được tạo từ luồng tạo inbound route.",
-      source: "inline",
-    };
-
-    setWorkflowOptions((prev) => {
-      const rest = prev.filter((item) => item.id !== workflow.id);
-      return [workflow, ...rest];
-    });
-    setDraft((prev) => ({ ...prev, workflowId }));
-    setStep(2);
-    setWorkflowMode("existing");
-  }, [returnWorkflow]);
 
   const handleCreateWorkflowRoute = () => {
     if (!newWorkflowName.trim()) {

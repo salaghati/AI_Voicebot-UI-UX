@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { deleteKbFallbackRule, fetchKbFallbackRule, toggleKbFallbackActive } from "@/lib/api-client";
 import { KbShell } from "./KbShell";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";

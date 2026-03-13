@@ -8,13 +8,11 @@ import { toast } from "sonner";
 import { fetchWorkflows, toggleWorkflowStatus } from "@/lib/api-client";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { AsyncState } from "@/components/shared/async-state";
 import { formatDateTime } from "@/lib/utils";
-import { mapStatusTone } from "@/lib/mappers";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import type { Workflow } from "@/types/domain";
 
@@ -39,9 +37,8 @@ export default function WorkflowListPage() {
     onError: () => toast.error("Không thể đổi trạng thái workflow"),
   });
 
-  const workflows = listQuery.data?.data.items ?? [];
-
   const filtered = useMemo(() => {
+    const workflows = listQuery.data?.data.items ?? [];
     const q = query.trim().toLowerCase();
     return workflows.filter((item: Workflow) => {
       const matchQ = !q || item.name.toLowerCase().includes(q) || item.id.toLowerCase().includes(q);
@@ -49,7 +46,7 @@ export default function WorkflowListPage() {
       const matchType = typeFilter === "Tất cả" || item.kind === typeFilter;
       return matchQ && matchStatus && matchType;
     });
-  }, [workflows, query, statusFilter, typeFilter]);
+  }, [listQuery.data?.data.items, query, statusFilter, typeFilter]);
 
   return (
     <div className="space-y-4">

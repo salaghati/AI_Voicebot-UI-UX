@@ -22,14 +22,14 @@ export default function SettingsPhoneNumbersPage() {
   const queryClient = useQueryClient();
 
   const query = useQuery({ queryKey: ["settings-phone-numbers"], queryFn: fetchPhoneNumbers });
-  const allNumbers = query.data?.data ?? [];
 
   const filtered = useMemo(() => {
+    const allNumbers = query.data?.data ?? [];
     const q = searchQuery.trim().toLowerCase();
     return allNumbers.filter(
       (item) => item.context === context && (!q || item.number.includes(q)),
     );
-  }, [allNumbers, context, searchQuery]);
+  }, [context, query.data?.data, searchQuery]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);

@@ -31,6 +31,16 @@ type LocalWorkflowOption = WorkflowRef & {
 };
 
 const OUTBOUND_DRAFT_STORAGE_KEY = "bot-engine-outbound-create-draft";
+type OutboundDraft = {
+  name: string;
+  description: string;
+  sourceType: string;
+  workflowId: string;
+  kbId: string;
+  fallbackRuleId: string;
+  schedule: string;
+  retryRule: string;
+};
 
 const outboundWorkflowLibrary: LocalWorkflowOption[] = workflowRefs
   .filter((item) => item.kind === "Outbound")
@@ -47,26 +57,38 @@ const workflowModeMeta: Record<WorkflowSetupMode, { title: string; description: 
   },
 };
 
+const defaultDraft = (): OutboundDraft => ({
+  name: "",
+  description: "",
+  sourceType: "CRM",
+  workflowId: "",
+  kbId: "",
+  fallbackRuleId: "",
+  schedule: "09:00 - 19:00",
+  retryRule: "Retry 2 lần, mỗi 15 phút",
+});
+
+const readStoredDraft = (): OutboundDraft => {
+  if (typeof window === "undefined") {
+    return defaultDraft();
+  }
+
+  const rawDraft = window.sessionStorage.getItem(OUTBOUND_DRAFT_STORAGE_KEY);
+  if (!rawDraft) {
+    return defaultDraft();
+  }
+
+  try {
+    return { ...defaultDraft(), ...(JSON.parse(rawDraft) as Partial<OutboundDraft>) };
+  } catch {
+    window.sessionStorage.removeItem(OUTBOUND_DRAFT_STORAGE_KEY);
+    return defaultDraft();
+  }
+};
+
 export default function OutboundCreatePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [step, setStep] = useState(0);
-  const [workflowMode, setWorkflowMode] = useState<WorkflowSetupMode>("existing");
-  const [workflowOptions, setWorkflowOptions] = useState<LocalWorkflowOption[]>(outboundWorkflowLibrary);
-  const [newWorkflowName, setNewWorkflowName] = useState("");
-  const [newWorkflowSummary, setNewWorkflowSummary] = useState("");
-  const [draft, setDraft] = useState({
-    name: "",
-    description: "",
-    sourceType: "CRM",
-    workflowId: "",
-    kbId: "",
-    fallbackRuleId: "",
-    schedule: "09:00 - 19:00",
-    retryRule: "Retry 2 lần, mỗi 15 phút",
-  });
-  const fallbackQuery = useQuery({ queryKey: ["kb-fallback-active"], queryFn: fetchActiveKbFallbackRules });
-  const selectedWorkflow = workflowOptions.find((item) => item.id === draft.workflowId) ?? null;
   const returnWorkflow = useMemo(
     () => ({
       workflowId: searchParams.get("workflowId"),
@@ -75,45 +97,46 @@ export default function OutboundCreatePage() {
     }),
     [searchParams],
   );
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const rawDraft = window.sessionStorage.getItem(OUTBOUND_DRAFT_STORAGE_KEY);
-    if (!rawDraft) return;
-    try {
-      const parsed = JSON.parse(rawDraft) as typeof draft;
-      setDraft((prev) => ({ ...prev, ...parsed }));
-    } catch {
-      window.sessionStorage.removeItem(OUTBOUND_DRAFT_STORAGE_KEY);
+  const initialHasReturnedWorkflow = Boolean(returnWorkflow.workflowId && returnWorkflow.workflowName);
+  const [step, setStep] = useState(() => (initialHasReturnedWorkflow ? 2 : 0));
+  const [workflowMode, setWorkflowMode] = useState<WorkflowSetupMode>(() =>
+    initialHasReturnedWorkflow ? "existing" : "existing",
+  );
+  const [newWorkflowName, setNewWorkflowName] = useState("");
+  const [newWorkflowSummary, setNewWorkflowSummary] = useState("");
+  const [draft, setDraft] = useState<OutboundDraft>(() => {
+    const storedDraft = readStoredDraft();
+    if (initialHasReturnedWorkflow && returnWorkflow.workflowId) {
+      return { ...storedDraft, workflowId: returnWorkflow.workflowId };
     }
-  }, []);
+    return storedDraft;
+  });
+  const fallbackQuery = useQuery({ queryKey: ["kb-fallback-active"], queryFn: fetchActiveKbFallbackRules });
+  const workflowOptions = useMemo(() => {
+    if (!returnWorkflow.workflowId || !returnWorkflow.workflowName) {
+      return outboundWorkflowLibrary;
+    }
+
+    const returnedWorkflow: LocalWorkflowOption = {
+      id: returnWorkflow.workflowId,
+      name: returnWorkflow.workflowName,
+      kind: "Outbound",
+      version: returnWorkflow.workflowVersion || "v1.0",
+      summary: "Workflow mới được tạo từ luồng tạo outbound campaign.",
+      source: "inline",
+    };
+
+    return [
+      returnedWorkflow,
+      ...outboundWorkflowLibrary.filter((item) => item.id !== returnedWorkflow.id),
+    ];
+  }, [returnWorkflow.workflowId, returnWorkflow.workflowName, returnWorkflow.workflowVersion]);
+  const selectedWorkflow = workflowOptions.find((item) => item.id === draft.workflowId) ?? null;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.sessionStorage.setItem(OUTBOUND_DRAFT_STORAGE_KEY, JSON.stringify(draft));
   }, [draft]);
-
-  useEffect(() => {
-    const { workflowId, workflowName, workflowVersion } = returnWorkflow;
-    if (!workflowId || !workflowName) return;
-
-    const workflow: LocalWorkflowOption = {
-      id: workflowId,
-      name: workflowName,
-      kind: "Outbound",
-      version: workflowVersion || "v1.0",
-      summary: "Workflow mới được tạo từ luồng tạo outbound campaign.",
-      source: "inline",
-    };
-
-    setWorkflowOptions((prev) => {
-      const rest = prev.filter((item) => item.id !== workflow.id);
-      return [workflow, ...rest];
-    });
-    setDraft((prev) => ({ ...prev, workflowId }));
-    setStep(2);
-    setWorkflowMode("existing");
-  }, [returnWorkflow]);
 
   const handleCreateWorkflowRoute = () => {
     if (!newWorkflowName.trim()) {
