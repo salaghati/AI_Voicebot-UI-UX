@@ -7,5 +7,6 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   const payload = await request.json();
-  return NextResponse.json({ data: payload, message: "Lưu cấu hình Agent thành công" });
+  Object.assign(agentSetting, payload);
+  return NextResponse.json({ data: agentSetting, message: "Lưu cấu hình Agent thành công" });
 }
