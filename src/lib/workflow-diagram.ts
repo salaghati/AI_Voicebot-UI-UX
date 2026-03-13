@@ -1,6 +1,6 @@
 import type { WorkflowNode } from "@/types/domain";
 
-export type WorkflowDiagramTone = "blue" | "green" | "orange" | "purple" | "slate" | "teal";
+export type WorkflowDiagramTone = "blue" | "green" | "orange" | "purple" | "rose" | "slate" | "teal";
 
 export interface WorkflowDiagramNode {
   node: WorkflowNode;
@@ -24,18 +24,23 @@ const NODE_WIDTH = 220;
 const NODE_HEIGHT = 76;
 
 function toneByNode(node: WorkflowNode, index: number, total: number): WorkflowDiagramTone {
-  const label = node.label.toLowerCase();
-  if (label.includes("start") || node.id === "node_start") {
+  if (node.type === "Start") {
     return "teal";
   }
-  if (label.includes("kết thúc") || label.includes("end")) {
+  if (node.type === "End") {
     return "slate";
+  }
+  if (node.type === "Prompt" || node.type === "Intent") {
+    return "blue";
   }
   if (node.type === "API") {
     return "purple";
   }
   if (node.type === "KB") {
     return "green";
+  }
+  if (node.type === "Handover") {
+    return "rose";
   }
   if (node.type === "Condition") {
     return index === total - 1 ? "slate" : "orange";
@@ -55,9 +60,7 @@ export function buildWorkflowDiagram(nodes: WorkflowNode[]): WorkflowDiagramNode
   let branchIndex = 0;
 
   nodes.forEach((node, index) => {
-    const isTerminal =
-      index === nodes.length - 1 &&
-      (node.label.toLowerCase().includes("kết") || node.label.toLowerCase().includes("end"));
+    const isTerminal = node.type === "End" || (index === nodes.length - 1 && node.label.toLowerCase().includes("end"));
 
     let x = leftX;
     let y = topY + leftIndex * gapY;
@@ -77,6 +80,10 @@ export function buildWorkflowDiagram(nodes: WorkflowNode[]): WorkflowDiagramNode
     }
 
     if (node.type === "API") {
+      x = branchX;
+      y = branchBaseY + branchIndex * gapY;
+      branchIndex += 1;
+    } else if (node.type === "KB" || node.type === "Handover") {
       x = branchX;
       y = branchBaseY + branchIndex * gapY;
       branchIndex += 1;
@@ -103,10 +110,20 @@ export function buildWorkflowDiagram(nodes: WorkflowNode[]): WorkflowDiagramNode
 
 export function buildWorkflowConnectors(diagramNodes: WorkflowDiagramNode[]): WorkflowDiagramConnector[] {
   const connectors: WorkflowDiagramConnector[] = [];
+  const byId = new Map(diagramNodes.map((item) => [item.node.id, item]));
+  const endNode = diagramNodes.find((item) => item.node.type === "End");
+  const seen = new Set<string>();
 
-  for (let index = 0; index < diagramNodes.length - 1; index += 1) {
-    const current = diagramNodes[index];
-    const next = diagramNodes[index + 1];
+  const parseRuleTargets = (conditionRulesText?: string) =>
+    conditionRulesText
+      ? Array.from(conditionRulesText.matchAll(/->\s*([A-Za-z0-9_-]+)/g)).map((match) => match[1])
+      : [];
+
+  const pushConnector = (current: WorkflowDiagramNode, next: WorkflowDiagramNode) => {
+    const key = `${current.node.id}-${next.node.id}`;
+    if (current.node.id === next.node.id || seen.has(key)) return;
+    seen.add(key);
+
     const fromX = current.x + current.width / 2;
     const fromBottom = current.y + current.height;
     const toX = next.x + next.width / 2;
@@ -121,7 +138,7 @@ export function buildWorkflowConnectors(diagramNodes: WorkflowDiagramNode[]): Wo
         fromId: current.node.id,
         toId: next.node.id,
       });
-      continue;
+      return;
     }
 
     const midY = Math.max(fromBottom + 26, toTop - 26);
@@ -149,7 +166,33 @@ export function buildWorkflowConnectors(diagramNodes: WorkflowDiagramNode[]): Wo
       fromId: current.node.id,
       toId: next.node.id,
     });
-  }
+  };
+
+  diagramNodes.forEach((current, index) => {
+    if (current.node.type === "End") return;
+
+    if (current.node.type === "Condition") {
+      const targets = [...parseRuleTargets(current.node.conditionRulesText), current.node.defaultTargetNodeId]
+        .filter((target): target is string => Boolean(target))
+        .map((target) => byId.get(target))
+        .filter((target): target is WorkflowDiagramNode => Boolean(target));
+
+      if (targets.length > 0) {
+        targets.forEach((target) => pushConnector(current, target));
+        return;
+      }
+    }
+
+    if ((current.node.type === "API" || current.node.type === "KB" || current.node.type === "Handover") && endNode) {
+      pushConnector(current, endNode);
+      return;
+    }
+
+    const next = diagramNodes[index + 1];
+    if (next) {
+      pushConnector(current, next);
+    }
+  });
 
   return connectors;
 }
@@ -177,6 +220,11 @@ export const workflowToneStyles: Record<
     header: "bg-[#8b5cf6]",
     border: "border-[#cab5ff]",
     chip: "bg-[#f3ecff] text-[#6544b0]",
+  },
+  rose: {
+    header: "bg-[#db2777]",
+    border: "border-[#f2a7cc]",
+    chip: "bg-[#ffe7f2] text-[#aa1f5a]",
   },
   slate: {
     header: "bg-[#64748b]",

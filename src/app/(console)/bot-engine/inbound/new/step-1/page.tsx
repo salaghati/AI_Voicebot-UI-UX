@@ -1,5 +1,5 @@
-import { InboundStep1 } from "@/features/bot-engine";
+import { redirect } from "next/navigation";
 
 export default function InboundStep1Page() {
-  return <InboundStep1 />;
+  redirect("/bot-engine/inbound/create");
 }

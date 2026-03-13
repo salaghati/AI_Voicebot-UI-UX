@@ -1,0 +1,76 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="980" fill="#F5F7FB"/>
+  <rect x="28" y="24" width="1544" height="932" rx="24" fill="#FFFFFF" stroke="#D7DEEA" stroke-width="2"/>
+
+  <text x="64" y="78" fill="#18212F" font-family="Arial, sans-serif" font-size="34" font-weight="700">Luồng business-first khi tạo bot cho campaign hoặc inbound route</text>
+  <text x="64" y="112" fill="#5B6472" font-family="Arial, sans-serif" font-size="18">Sơ đồ này giải thích cách người dùng bắt đầu từ đối tượng business, sau đó mới quyết định dùng workflow sẵn có hoặc tạo workflow mới.</text>
+
+  <rect x="64" y="160" width="240" height="720" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
+  <text x="96" y="210" fill="#1C2635" font-family="Arial, sans-serif" font-size="28" font-weight="700">Admin</text>
+  <text x="96" y="242" fill="#5E6877" font-family="Arial, sans-serif" font-size="18">Người thao tác trong console</text>
+
+  <rect x="328" y="160" width="588" height="720" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
+  <text x="360" y="210" fill="#1C2635" font-family="Arial, sans-serif" font-size="28" font-weight="700">Bot Engine Create</text>
+  <text x="360" y="242" fill="#5E6877" font-family="Arial, sans-serif" font-size="18">Luồng tạo Outbound Campaign hoặc Inbound Route</text>
+
+  <rect x="940" y="160" width="588" height="720" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
+  <text x="972" y="210" fill="#1C2635" font-family="Arial, sans-serif" font-size="28" font-weight="700">Workflow Builder</text>
+  <text x="972" y="242" fill="#5E6877" font-family="Arial, sans-serif" font-size="18">Nơi tạo mới hoặc chỉnh sâu logic bot</text>
+
+  <circle cx="184" cy="290" r="20" fill="#2558A5"/>
+  <path d="M184 310 L184 350 M164 326 L204 326 M184 350 L164 388 M184 350 L204 388" stroke="#2558A5" stroke-width="8" stroke-linecap="round"/>
+
+  <rect x="390" y="274" width="450" height="92" rx="16" fill="#EEF3FF" stroke="#AABFF8" stroke-width="2"/>
+  <text x="420" y="314" fill="#1A3870" font-family="Arial, sans-serif" font-size="22" font-weight="700">Bắt đầu từ Campaign hoặc Inbound Route</text>
+  <text x="420" y="342" fill="#3D5D98" font-family="Arial, sans-serif" font-size="17">Người dùng khai báo tên, mô tả, queue/data source và ngữ cảnh vận hành.</text>
+
+  <rect x="480" y="430" width="270" height="110" rx="14" fill="#FFFFFF" stroke="#D5DCE8" stroke-width="2"/>
+  <text x="514" y="474" fill="#263141" font-family="Arial, sans-serif" font-size="22" font-weight="700">Dùng workflow có sẵn</text>
+  <text x="514" y="502" fill="#5B6472" font-family="Arial, sans-serif" font-size="16">Chọn từ thư viện hiện có</text>
+  <text x="514" y="524" fill="#5B6472" font-family="Arial, sans-serif" font-size="16">rồi đi tiếp sang bước bind KB.</text>
+
+  <rect x="480" y="592" width="270" height="128" rx="14" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
+  <text x="514" y="634" fill="#153A24" font-family="Arial, sans-serif" font-size="22" font-weight="700">Tạo workflow mới</text>
+  <text x="514" y="662" fill="#2D6241" font-family="Arial, sans-serif" font-size="16">Nhập tên và mô tả ngắn</text>
+  <text x="514" y="684" fill="#2D6241" font-family="Arial, sans-serif" font-size="16">ngay trong luồng tạo bot</text>
+  <text x="514" y="706" fill="#2D6241" font-family="Arial, sans-serif" font-size="16">trước khi sang workflow builder.</text>
+
+  <rect x="1010" y="592" width="430" height="120" rx="16" fill="#EEF3FF" stroke="#AABFF8" stroke-width="2"/>
+  <text x="1042" y="636" fill="#1A3870" font-family="Arial, sans-serif" font-size="22" font-weight="700">/workflow/new nhận prefill và returnTo</text>
+  <text x="1042" y="664" fill="#3D5D98" font-family="Arial, sans-serif" font-size="16">Builder được mở với tên workflow, mô tả bối cảnh và route quay lại</text>
+  <text x="1042" y="686" fill="#3D5D98" font-family="Arial, sans-serif" font-size="16">để người dùng không bị lạc khỏi luồng business ban đầu.</text>
+
+  <rect x="1010" y="770" width="430" height="76" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
+  <text x="1042" y="816" fill="#153A24" font-family="Arial, sans-serif" font-size="22" font-weight="700">Publish xong thì quay lại create flow</text>
+
+  <rect x="390" y="770" width="450" height="76" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
+  <text x="420" y="816" fill="#553514" font-family="Arial, sans-serif" font-size="22" font-weight="700">Tiếp tục bind KB, KB Fallback, review và tạo bot</text>
+
+  <path d="M184 388 C184 430 280 430 388 430" stroke="#547294" stroke-width="4" fill="none" marker-end="url(#arrowBlue)"/>
+  <path d="M614 366 V410" stroke="#547294" stroke-width="4" marker-end="url(#arrowBlue)"/>
+  <path d="M614 540 V590" stroke="#2D6241" stroke-width="4" marker-end="url(#arrowGreen)"/>
+  <path d="M750 486 H854 C900 486 900 770 1010 770" stroke="#C78A28" stroke-width="4" fill="none" stroke-dasharray="10 8" marker-end="url(#arrowOrange)"/>
+  <path d="M750 656 H930" stroke="#2D6241" stroke-width="4" marker-end="url(#arrowGreen)"/>
+  <path d="M1226 712 V756" stroke="#2D6241" stroke-width="4" marker-end="url(#arrowGreen)"/>
+  <path d="M1010 808 H842" stroke="#2D6241" stroke-width="4" marker-end="url(#arrowGreen)"/>
+
+  <rect x="1170" y="438" width="290" height="100" rx="14" fill="#FFFFFF" stroke="#D5DCE8" stroke-width="2"/>
+  <text x="1200" y="480" fill="#263141" font-family="Arial, sans-serif" font-size="20" font-weight="700">Ý nghĩa kiến trúc</text>
+  <text x="1200" y="508" fill="#5B6472" font-family="Arial, sans-serif" font-size="16">Workflow vẫn là thư viện logic,</text>
+  <text x="1200" y="530" fill="#5B6472" font-family="Arial, sans-serif" font-size="16">nhưng người dùng đi từ business context trước.</text>
+
+  <rect x="96" y="820" width="208" height="40" rx="12" fill="#FFFFFF" stroke="#D5DCE8" stroke-width="2"/>
+  <text x="122" y="846" fill="#5B6472" font-family="Arial, sans-serif" font-size="16">Actor business trong console</text>
+
+  <defs>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#547294"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2D6241"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#C78A28"/>
+    </marker>
+  </defs>
+</svg>

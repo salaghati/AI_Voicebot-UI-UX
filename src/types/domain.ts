@@ -73,9 +73,19 @@ export interface InboundDraft {
   note: string;
 }
 
+export type WorkflowNodeType =
+  | "Start"
+  | "Prompt"
+  | "Intent"
+  | "Condition"
+  | "API"
+  | "KB"
+  | "Handover"
+  | "End";
+
 export interface WorkflowNode {
   id: string;
-  type: "Intent" | "KB" | "API" | "Condition";
+  type: WorkflowNodeType;
   label: string;
   value: string;
   x?: number;
@@ -111,7 +121,6 @@ export interface WorkflowNode {
   onFailAction?: "retry" | "fallback" | "transfer_agent" | "end_call";
 
   // KB node
-  kbRefId?: string;
   retrievalMode?: "semantic" | "keyword" | "hybrid";
   topK?: number;
   scoreThreshold?: number;
@@ -119,6 +128,14 @@ export interface WorkflowNode {
   promptTemplate?: string;
   citationEnabled?: boolean;
   noAnswerAction?: "fallback_node" | "ask_again" | "transfer_agent" | "end_call";
+
+  // Handover node
+  handoverTarget?: string;
+  handoverMessage?: string;
+  onHandoverFail?: "fallback_node" | "retry_transfer" | "end_call";
+
+  // End node
+  endReason?: string;
 }
 
 export interface Workflow {

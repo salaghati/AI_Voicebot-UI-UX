@@ -1,5 +1,5 @@
-import { CampaignStep4 } from "@/features/bot-engine";
+import { redirect } from "next/navigation";
 
 export default function OutboundStep4Page() {
-  return <CampaignStep4 />;
+  redirect("/bot-engine/outbound/create");
 }

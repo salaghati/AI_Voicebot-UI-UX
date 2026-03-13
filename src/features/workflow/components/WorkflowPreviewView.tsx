@@ -12,6 +12,7 @@ import { TabsNav } from "@/components/ui/tabs";
 import { StateSwitcher } from "@/components/shared/state-switcher";
 import { AsyncState } from "@/components/shared/async-state";
 import { Badge } from "@/components/ui/badge";
+import { getWorkflowNodeTypeLabel } from "@/lib/workflow-node-meta";
 import { WorkflowDiagramCanvas } from "./WorkflowDiagramCanvas";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/utils";
@@ -145,7 +146,7 @@ export function WorkflowPreviewView({ workflowId, tab }: { workflowId: string; t
                   <p className="text-xs font-semibold text-[var(--text-dim)]">Đang lọc theo node</p>
                   <p className="mt-1 font-semibold">{selectedNode.label}</p>
                   <div className="mt-2">
-                    <Badge tone="info">{selectedNode.type}</Badge>
+                    <Badge tone="info">{getWorkflowNodeTypeLabel(selectedNode.type)}</Badge>
                   </div>
                 </div>
               ) : null}

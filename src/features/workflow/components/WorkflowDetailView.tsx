@@ -12,7 +12,12 @@ import { Button } from "@/components/ui/button";
 import { AsyncState } from "@/components/shared/async-state";
 import { formatDateTime } from "@/lib/utils";
 import { mapStatusTone } from "@/lib/mappers";
-import { WorkflowDiagramCanvas } from "./WorkflowDiagramCanvas";
+import {
+  getWorkflowNodeContentLabel,
+  getWorkflowNodeDescription,
+  getWorkflowNodeTypeLabel,
+} from "@/lib/workflow-node-meta";
+import { WorkflowInteractiveCanvas } from "./WorkflowInteractiveCanvas";
 
 function parseVersion(version: string) {
   const numeric = Number.parseFloat(version.replace("v", ""));
@@ -68,6 +73,15 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
   const versionHistory = useMemo(
     () => wf ? buildVersionHistory(wf.version, wf.status, wf.updatedAt) : [],
     [wf],
+  );
+  const entityScope = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          (wf?.nodes ?? []).flatMap((node) => node.entities ?? []).filter(Boolean),
+        ),
+      ),
+    [wf?.nodes],
   );
 
   if (query.isLoading) {
@@ -152,17 +166,78 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
         }
       />
 
+      <div className="grid gap-3 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1.8fr)]">
+        <Card className="p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--text-dim)]">Workflow Summary</p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div>
+              <p className="text-xs text-[var(--text-dim)]">Workflow ID</p>
+              <p className="mt-1 text-base font-semibold text-[var(--text-main)]">{currentWorkflow.id}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[var(--text-dim)]">Version</p>
+              <p className="mt-1 text-base font-semibold text-[var(--text-main)]">{currentWorkflow.version}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[var(--text-dim)]">Updated</p>
+              <p className="mt-1 text-base font-semibold text-[var(--text-main)]">{formatDateTime(currentWorkflow.updatedAt)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[var(--text-dim)]">Node Count</p>
+              <p className="mt-1 text-base font-semibold text-[var(--text-main)]">{currentWorkflow.nodes.length}</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--text-dim)]">Intent & Entity Scope</p>
+              <p className="mt-1 text-sm text-[var(--text-dim)]">
+                Intent quyết định nhánh xử lý. Entity là dữ liệu được thu từ lời khách và dùng tiếp ở Condition hoặc API.
+              </p>
+            </div>
+            <div className="rounded-full bg-[#eef6ff] px-3 py-1 text-xs font-semibold text-[#3565b3]">
+              Kéo thả node trực tiếp trên diagram để sắp layout review
+            </div>
+          </div>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div>
+              <p className="text-xs font-semibold text-[var(--text-dim)]">Intent toàn workflow</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {currentWorkflow.intents.map((intent) => (
+                  <Badge key={intent}>{intent}</Badge>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-[var(--text-dim)]">Entity scope</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {entityScope.length > 0 ? entityScope.map((entity) => (
+                  <Badge key={entity} tone="info">{entity}</Badge>
+                )) : (
+                  <span className="text-sm text-[var(--text-dim)]">Workflow này chưa cần entity đầu vào.</span>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 rounded-xl border border-[#d7e2f0] bg-[#f8fbff] p-3 text-sm text-[var(--text-dim)]">
+            <p className="font-semibold text-[var(--text-main)]">Cách đọc flow này</p>
+            <p className="mt-1">`Intent node` hỏi và hiểu khách muốn gì. `Entity` là dữ liệu bot nghe được như mã khách hàng. `Condition` đọc intent đó để rẽ nhánh. `API` dùng entity để tra cứu. `KB` dùng câu hỏi hiện tại để trả lời chính sách.</p>
+          </div>
+        </Card>
+      </div>
+
       <div className="overflow-hidden rounded-xl border border-[var(--line)] bg-white">
         <div className="grid min-h-[740px] xl:grid-cols-[1fr_360px]">
-          <WorkflowDiagramCanvas
-            nodes={currentWorkflow.nodes}
+          <WorkflowInteractiveCanvas
+            workflowNodes={currentWorkflow.nodes}
             selectedId={selectedNode?.id}
             onSelect={setSelectedId}
             title="Workflow Diagram"
-            subtitle="Click vào từng node trong diagram để xem nội dung và metadata bên phải."
+            subtitle="Click để xem properties của node. Kéo thả để sắp lại layout review ngay trên màn hình này."
           />
           <aside className="border-l border-[var(--line)] bg-[#fbfcff] p-4">
-            <h3 className="text-lg font-bold">Properties - {selectedNode?.label || "Node"}</h3>
+            <h3 className="text-lg font-bold">Node Properties - {selectedNode?.label || "Node"}</h3>
             {selectedNode ? (
               <div className="mt-4 space-y-4">
                 <div>
@@ -174,18 +249,38 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
                 <div>
                   <p className="text-xs font-semibold text-[var(--text-dim)]">Loại node</p>
                   <div className="mt-1">
-                    <Badge tone="info">{selectedNode.type}</Badge>
+                    <Badge tone="info">{getWorkflowNodeTypeLabel(selectedNode.type)}</Badge>
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[var(--text-dim)]">Nội dung xử lý</p>
+                  <p className="text-xs font-semibold text-[var(--text-dim)]">{getWorkflowNodeContentLabel(selectedNode.type)}</p>
                   <div className="mt-1 rounded-xl border border-[var(--line)] bg-white p-3 text-sm text-[var(--text-main)]">
                     {selectedNode.value}
                   </div>
                 </div>
+                <div className="rounded-xl border border-[var(--line)] bg-white p-3 text-sm text-[var(--text-dim)]">
+                  {getWorkflowNodeDescription(selectedNode.type)}
+                </div>
+                {selectedNode.type === "Start" ? (
+                  <div className="space-y-2 rounded-xl border border-[var(--line)] bg-white p-3">
+                    <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">Start Properties</p>
+                    <p className="text-sm">Node này chỉ đánh dấu entry point của workflow.</p>
+                  </div>
+                ) : null}
+                {selectedNode.type === "Prompt" ? (
+                  <div className="space-y-2 rounded-xl border border-[var(--line)] bg-white p-3">
+                    <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">Prompt Properties</p>
+                    <p className="text-sm">TTS / Bot nói: <span className="font-medium">{selectedNode.ttsText || selectedNode.value || "--"}</span></p>
+                  </div>
+                ) : null}
                 {selectedNode.type === "Intent" ? (
                   <div className="space-y-2 rounded-xl border border-[var(--line)] bg-white p-3">
-                    <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">Intent Properties</p>
+                    <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">Intent Capture Properties</p>
+                    <div className="rounded-lg border border-[#d7e2f0] bg-[#f8fbff] p-3 text-sm text-[var(--text-dim)]">
+                      <p><span className="font-semibold text-[var(--text-main)]">Intent</span> = khách đang muốn làm gì.</p>
+                      <p><span className="font-semibold text-[var(--text-main)]">Entity</span> = dữ liệu cụ thể bot lấy ra từ câu nói của khách.</p>
+                      <p className="mt-2">Ví dụ: “Cho tôi kiểm tra hóa đơn KH123” thì `intent = payment_check`, `entity = customer_id: KH123`.</p>
+                    </div>
                     <p className="text-sm">Intent chính: <span className="font-medium">{selectedNode.mainIntent || "--"}</span></p>
                     <p className="text-sm">Confidence threshold: <span className="font-medium">{selectedNode.confidenceThreshold ?? "--"}</span></p>
                     <p className="text-sm">Fallback node: <span className="font-medium">{selectedNode.fallbackNodeId || "--"}</span></p>
@@ -197,6 +292,9 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
                 {selectedNode.type === "Condition" ? (
                   <div className="space-y-2 rounded-xl border border-[var(--line)] bg-white p-3">
                     <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">Condition Properties</p>
+                    <div className="rounded-lg border border-[#d7e2f0] bg-[#fffaf1] p-3 text-sm text-[var(--text-dim)]">
+                      Condition không thu dữ liệu mới. Nó chỉ đọc intent hoặc entity đã có để quyết định đi sang API, KB, Handover hay End.
+                    </div>
                     <p className="text-sm">Nguồn điều kiện: <span className="font-medium">{selectedNode.conditionSource || "--"}</span></p>
                     <p className="text-sm">Nhánh mặc định: <span className="font-medium">{selectedNode.defaultTargetNodeId || "--"}</span></p>
                     <p className="text-sm">On rule error: <span className="font-medium">{selectedNode.onRuleError || "--"}</span></p>
@@ -206,6 +304,9 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
                 {selectedNode.type === "API" ? (
                   <div className="space-y-2 rounded-xl border border-[var(--line)] bg-white p-3">
                     <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">API Properties</p>
+                    <div className="rounded-lg border border-[#d7e2f0] bg-[#f8fbff] p-3 text-sm text-[var(--text-dim)]">
+                      API node dùng entity đã thu ở node Intent trước đó. Trong flow demo này, API đang cần `customer_id` hoặc `bill_code`.
+                    </div>
                     <p className="text-sm">API ref: <span className="font-medium">{selectedNode.apiRef || "--"}</span></p>
                     <p className="text-sm">Method/URL: <span className="font-medium">{selectedNode.apiMethod || "--"} {selectedNode.apiUrl || ""}</span></p>
                     <p className="text-sm">Auth profile: <span className="font-medium">{selectedNode.authProfile || "--"}</span></p>
@@ -217,42 +318,33 @@ export function WorkflowDetailView({ workflowId }: { workflowId: string }) {
                 {selectedNode.type === "KB" ? (
                   <div className="space-y-2 rounded-xl border border-[var(--line)] bg-white p-3">
                     <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">KB Properties</p>
-                    <p className="text-sm">KB ref: <span className="font-medium">{selectedNode.kbRefId || "--"}</span></p>
+                    <div className="rounded-lg border border-[#d7e2f0] bg-[#f4fcf8] p-3 text-sm text-[var(--text-dim)]">
+                      KB node thường trả lời câu hỏi kiến thức chung. Nó dựa vào câu hỏi hiện tại và KB đã bind, không nhất thiết phải cần entity như API.
+                    </div>
+                    <p className="text-sm">KB binding: <span className="font-medium">Được chọn khi gắn workflow vào campaign/route</span></p>
                     <p className="text-sm">Retrieval mode: <span className="font-medium">{selectedNode.retrievalMode || "--"}</span></p>
                     <p className="text-sm">Top-K / Threshold: <span className="font-medium">{selectedNode.topK ?? "--"} / {selectedNode.scoreThreshold ?? "--"}</span></p>
                     <p className="text-sm">Rerank/Citation: <span className="font-medium">{selectedNode.rerank ? "On" : "Off"} / {selectedNode.citationEnabled ? "On" : "Off"}</span></p>
                     <p className="text-sm">No-answer action: <span className="font-medium">{selectedNode.noAnswerAction || "--"}</span></p>
                   </div>
                 ) : null}
+                {selectedNode.type === "Handover" ? (
+                  <div className="space-y-2 rounded-xl border border-[var(--line)] bg-white p-3">
+                    <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">Handover Properties</p>
+                    <p className="text-sm">Target queue / agent: <span className="font-medium">{selectedNode.handoverTarget || "--"}</span></p>
+                    <p className="text-sm">Thông điệp chuyển máy: <span className="font-medium">{selectedNode.handoverMessage || selectedNode.ttsText || "--"}</span></p>
+                    <p className="text-sm">Nếu chuyển máy thất bại: <span className="font-medium">{selectedNode.onHandoverFail || "--"}</span></p>
+                  </div>
+                ) : null}
+                {selectedNode.type === "End" ? (
+                  <div className="space-y-2 rounded-xl border border-[var(--line)] bg-white p-3">
+                    <p className="text-xs font-semibold uppercase text-[var(--text-dim)]">End Properties</p>
+                    <p className="text-sm">TTS / Bot nói: <span className="font-medium">{selectedNode.ttsText || selectedNode.value || "--"}</span></p>
+                    <p className="text-sm">End reason: <span className="font-medium">{selectedNode.endReason || "--"}</span></p>
+                  </div>
+                ) : null}
               </div>
             ) : null}
-
-            <div className="mt-6 border-t border-[var(--line)] pt-4">
-              <h4 className="text-sm font-bold">Thông tin workflow</h4>
-              <div className="mt-3 space-y-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-dim)]">Mã</span>
-                  <span className="font-medium">{currentWorkflow.id}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-dim)]">Version</span>
-                  <span className="font-medium">{currentWorkflow.version}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-dim)]">Cập nhật</span>
-                  <span className="font-medium">{formatDateTime(currentWorkflow.updatedAt)}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 border-t border-[var(--line)] pt-4">
-              <p className="mb-2 text-sm font-bold">Intent trong workflow</p>
-              <div className="flex flex-wrap gap-2">
-                {currentWorkflow.intents.map((intent) => (
-                  <Badge key={intent}>{intent}</Badge>
-                ))}
-              </div>
-            </div>
 
             <div className="mt-6">
               <Link href={`/workflow/${currentWorkflow.id}/preview/session`}>

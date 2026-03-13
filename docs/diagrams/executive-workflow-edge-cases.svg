@@ -1,0 +1,65 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="980" fill="#F5F7FB"/>
+  <rect x="28" y="24" width="1544" height="932" rx="24" fill="#FFFFFF" stroke="#D7DEEA" stroke-width="2"/>
+
+  <text x="64" y="78" fill="#18212F" font-family="Arial, sans-serif" font-size="34" font-weight="700">Các edge case quan trọng khi bind workflow vào bot</text>
+  <text x="64" y="112" fill="#5B6472" font-family="Arial, sans-serif" font-size="18">Sơ đồ này giúp người đọc hiểu các câu hỏi hay gây nhầm lẫn: KB lấy ở đâu, API lấy ref ở đâu, và handover phụ thuộc vào gì.</text>
+
+  <rect x="84" y="180" width="1432" height="730" rx="20" fill="#F8FAFD" stroke="#DCE3EE" stroke-width="2"/>
+
+  <rect x="136" y="246" width="280" height="92" rx="16" fill="#EEF3FF" stroke="#AABFF8" stroke-width="2"/>
+  <text x="168" y="286" fill="#1A3870" font-family="Arial, sans-serif" font-size="22" font-weight="700">Bắt đầu từ một bot đã gắn workflow</text>
+  <text x="168" y="314" fill="#3D5D98" font-family="Arial, sans-serif" font-size="16">Campaign hoặc route đã chọn workflow để chạy.</text>
+
+  <path d="M416 292 H516" stroke="#547294" stroke-width="4" marker-end="url(#arrowBlue2)"/>
+
+  <polygon points="620,210 760,292 620,374 480,292" fill="#FFFFFF" stroke="#D5DCE8" stroke-width="2"/>
+  <text x="552" y="282" fill="#263141" font-family="Arial, sans-serif" font-size="20" font-weight="700">Workflow có</text>
+  <text x="560" y="310" fill="#263141" font-family="Arial, sans-serif" font-size="20" font-weight="700">KB node không?</text>
+
+  <path d="M760 292 H882" stroke="#2D6241" stroke-width="4" marker-end="url(#arrowGreen2)"/>
+  <text x="804" y="274" fill="#2D6241" font-family="Arial, sans-serif" font-size="16" font-weight="700">Có</text>
+
+  <path d="M620 374 V470" stroke="#C78A28" stroke-width="4" marker-end="url(#arrowOrange2)"/>
+  <text x="640" y="428" fill="#C78A28" font-family="Arial, sans-serif" font-size="16" font-weight="700">Không</text>
+
+  <rect x="882" y="236" width="520" height="112" rx="16" fill="#EAF7EE" stroke="#95CDA4" stroke-width="2"/>
+  <text x="914" y="280" fill="#153A24" font-family="Arial, sans-serif" font-size="22" font-weight="700">KB node sẽ dùng KB context được bind ở Bot Engine Create</text>
+  <text x="914" y="308" fill="#2D6241" font-family="Arial, sans-serif" font-size="16">Người dùng không chọn lại KB bên trong workflow; workflow chỉ quyết định thời điểm tra tri thức.</text>
+
+  <rect x="434" y="470" width="372" height="108" rx="16" fill="#FFF4E6" stroke="#F2C483" stroke-width="2"/>
+  <text x="466" y="514" fill="#553514" font-family="Arial, sans-serif" font-size="22" font-weight="700">Nếu workflow không có KB node</text>
+  <text x="466" y="542" fill="#7A5A31" font-family="Arial, sans-serif" font-size="16">Về mặt logic, bot không cần tra KB ở runtime.</text>
+  <text x="466" y="564" fill="#7A5A31" font-family="Arial, sans-serif" font-size="16">Prototype hiện vẫn có bước chọn KB trong create flow.</text>
+
+  <rect x="882" y="454" width="520" height="120" rx="16" fill="#EEF3FF" stroke="#AABFF8" stroke-width="2"/>
+  <text x="914" y="498" fill="#1A3870" font-family="Arial, sans-serif" font-size="22" font-weight="700">Nếu workflow có API node</text>
+  <text x="914" y="526" fill="#3D5D98" font-family="Arial, sans-serif" font-size="16">API ref, API URL và auth profile hiện vẫn cấu hình trong chính node API.</text>
+  <text x="914" y="548" fill="#3D5D98" font-family="Arial, sans-serif" font-size="16">Settings API chưa đóng vai trò source-of-truth cho node API trong workflow.</text>
+
+  <rect x="882" y="646" width="520" height="120" rx="16" fill="#FCEAF3" stroke="#E9A6C7" stroke-width="2"/>
+  <text x="914" y="690" fill="#7A1F4B" font-family="Arial, sans-serif" font-size="22" font-weight="700">Nếu workflow có Handover node</text>
+  <text x="914" y="718" fill="#954B72" font-family="Arial, sans-serif" font-size="16">Bot có nhánh chuyển sang người thật, nhưng queue/agent target hiện chưa được lấy đồng bộ từ Settings Agent.</text>
+  <text x="914" y="740" fill="#954B72" font-family="Arial, sans-serif" font-size="16">Người đọc nên hiểu đây là logic product đúng, còn mức tích hợp source-of-truth vẫn chưa hoàn chỉnh.</text>
+
+  <path d="M1142 348 V454" stroke="#547294" stroke-width="4" marker-end="url(#arrowBlue2)"/>
+  <path d="M1142 574 V646" stroke="#547294" stroke-width="4" marker-end="url(#arrowBlue2)"/>
+
+  <rect x="136" y="690" width="620" height="140" rx="18" fill="#FFFFFF" stroke="#D5DCE8" stroke-width="2"/>
+  <text x="172" y="736" fill="#263141" font-family="Arial, sans-serif" font-size="24" font-weight="700">Điều người đọc cần nhớ</text>
+  <text x="172" y="770" fill="#5B6472" font-family="Arial, sans-serif" font-size="18">1. Workflow quyết định logic; Bot Engine quyết định context chạy.</text>
+  <text x="172" y="798" fill="#5B6472" font-family="Arial, sans-serif" font-size="18">2. KB được bind ở create flow; KB node chỉ là điểm tra tri thức.</text>
+  <text x="172" y="826" fill="#5B6472" font-family="Arial, sans-serif" font-size="18">3. API và Handover đã đúng về ý tưởng, nhưng chưa nối source-of-truth hoàn toàn từ Settings.</text>
+
+  <defs>
+    <marker id="arrowBlue2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#547294"/>
+    </marker>
+    <marker id="arrowGreen2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2D6241"/>
+    </marker>
+    <marker id="arrowOrange2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#C78A28"/>
+    </marker>
+  </defs>
+</svg>

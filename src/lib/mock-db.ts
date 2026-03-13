@@ -101,6 +101,124 @@ const inbounds: InboundConfig[] = [
 
 const workflows: Workflow[] = [
   {
+    id: "WF_FullNode_Demo",
+    name: "Demo đầy đủ node và entity",
+    status: "Draft",
+    kind: "Outbound",
+    version: "v1.0",
+    updatedAt: new Date(now - 1000 * 60 * 20).toISOString(),
+    intents: ["payment_check", "late_fee_policy", "handover_request", "complaint", "other"],
+    nodes: [
+      {
+        id: "demo_start",
+        type: "Start",
+        label: "1. START",
+        value: "Điểm bắt đầu của workflow demo đầy đủ node.",
+        x: 36,
+        y: 34,
+        ttsText: "",
+      },
+      {
+        id: "demo_greeting",
+        type: "Prompt",
+        label: "2. LỜI CHÀO",
+        value: "Bot chào khách và giới thiệu phạm vi hỗ trợ của cuộc gọi.",
+        x: 36,
+        y: 156,
+        ttsText: "Xin chào anh chị, em là AI Voicebot hỗ trợ kiểm tra thanh toán.",
+      },
+      {
+        id: "demo_capture_intent",
+        type: "Intent",
+        label: "3. THU INTENT + ENTITY",
+        value: "Bot hỏi nhu cầu để nhận intent và trích entity như customer_id hoặc bill_code từ câu trả lời của khách.",
+        x: 36,
+        y: 278,
+        ttsText: "Anh chị cần kiểm tra thanh toán, hỏi chính sách phí trễ hạn hay gặp tổng đài viên ạ? Nếu có, anh chị đọc giúp em mã khách hàng hoặc mã hóa đơn.",
+        intents: ["payment_check", "late_fee_policy", "handover_request", "complaint", "other"],
+        entities: ["customer_id", "bill_code"],
+        mainIntent: "payment_check",
+        confidenceThreshold: 0.84,
+        fallbackNodeId: "demo_end",
+        repromptText: "Anh/chị vui lòng nói rõ nhu cầu và đọc giúp em mã khách hàng nếu có.",
+        timeoutSec: 7,
+        maxRetry: 2,
+      },
+      {
+        id: "demo_route",
+        type: "Condition",
+        label: "4. RẼ NHÁNH THEO INTENT",
+        value: "Condition đọc intent vừa thu được rồi quyết định sang API, KB, Handover hoặc End.",
+        x: 36,
+        y: 400,
+        intents: ["payment_check", "late_fee_policy", "handover_request", "complaint", "other"],
+        conditionSource: "intent",
+        conditionRulesText:
+          "intent == payment_check -> demo_api\nintent == late_fee_policy -> demo_kb\nintent == handover_request -> demo_handover\nintent == complaint -> demo_handover",
+        defaultTargetNodeId: "demo_end",
+        onRuleError: "fallback",
+      },
+      {
+        id: "demo_api",
+        type: "API",
+        label: "5A. API TRA DƯ NỢ",
+        value: "API dùng entity customer_id hoặc bill_code đã thu ở node trước để tra số tiền cần thanh toán.",
+        x: 298,
+        y: 522,
+        ttsText: "Em đang kiểm tra dư nợ và trạng thái thanh toán của anh chị.",
+        entities: ["customer_id", "bill_code"],
+        apiRef: "tra_cuoc_api",
+        apiMethod: "GET",
+        apiUrl: "/billing/current",
+        authProfile: "billing_service_token",
+        apiTimeoutMs: 3000,
+        apiRetry: 2,
+        successCondition: "status == 200",
+        requestMapping: '{ \"customer_id\": \"{{customer_id}}\", \"bill_code\": \"{{bill_code}}\" }',
+        responseMapping: '{ \"balance\": \"$.data.balance\", \"due_date\": \"$.data.due_date\" }',
+        onFailAction: "fallback",
+      },
+      {
+        id: "demo_kb",
+        type: "KB",
+        label: "5B. KB GIẢI THÍCH CHÍNH SÁCH",
+        value: "KB trả lời câu hỏi chính sách phí trễ hạn dựa trên intent late_fee_policy và nội dung khách hỏi.",
+        x: 298,
+        y: 644,
+        ttsText: "Em đang tra cứu chính sách phí trễ hạn cho anh chị.",
+        retrievalMode: "hybrid",
+        topK: 4,
+        scoreThreshold: 0.76,
+        rerank: true,
+        citationEnabled: true,
+        promptTemplate: "Tóm tắt chính sách ngắn gọn, dễ hiểu, không quá 2 câu.",
+        noAnswerAction: "fallback_node",
+      },
+      {
+        id: "demo_handover",
+        type: "Handover",
+        label: "5C. CHUYỂN AGENT",
+        value: "Nếu intent là handover_request hoặc complaint thì bot chuyển cuộc gọi sang tổng đài viên.",
+        x: 298,
+        y: 766,
+        ttsText: "Em chuyển cuộc gọi sang tổng đài viên để hỗ trợ trực tiếp cho anh chị.",
+        handoverTarget: "queue_payment",
+        handoverMessage: "Chuyển máy sang hàng chờ hỗ trợ thanh toán và khiếu nại.",
+        onHandoverFail: "fallback_node",
+      },
+      {
+        id: "demo_end",
+        type: "End",
+        label: "6. KẾT THÚC",
+        value: "Bot kết thúc cuộc gọi sau khi xử lý xong hoặc khi không có nhánh phù hợp.",
+        x: 84,
+        y: 888,
+        ttsText: "Cảm ơn anh chị đã liên hệ. Chúc anh chị một ngày tốt lành.",
+        endReason: "completed",
+      },
+    ],
+  },
+  {
     id: "WF_ThuNo_A",
     name: "Thu nợ chuẩn A",
     status: "Active",
@@ -109,7 +227,7 @@ const workflows: Workflow[] = [
     updatedAt: new Date(now - 86400000 * 2).toISOString(),
     intents: ["Xác nhận thanh toán", "Xin gia hạn", "Từ chối"],
     nodes: [
-      { id: "n1", type: "Intent", label: "Mở đầu", value: "Chào và xác thực" },
+      { id: "n1", type: "Prompt", label: "Mở đầu", value: "Chào khách và xác thực danh tính", ttsText: "Em chào anh chị, em gọi để xác thực và nhắc lịch thanh toán." },
       { id: "n2", type: "API", label: "Tra dư nợ", value: "GET /debt/:id" },
       { id: "n3", type: "KB", label: "Giải thích phí", value: "KB_FEE_01" },
       { id: "n4", type: "Condition", label: "Điều hướng", value: "Theo intent" },
@@ -124,7 +242,7 @@ const workflows: Workflow[] = [
     updatedAt: new Date(now - 86400000 * 6).toISOString(),
     intents: ["Quan tâm", "Không quan tâm", "Cần tư vấn"],
     nodes: [
-      { id: "n1", type: "Intent", label: "Giới thiệu", value: "Mở đầu ưu đãi" },
+      { id: "n1", type: "Prompt", label: "Giới thiệu", value: "Mở đầu giới thiệu ưu đãi Premium", ttsText: "Em gọi để giới thiệu ưu đãi của gói Premium." },
       { id: "n2", type: "KB", label: "FAQ", value: "KB_PREMIUM_FAQ" },
       { id: "n3", type: "Condition", label: "Chuyển nhánh", value: "Theo mức quan tâm" },
     ],
@@ -138,9 +256,9 @@ const workflows: Workflow[] = [
     updatedAt: new Date(now - 86400000 * 1).toISOString(),
     intents: ["Hỏi phương thức", "Báo lỗi giao dịch", "Gặp agent"],
     nodes: [
-      { id: "n1", type: "Intent", label: "Thu intent", value: "STT + classifier" },
+      { id: "n1", type: "Intent", label: "Thu intent", value: "Anh/chị đang cần hỗ trợ phương thức thanh toán, lỗi giao dịch hay gặp agent ạ?", ttsText: "Anh chị đang cần hỗ trợ phương thức thanh toán, lỗi giao dịch hay gặp agent ạ?" },
       { id: "n2", type: "API", label: "Tra trạng thái", value: "GET /payment/status" },
-      { id: "n3", type: "Condition", label: "Fallback", value: "Handover khi cần" },
+      { id: "n3", type: "Handover", label: "Chuyển agent", value: "Chuyển cuộc gọi cho tổng đài viên khi khách cần hỗ trợ trực tiếp.", ttsText: "Em chuyển cuộc gọi sang tổng đài viên để hỗ trợ trực tiếp cho anh chị.", handoverTarget: "queue_payment", onHandoverFail: "end_call" },
     ],
   },
   {
@@ -154,64 +272,50 @@ const workflows: Workflow[] = [
     nodes: [
       {
         id: "node_start",
-        type: "Intent",
+        type: "Start",
         label: "START",
-        value: "Bắt đầu workflow",
+        value: "Điểm bắt đầu của workflow",
         x: 36,
         y: 34,
-        ttsText: "Bắt đầu workflow",
-        mainIntent: "greeting",
-        confidenceThreshold: 0.8,
-        fallbackNodeId: "node_greeting",
-        repromptText: "Xin chào, hệ thống bắt đầu cuộc gọi.",
-        timeoutSec: 5,
-        maxRetry: 1,
+        ttsText: "",
       },
       {
         id: "node_greeting",
-        type: "Intent",
+        type: "Prompt",
         label: "LỜI CHÀO",
         value: "Xin chào anh/chị, em là AI Voicebot hỗ trợ thanh toán.",
         x: 36,
         y: 156,
         ttsText: "Xin chào anh chị, em là AI Voicebot hỗ trợ thanh toán.",
-        intents: ["payment_check", "complaint", "handover_request"],
+      },
+      {
+        id: "node_capture_intent",
+        type: "Intent",
+        label: "HỎI NHU CẦU",
+        value: "Anh/chị cần em hỗ trợ kiểm tra thanh toán, giải thích phí hay gặp nhân viên ạ?",
+        x: 36,
+        y: 278,
+        ttsText: "Anh chị cần em hỗ trợ kiểm tra thanh toán, giải thích phí hay gặp nhân viên ạ?",
+        intents: ["payment_check", "late_fee_policy", "handover_request", "other"],
         entities: ["customer_id"],
         mainIntent: "payment_check",
         confidenceThreshold: 0.82,
-        fallbackNodeId: "node_kb",
-        repromptText: "Anh/chị cần hỗ trợ thanh toán hay cần gặp nhân viên ạ?",
+        fallbackNodeId: "node_end",
+        repromptText: "Anh/chị có thể nói rõ hơn nhu cầu giúp em được không ạ?",
         timeoutSec: 7,
         maxRetry: 2,
       },
       {
-        id: "node_kb",
-        type: "KB",
-        label: "TRA CỨU KB",
-        value: "Tra tri thức về quy trình thanh toán trễ hạn.",
-        x: 36,
-        y: 278,
-        ttsText: "Em đang tra cứu thông tin hỗ trợ phù hợp cho anh chị.",
-        kbRefId: "KB-100",
-        retrievalMode: "hybrid",
-        topK: 3,
-        scoreThreshold: 0.75,
-        rerank: true,
-        citationEnabled: true,
-        promptTemplate: "Tóm tắt quy trình thanh toán trễ hạn ngắn gọn, dễ hiểu.",
-        noAnswerAction: "fallback_node",
-      },
-      {
-        id: "node_condition",
+        id: "node_route",
         type: "Condition",
-        label: "PHÂN LOẠI INTENT",
-        value: "Điều hướng theo intent sau khi chào.",
+        label: "PHÂN LUỒNG",
+        value: "Điều hướng theo intent sau khi nhận nhu cầu.",
         x: 36,
         y: 400,
-        intents: ["payment_check", "complaint", "handover_request", "other"],
+        intents: ["payment_check", "late_fee_policy", "handover_request", "other"],
         conditionSource: "intent",
         conditionRulesText:
-          "intent == payment_check -> node_api\nintent == complaint -> node_handover\nintent == handover_request -> node_handover",
+          "intent == payment_check -> node_api\nintent == late_fee_policy -> node_kb\nintent == handover_request -> node_handover",
         defaultTargetNodeId: "node_end",
         onRuleError: "fallback",
       },
@@ -236,31 +340,59 @@ const workflows: Workflow[] = [
         onFailAction: "fallback",
       },
       {
+        id: "node_kb",
+        type: "KB",
+        label: "TRA CỨU CHÍNH SÁCH",
+        value: "Tra tri thức về quy trình thanh toán trễ hạn và phí phát sinh.",
+        x: 298,
+        y: 644,
+        ttsText: "Em đang tra cứu thông tin về chính sách thanh toán trễ hạn cho anh chị.",
+        retrievalMode: "hybrid",
+        topK: 3,
+        scoreThreshold: 0.75,
+        rerank: true,
+        citationEnabled: true,
+        promptTemplate: "Tóm tắt chính sách thanh toán trễ hạn ngắn gọn, dễ hiểu.",
+        noAnswerAction: "fallback_node",
+      },
+      {
         id: "node_handover",
-        type: "Condition",
+        type: "Handover",
         label: "CHUYỂN AGENT",
         value: "Chuyển cuộc gọi cho tổng đài viên khi khách yêu cầu.",
         x: 298,
-        y: 644,
-        conditionSource: "context",
-        conditionRulesText: "handover_required == true -> transfer_agent",
-        defaultTargetNodeId: "node_end",
-        onRuleError: "transfer_agent",
+        y: 766,
+        ttsText: "Em chuyển cuộc gọi sang tổng đài viên để hỗ trợ trực tiếp cho anh chị.",
+        handoverTarget: "queue_payment",
+        handoverMessage: "Chuyển máy sang hàng chờ hỗ trợ thanh toán.",
+        onHandoverFail: "fallback_node",
       },
       {
         id: "node_end",
-        type: "Condition",
+        type: "End",
         label: "KẾT THÚC",
         value: "Cảm ơn anh/chị, chúc anh/chị một ngày tốt lành.",
         x: 84,
-        y: 766,
-        conditionSource: "context",
-        conditionRulesText: "is_end == true -> END",
-        onRuleError: "end_call",
+        y: 888,
+        ttsText: "Cảm ơn anh chị, chúc anh chị một ngày tốt lành.",
+        endReason: "completed",
       },
     ],
   },
 ];
+
+const legacyWorkflowIdMap: Record<string, string> = {
+  "WF-3001": "WF_ThuNo_A",
+  "WF-3002": "WF_Mau_HoanChinh",
+  "WF-3003": "WF_ThanhToan",
+  "WF-3004": "WF_Mau_HoanChinh",
+  "WF-3005": "WF_CrossSell_B",
+  "WF-3006": "WF_ThanhToan",
+};
+
+function resolveWorkflowId(id: string) {
+  return legacyWorkflowIdMap[id] ?? id;
+}
 
 const previewData: Record<string, Record<string, WorkflowPreviewItem[]>> = {
   WF_ThuNo_A: {
@@ -312,7 +444,7 @@ const previewData: Record<string, Record<string, WorkflowPreviewItem[]>> = {
       { time: "08:30:07", speaker: "Bot", content: "Em đang kiểm tra trạng thái giao dịch giúp anh/chị.", nodeId: "n2", nodeLabel: "Tra trạng thái" },
     ],
     kb: [
-      { time: "08:30:08", speaker: "KB", content: "Không dùng KB ở workflow này", nodeId: "n3", nodeLabel: "Fallback" },
+      { time: "08:30:08", speaker: "KB", content: "Workflow này không dùng KB để trả lời runtime", nodeId: "n3", nodeLabel: "Chuyển agent" },
     ],
     "api-log": [
       { time: "08:30:06", speaker: "API", content: "GET /payment/status -> 200 (28ms)", nodeId: "n2", nodeLabel: "Tra trạng thái" },
@@ -431,7 +563,8 @@ export function listWorkflows(params: FilterParams) {
 }
 
 export function getWorkflowById(id: string) {
-  return workflows.find((item) => item.id === id) ?? null;
+  const resolvedId = resolveWorkflowId(id);
+  return workflows.find((item) => item.id === resolvedId) ?? null;
 }
 
 export function createWorkflow(draft: WorkflowDraft) {
@@ -450,7 +583,8 @@ export function createWorkflow(draft: WorkflowDraft) {
 }
 
 export function updateWorkflow(id: string, draft: WorkflowDraft) {
-  const index = workflows.findIndex((item) => item.id === id);
+  const resolvedId = resolveWorkflowId(id);
+  const index = workflows.findIndex((item) => item.id === resolvedId);
   if (index < 0) {
     return null;
   }
@@ -472,7 +606,8 @@ export function updateWorkflow(id: string, draft: WorkflowDraft) {
 }
 
 export function toggleWorkflowStatus(id: string) {
-  const index = workflows.findIndex((item) => item.id === id);
+  const resolvedId = resolveWorkflowId(id);
+  const index = workflows.findIndex((item) => item.id === resolvedId);
   if (index < 0) return null;
   const current = workflows[index];
   workflows[index] = {
@@ -485,10 +620,12 @@ export function toggleWorkflowStatus(id: string) {
 function buildWorkflowPreviewFromWorkflow(workflow: Workflow) {
   const session = workflow.nodes.map((node, index) => ({
     time: `09:00:${String(index * 3).padStart(2, "0")}`,
-    speaker: index === 0 ? "System" : "Bot",
+    speaker: node.type === "Start" ? "System" : "Bot",
     content:
-      index === 0
+      node.type === "Start"
         ? `Khởi tạo workflow ${workflow.name}`
+        : node.type === "Handover"
+          ? `Chuyển cuộc gọi tại node ${node.label}`
         : `Đang xử lý node ${node.label}: ${node.value}`,
     nodeId: node.id,
     nodeLabel: node.label,
@@ -496,10 +633,14 @@ function buildWorkflowPreviewFromWorkflow(workflow: Workflow) {
 
   const conversation = workflow.nodes.map((node, index) => ({
     time: `09:01:${String(index * 3).padStart(2, "0")}`,
-    speaker: node.type === "API" ? "System" : "Bot",
+    speaker: node.type === "API" || node.type === "Start" ? "System" : node.type === "Handover" ? "Agent Router" : "Bot",
     content:
       node.type === "Condition"
         ? `Điều hướng theo điều kiện tại ${node.label}`
+        : node.type === "Handover"
+          ? node.handoverMessage || node.value
+        : node.type === "End"
+          ? node.ttsText || node.value
         : node.value,
     confidence: node.type === "Condition" ? 0.91 : undefined,
     nodeId: node.id,
@@ -518,13 +659,15 @@ function buildWorkflowPreviewFromWorkflow(workflow: Workflow) {
     })) satisfies WorkflowPreviewItem[];
 
   const apiLog = workflow.nodes
-    .filter((node) => node.type === "API" || node.type === "Condition")
+    .filter((node) => node.type === "API" || node.type === "Condition" || node.type === "Handover")
     .map((node, index) => ({
       time: `09:03:${String(index * 4).padStart(2, "0")}`,
       speaker: "API",
       content:
         node.type === "API"
           ? `${node.value} -> 200 (${24 + index * 7}ms)`
+          : node.type === "Handover"
+            ? `POST /agent/handover -> 202 (${18 + index * 3}ms)`
           : `POST /workflow/router -> 200 (${14 + index * 4}ms)`,
       nodeId: node.id,
       nodeLabel: node.label,

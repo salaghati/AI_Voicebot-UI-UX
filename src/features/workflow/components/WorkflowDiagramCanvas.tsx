@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import type { WorkflowNode } from "@/types/domain";
+import { getWorkflowNodeTypeLabel } from "@/lib/workflow-node-meta";
 import {
   buildWorkflowConnectors,
   buildWorkflowDiagram,
@@ -87,7 +88,7 @@ export function WorkflowDiagramCanvas({
                 <p className="break-words">{item.node.value}</p>
                 <div className="mt-2 flex items-center justify-between">
                   <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${tone.chip}`}>
-                    {item.node.type}
+                    {getWorkflowNodeTypeLabel(item.node.type)}
                   </span>
                   {isActive ? (
                     <span className="rounded-full bg-[#e7fbf3] px-2 py-0.5 text-[11px] font-semibold text-[#117a5b]">

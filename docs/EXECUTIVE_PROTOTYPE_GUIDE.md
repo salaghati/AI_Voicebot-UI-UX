@@ -1,8 +1,8 @@
 # AI Voicebot Ops Console
 
 > Tài liệu đọc nhanh cho cấp quản lý và người xem prototype  
-> Phiên bản: 1.0  
-> Cập nhật: 11/03/2026
+> Phiên bản: 1.1  
+> Cập nhật: 13/03/2026
 
 ---
 
@@ -47,6 +47,7 @@ Prototype này mô phỏng đầy đủ bức tranh vận hành:
 
 - các màn hình thao tác chính đang nằm ở `Dashboard`, `Bot Engine`, `Workflow`, `KB`, `Report`, `Settings`, `Preview`;
 - các màn hình tạo mới chính trong code là `/bot-engine/outbound/create`, `/bot-engine/inbound/create`, `/workflow/new`, `/kb/add`;
+- ở `Outbound Create` và `Inbound Create`, người dùng hiện có thể `dùng workflow có sẵn` hoặc `tạo workflow mới ngay trong flow đó` rồi quay lại bước cấu hình bot;
 - `/settings` trong app hiện redirect về `/settings/stt-tts`;
 - một số route phụ như `preview/platform-review/*` tồn tại để thử pattern UX, nhưng không phải luồng chính của executive demo.
 
@@ -131,6 +132,7 @@ Kết luận ngắn từ sơ đồ:
 | `KB Fallback -> Outbound create` | Có link thật | Chọn rule active qua API |
 | `KB Fallback -> Inbound create` | Có link thật | Chọn rule active qua API |
 | `Workflow -> Preview` | Có link thật | Preview đọc workflow thật |
+| `Bot Engine create -> Workflow new` | Có link thật | Có thể nhảy sang builder với prefill và quay lại create flow |
 | `Workflow -> Bot Engine create` | Link một phần | Chọn qua `workflowRefs` mock |
 | `Knowledge Base -> Bot Engine create` | Link một phần | Chọn qua `knowledgeRefs` mock |
 | `Campaign / Inbound data -> Dashboard / Reports` | Có link thật | Đã có consumer hiển thị kết quả vận hành |
@@ -142,11 +144,17 @@ Người đọc sẽ dễ hiểu hơn nếu nhìn hệ thống theo `3 chuỗi t
 `Chuỗi 1: cấu hình một bot để chạy chiến dịch hoặc hotline`
 
 1. Người vận hành vào `Bot Engine Create` để tạo `Outbound Campaign` hoặc `Inbound Route`.
-2. Ở bước cấu hình, hệ thống yêu cầu gắn `Workflow`, `Knowledge Base`, và có thể gắn `KB Fallback`.
-3. Trong code hiện tại:
+2. Ở bước cấu hình, hệ thống cho phép:
+   - dùng `Workflow` có sẵn;
+   - hoặc tạo `Workflow` mới ngay trong flow rồi quay lại tiếp tục tạo bot.
+3. Sau khi workflow đã được gắn, hệ thống yêu cầu chọn `Knowledge Base`, và có thể gắn thêm `KB Fallback`.
+4. Trong code hiện tại:
    - `KB Fallback` là phần nối thật, vì màn create đọc danh sách rule active từ API;
-   - `Workflow` và `Knowledge Base` mới nối một phần, vì danh sách chọn đang đến từ mock refs.
-4. Kết quả là người xem vẫn hiểu đúng nghiệp vụ, nhưng về mặt kiến trúc code thì chưa phải một nguồn dữ liệu dùng chung hoàn toàn.
+   - `Workflow` và `Knowledge Base` mới nối một phần, vì danh sách chọn đang đến từ mock refs;
+   - nhánh `tạo workflow mới ngay trong flow` là link thật giữa `Bot Engine Create` và `Workflow Builder`, nhưng hiện mới ở mức draft UI/runtime mock.
+5. Kết quả là người xem sẽ thấy tư duy `business-first` rõ hơn trước: bắt đầu từ campaign hoặc route trước, rồi mới xác định logic bot.
+
+`Gợi ý đọc tiếp:` sơ đồ trực quan cho luồng này được trình bày ở mục `10.6`.
 
 `Chuỗi 2: thiết kế logic xử lý của bot`
 
@@ -272,6 +280,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 | Workflow Node | Một bước trong workflow; trong bản deploy hiện tại có các loại `Start`, `Prompt`, `Intent`, `Condition`, `API`, `KB`, `Handover`, `End` |
 | Intent | Nhu cầu hoặc mục đích mà khách đang muốn thực hiện |
 | Entity | Dữ liệu cụ thể bot trích xuất từ lời khách để dùng cho điều kiện hoặc API |
+| Workflow Library | Nơi lưu và quản lý logic bot có thể tái sử dụng giữa nhiều campaign hoặc route |
 | Knowledge Base | Nguồn tri thức để bot tra cứu và trả lời |
 | KB Fallback | Quy tắc phản ứng khi bot không hiểu hoặc match KB thấp |
 | Handover | Chuyển bot sang nhân viên thật |
@@ -309,7 +318,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 - mở chi tiết campaign;
 - tạo campaign mới theo từng bước;
 - chọn nguồn dữ liệu;
-- gắn workflow;
+- chọn workflow có sẵn hoặc nhảy sang tạo workflow mới;
 - gắn Knowledge Base;
 - gắn KB Fallback đang active;
 - cấu hình lịch gọi và retry.
@@ -322,6 +331,8 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 
 `Ý nghĩa nghiệp vụ:` giúp doanh nghiệp mở rộng gọi ra tự động mà không phụ thuộc hoàn toàn vào nhân sự gọi thủ công.
 
+`Điểm cần hiểu đúng:` trong bản deploy hiện tại, outbound create đã bắt đầu đi theo tư duy `business-first`: tạo campaign trước, rồi mới quyết định logic bot đi kèm.
+
 ### 9.3. Bot Engine Inbound
 
 `Mục đích:` cấu hình cách hệ thống tiếp nhận cuộc gọi vào.
@@ -333,7 +344,7 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 - xem danh sách route inbound;
 - tạo route mới;
 - cấu hình queue và extension;
-- gắn workflow xử lý;
+- chọn workflow inbound có sẵn hoặc nhảy sang tạo workflow mới;
 - gắn KB và fallback;
 - kiểm tra chi tiết route.
 
@@ -344,6 +355,8 @@ Chuỗi này đủ để người xem hiểu gần như toàn bộ hệ thống.
 - các route `/bot-engine/inbound/new/step-1..4` hiện chỉ redirect về `/bot-engine/inbound/create`.
 
 `Ý nghĩa nghiệp vụ:` mỗi hotline hoặc đầu số có thể được định nghĩa cách xử lý riêng mà không phải sửa hệ thống lõi.
+
+`Điểm cần hiểu đúng:` inbound route là nơi định nghĩa ngữ cảnh hotline hoặc queue; workflow chỉ là logic được gắn vào ngữ cảnh đó.
 
 ### 9.4. Workflow
 
@@ -548,118 +561,33 @@ Cách đọc sơ đồ:
 
 ---
 
-## 11. Cách dùng tài liệu này khi chuẩn bị trình bày
+### 10.6. Tạo workflow mới ngay trong luồng tạo bot
 
-Mục này dành cho người nội bộ đang chuẩn bị demo hoặc giải thích prototype cho sếp. Mục tiêu không phải là đọc nguyên văn khi trình, mà là giúp người trình biết:
+![Luồng business-first khi tạo workflow mới](./diagrams/executive-business-first-workflow-binding.svg)
 
-- nên mở màn hình nào trước;
-- ở mỗi màn cần nói đúng ý gì;
-- chỗ nào là màn hình thật trong code;
-- chỗ nào là logic nghiệp vụ đang được mô phỏng.
+Ý nghĩa nghiệp vụ:
 
-### 11.1. Thứ tự demo nội bộ nên đi
+- doanh nghiệp không luôn nghĩ từ `workflow` trước; họ thường nghĩ từ `campaign`, `hotline`, `queue VIP` trước;
+- vì vậy prototype hiện đang thử hướng `business-first`: bắt đầu từ bot engine create, rồi mới nhảy sang workflow builder nếu cần logic mới;
+- module `Workflow` vẫn được giữ như thư viện logic và nơi chỉnh sâu, chứ không bị loại bỏ.
 
-| Bước | Route nên mở | Nên dùng màn này để nói gì |
-| --- | --- | --- |
-| 1 | `/dashboard` | Mở đầu bằng góc nhìn điều hành: hệ thống này dùng để quản trị vận hành voicebot, không phải chỉ là một chatbot demo |
-| 2 | `/bot-engine/outbound` hoặc `/bot-engine/inbound` | Cho thấy platform quản lý đối tượng vận hành thật: campaign gọi ra hoặc route hotline gọi vào |
-| 3 | `/bot-engine/outbound/create` hoặc `/bot-engine/inbound/create` | Giải thích cách một bot được cấu hình để chạy: gắn workflow, KB và KB fallback vào một ngữ cảnh vận hành cụ thể |
-| 4 | `/workflow` | Chuyển sang phần “bộ não” của bot: nơi mô hình hóa cách bot chào, hiểu nhu cầu, tra dữ liệu, tra tri thức và handover |
-| 5 | `/workflow/WF_FullNode_Demo` | Dùng workflow mẫu đầy đủ node để giải thích semantics chuẩn của `Start`, `Prompt`, `Intent`, `Condition`, `API`, `KB`, `Handover`, `End` |
-| 6 | `/workflow/WF_FullNode_Demo/preview/session` | Cho xem mô phỏng transcript để người nghe thấy workflow không chỉ là sơ đồ mà còn dẫn tới hành vi runtime |
-| 7 | `/kb/list` và `/kb/fallback` | Giải thích bot có hai lớp tri thức: kho nội dung để trả lời và fallback để thoát hiểm khi bot không chắc chắn |
-| 8 | `/report/overview` | Chốt lại bằng việc doanh nghiệp đọc hiệu quả vận hành ở đâu sau khi bot chạy |
-| 9 | `/settings/stt-tts` hoặc `/settings/api` | Kết luận rằng hệ thống không chỉ có flow business mà còn có lớp cấu hình nền để đi tới triển khai thực tế |
+`Độ bám code:` cao ở mức route handoff giữa `Bot Engine Create` và `Workflow Builder`; phần lưu draft bền vững lâu dài vẫn đang ở mức local/prototype.
 
-### 11.2. Cách giải thích ngắn ở từng điểm dừng
+### 10.7. Edge case khi workflow được bind vào campaign hoặc route
 
-| Màn hình | Câu giải thích nội bộ nên nhớ |
-| --- | --- |
-| Dashboard | Đây là màn nhìn sức khỏe vận hành, không phải nơi cấu hình bot |
-| Bot Engine Create | Đây là nơi tạo một đối tượng vận hành cụ thể; ở đây user bind `workflow`, `KB`, `KB fallback` vào campaign hoặc route |
-| Workflow list | Đây là thư viện logic bot, mỗi workflow là một kịch bản xử lý có thể tái sử dụng |
-| Workflow detail | Đây là nơi đọc logic của từng node; khi bấm vào node thì chỉ nên hiểu là đang xem properties của node đó |
-| Workflow preview | Đây là runtime mô phỏng để giải thích bot sẽ nói gì, đi node nào, gọi API hay tra KB ra sao |
-| KB list / fallback | Đây là nơi quản trị tri thức và cách xử lý khi bot không đủ tự tin |
-| Report | Đây là lớp đo hiệu quả sau vận hành, không phải nơi định nghĩa logic bot |
-| Settings | Đây là lớp cấu hình nền, không đồng nghĩa mọi cấu hình trong settings đã được wire 100% vào mọi module |
+![Edge cases khi workflow được bind vào bot](./diagrams/executive-workflow-edge-cases.svg)
 
-### 11.3. Ba điểm rất dễ nói lệch khi trình
+Ý nghĩa nghiệp vụ:
 
-1. `Workflow` quyết định logic, còn `Outbound/Inbound` quyết định ngữ cảnh vận hành.
-2. `KB` được chọn ở bước tạo `Outbound/Inbound`; `KB node` trong workflow chỉ là bước bot đi tra tri thức, không phải nơi chọn lại KB.
-3. `Intent` là nhu cầu của khách, còn `Entity` là dữ liệu bot lấy được để dùng cho `Condition` hoặc `API`.
+- sơ đồ này giải thích các chỗ dễ gây hiểu nhầm nhất khi đọc prototype;
+- `KB` luôn nên được hiểu là `context của bot`, còn `KB node` là `điểm bot đi tra tri thức`;
+- `API` và `Handover` đã đúng về ý tưởng sản phẩm, nhưng vẫn chưa nối trọn vẹn với `Settings` theo kiểu source-of-truth.
 
-### 11.4. Workflow nào nên dùng để giải thích cho dễ hiểu
-
-Nếu chỉ chọn một workflow để giải thích nội bộ trước khi trình cho sếp, nên ưu tiên:
-
-- `WF_FullNode_Demo`: dễ dùng nhất để giải thích ngữ nghĩa đầy đủ của các loại node;
-- `WF_Mau_HoanChinh`: phù hợp nếu muốn minh họa gần hơn với một flow nghiệp vụ đầy đủ;
-- `WF_ThuNo_A`: phù hợp nếu muốn nói về use case nhắc thanh toán/outbound rõ ràng.
+`Độ bám code:` cao ở mức giải thích cách app đang hành xử; đồng thời cũng chỉ rõ các giới hạn tích hợp hiện tại để người đọc không hiểu quá mức.
 
 ---
 
-## 12. Cách hiểu đúng các màn hình trong bản deploy hiện tại
-
-Mục này dùng để tự kiểm tra khi thao tác trên prototype. Nếu thấy một màn “không giống production thật”, cần xác định nó thuộc một trong ba lớp sau:
-
-- `màn hình thật trong code`: có route và có thể thao tác trực tiếp;
-- `màn hình mô phỏng`: dùng mock data hoặc runtime giả lập để giải thích sản phẩm;
-- `diễn giải nghiệp vụ`: nằm trong tài liệu để giúp người đọc hiểu logic tổng thể, không phải click-flow 1:1.
-
-### 12.1. Đọc từng nhóm màn hình như thế nào
-
-| Nhóm màn hình | Nên hiểu đúng theo bản deploy hiện tại |
-| --- | --- |
-| Dashboard | Nơi đọc chỉ số vận hành tổng thể; không phải nơi tạo hay sửa dữ liệu |
-| Outbound / Inbound list | Nơi xem đối tượng vận hành đang được quản lý; mỗi item là một campaign hoặc route đã gắn workflow/KB/fallback |
-| Outbound / Inbound create | Nơi bind các thành phần lại với nhau để bot có thể chạy trong ngữ cảnh business cụ thể |
-| Workflow list | Nơi xem thư viện workflow và chọn workflow để đọc, sửa, preview hoặc xem version |
-| Workflow detail | Nơi đọc logic của workflow; phần sidebar phải được hiểu là properties của node đang chọn, không phải summary của toàn workflow |
-| Workflow preview | Nơi mô phỏng runtime: transcript, log node, API log, KB log |
-| KB list / KB detail | Nơi quản trị tài liệu tri thức, trạng thái học và thông tin sử dụng |
-| KB fallback | Nơi định nghĩa cách hệ thống phản ứng khi bot không hiểu hoặc KB match kém |
-| Reports | Nơi đọc hiệu quả sau vận hành; dữ liệu hiện vẫn là dữ liệu mô phỏng |
-| Settings | Nơi cấu hình nền của platform; một số phần đã có màn hình riêng nhưng chưa phải mọi mục đều được tích hợp hoàn toàn vào runtime |
-
-### 12.2. Cách đọc đúng phần workflow để không bị mơ hồ
-
-| Thành phần trong workflow | Nên hiểu thế nào |
-| --- | --- |
-| `Start` | Điểm bắt đầu của flow |
-| `Prompt` | Bước bot nói ra một lời thoại hoặc hướng dẫn |
-| `Intent` | Bước bot thu nhu cầu của khách và có thể extract intent/entity |
-| `Condition` | Bước rẽ nhánh dựa trên intent hoặc entity đã có |
-| `API` | Bước gọi hệ thống ngoài bằng dữ liệu đã thu được |
-| `KB` | Bước tra tri thức từ KB đã bind ở outbound/inbound create |
-| `Handover` | Bước chuyển sang người thật hoặc queue hỗ trợ |
-| `End` | Điểm kết thúc flow |
-
-### 12.3. Cách hiểu đúng quan hệ giữa intent và entity
-
-| Khái niệm | Ý nghĩa trong workflow |
-| --- | --- |
-| Intent | Khách đang muốn làm gì, ví dụ kiểm tra thanh toán, hỏi chính sách, yêu cầu gặp agent |
-| Entity | Dữ liệu cụ thể bot lấy ra từ câu nói của khách, ví dụ `customer_id`, `bill_code`, `phone_number` |
-| Intent node | Nơi phù hợp nhất để thu intent và entity |
-| Condition node | Đọc intent/entity để quyết định đi nhánh nào |
-| API node | Dùng entity làm tham số đầu vào để gọi hệ thống ngoài |
-| KB node | Thường dùng câu hỏi/ngữ cảnh hiện tại để tra tri thức; không phải nơi khai báo lại business context |
-
-### 12.4. Màn nào bám UI thật, màn nào thiên về giải thích
-
-| Loại nội dung | Nên hiểu thế nào |
-| --- | --- |
-| Route cụ thể như `/workflow/[id]`, `/workflow/[id]/preview/session`, `/bot-engine/outbound/create` | Đây là màn hình có thật trong code hiện tại |
-| Route `/bot-engine/*/new/step-1..4` | Trong code hiện tại chúng chỉ redirect về màn `/create`, không nên xem là một flow riêng |
-| Bảng mô tả module | Đây là lớp giải thích cho người đọc, không phải UI specification |
-| Activity diagram gắn với create/list/detail | Đây là flow tương đối sát với các màn hình thật |
-| Activity diagram gắn với runtime, handover, improvement loop | Đây là flow nghiệp vụ để giải thích sản phẩm, không phải chuỗi click 1:1 |
-
----
-
-## 13. Giới hạn hiện tại của prototype
+## 11. Giới hạn hiện tại của prototype
 
 Để tránh hiểu sai khi trình bày, cần nói rõ:
 
@@ -676,7 +604,7 @@ Nói cách khác:
 
 ---
 
-## 14. Kết luận cho người đọc
+## 12. Kết luận cho người đọc
 
 Nếu chỉ nhớ 4 ý, hãy nhớ:
 
@@ -687,7 +615,7 @@ Nếu chỉ nhớ 4 ý, hãy nhớ:
 
 ---
 
-## 15. Tài liệu liên quan
+## 13. Tài liệu liên quan
 
 - [README](../README.md)
 - [Business Documentation](../BUSINESS_DOCUMENTATION.md)

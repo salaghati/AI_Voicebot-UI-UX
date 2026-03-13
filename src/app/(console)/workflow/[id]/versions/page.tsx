@@ -43,7 +43,7 @@ function buildVersionHistory(version: string, status: "Active" | "Draft", update
         index === 0
           ? "Publish hiện tại"
           : index % 2 === 0
-            ? "Sửa condition + KB ref"
+            ? "Sửa condition + cấu hình KB"
             : "Sửa prompt + retry",
     };
   });
